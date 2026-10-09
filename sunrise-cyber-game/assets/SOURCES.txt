@@ -1,0 +1,29 @@
+Asset provenance — Sunrise Cyber Game
+
+outfit-variable.woff2
+Variable Outfit typeface (weights 100–900), fetched from the Google Fonts repository:
+https://raw.githubusercontent.com/google/fonts/main/ofl/outfit/Outfit%5Bwght%5D.ttf
+Converted without changing glyphs via FontTools to WOFF2. SIL Open Font License 1.1;
+license included as OFL-Outfit.txt. Original TTF retained for reproducibility.
+
+sunrise-symbol.svg
+Sunrise brand symbol sourced from Simple Icons:
+https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/sunrise.svg
+Metadata (data/simple-icons.json) identifies the official source https://www.sunrise.ch
+and the natural brand color DA291C. Vector geometry preserved; fill set to DA291C.
+Simple Icons project license: CC0 1.0 (CC0-Simple-Icons.md).
+Brand trademarks remain the property of their respective owners.
+
+sunrise-logo.svg
+Verified Sunrise symbol above, paired with a TEMPORARY TYPOGRAPHIC WORDMARK.
+The text is not a supplied official Sunrise wordmark. Replace this complete file
+with the approved official brand asset before event publication.
+
+bip-logo.svg
+TEMPORARY TYPOGRAPHIC PLACEHOLDER for Business Integration Partners (BIP).
+No official BIP logo could be downloaded or validated. Replace with the approved
+BIP vector logo before event publication. White lettering fits the dark footer.
+
+The official web domains www.bip-group.com, bip-group.com and www.sunrise.ch were
+unavailable through the current network proxy (HTTP 403 / CONNECT tunnel failed).
+No network settings were changed. The app remains fully local at runtime.
