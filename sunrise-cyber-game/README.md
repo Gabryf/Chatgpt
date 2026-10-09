@@ -46,6 +46,19 @@ Your journey score is the average of the three game scores, each normalised to 1
 
 All messages and addresses are simulations. Suspicious links are inactive. These are educational scenarios; references to IT reporting channels and approved tools should be aligned with Sunrise procedures before the event.
 
+## Hidden test mode
+
+To try any game without drawing it:
+
+1. With the game page focused, press **Ctrl + Shift + G** (**Cmd + Shift + G** on Mac). Alternatively, click or tap **Learn. Choose. Protect.** in the footer three times quickly.
+2. Enter **`Gabriele&Alessia`** and select **Unlock games**.
+3. Click any of the nine game cards. During a game, use **Restart game** to try again, **All games** to return to the catalogue, or the sidebar to switch games directly.
+4. Select **Exit test mode** in the catalogue to lock it and return to the normal journey.
+
+Test results are stored separately from the normal journey. Completed scores and draws are kept; returning to an unfinished normal game restarts that game. Test mode stays unlocked through refreshes in the same browser tab, until you exit it or close the tab. If browser storage is unavailable, refresh starts a new session.
+
+This is a hidden testing shortcut in a static app. The code is visible in the source and is not a security boundary.
+
 ## Logos: replace before the event
 
 The supplied reference archive did not contain BIP or Sunrise logos, and the official sites were unavailable in the development environment.
@@ -63,6 +76,7 @@ Buttons work with Tab and Enter, dialogs close with Escape, and feedback is anno
 
 - `index.html`: structure, opening copy, footer and dialogs.
 - `style.css`: colours, font, wheel and overall layout.
+- `preview.css`: hidden test mode catalogue, controls and access dialog.
 - `app.js`: draws, animation, game order, progression and results.
 - `games/detection.*`, `decision.*`, `interactive.*`: scenarios and mechanics.
 - `assets/`: local assets and licences.
@@ -81,4 +95,4 @@ python3 -m playwright install chromium
 python3 -m unittest discover -s tests -v
 ```
 
-The runner uses system Chromium when available; set `CHROMIUM_PATH` to choose an executable. Tests manage their own local server and check all nine games in three complete journeys, unique draws, pointer alignment, the three-spin limit, game order, results, refresh, reset, dialogs, keyboard interaction and mobile layout after animations.
+The runner uses system Chromium when available; set `CHROMIUM_PATH` to choose an executable. Tests manage their own local server and check all nine games in three complete journeys, unique draws, pointer alignment, the three-spin limit, game order, results, refresh, reset, dialogs, keyboard interaction and mobile layout after animations. Test mode checks cover access, all nine games, replay, refresh, mobile controls, timer cleanup and preservation of the normal journey.

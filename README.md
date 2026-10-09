@@ -16,6 +16,8 @@ Alternatively, open [Sunrise_Cyber_Play_EN.html](sunrise-cyber-game/Sunrise_Cybe
 
 The game works offline and requires no accounts, API keys or runtime dependencies. Source code, local assets, previews, development tests and build instructions are included. This repository contains the files; GitHub Pages hosting has not been enabled.
 
+To test any game freely, press **Ctrl + Shift + G** (**Cmd + Shift + G** on Mac), or click the footer **Learn. Choose. Protect.** three times quickly. Enter **`Gabriele&Alessia`** and select **Unlock games**. See [hidden test mode](sunrise-cyber-game/README.md#hidden-test-mode) for replay and exit controls.
+
 The complete BIP and Sunrise wordmarks are provisional. Replace them with approved brand assets before using the game at an event; see the [project README](sunrise-cyber-game/README.md#logos-replace-before-the-event).
 
 ![Cyber Play preview](sunrise-cyber-game/previews/wheel-desktop.png)

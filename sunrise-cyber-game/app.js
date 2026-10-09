@@ -16,9 +16,13 @@
   const byId = id => games.find(game => game.id === id);
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const state = {selected:[], results:[], round:0, phase:'wheel', spinning:false, rotation:0};
+  const preview = {unlocked:false, activeId:null, results:{}, lastId:null};
+  const normalPhases = ['wheel','game','results'];
+  let normalPhase = 'wheel';
   let cleanup = null;
   let generation = 0;
   document.querySelectorAll('[data-icon]').forEach(el => { el.innerHTML = icon(el.dataset.icon); });
+  const journeyTip = $('.journey-tip').innerHTML;
 
   function escape(text) {
     return String(text).replace(/[&<>"']/g, character => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[character]));
@@ -32,7 +36,23 @@
     return result;
   }
   function save() {
+    if (!normalPhases.includes(state.phase)) return;
     try { sessionStorage.setItem('cyberplay-session-en-v2', JSON.stringify({selected:state.selected, results:state.results, round:state.round, phase:state.phase})); } catch (_) { /* Offline storage may be unavailable. */ }
+  }
+  function savePreview() {
+    try {
+      if (preview.unlocked) sessionStorage.setItem('cyberplay-preview-v1',JSON.stringify(preview));
+      else sessionStorage.removeItem('cyberplay-preview-v1');
+    } catch (_) { /* Test mode also works when browser storage is unavailable. */ }
+  }
+  function restorePreview() {
+    try {
+      const data = JSON.parse(sessionStorage.getItem('cyberplay-preview-v1'));
+      if (!data || data.unlocked !== true || data.activeId !== null && !byId(data.activeId) || data.lastId !== null && !byId(data.lastId)) return;
+      if (!data.results || typeof data.results !== 'object' || Array.isArray(data.results)) return;
+      if (Object.entries(data.results).some(([id,result]) => !byId(id) || !result || result.id !== id || !Number.isFinite(result.percent) || result.percent < 0 || result.percent > 100 || typeof result.lesson !== 'string')) return;
+      Object.assign(preview,{unlocked:true,activeId:data.activeId,results:data.results,lastId:data.lastId});
+    } catch (_) { /* Invalid saved test data never affects the normal journey. */ }
   }
   function restore() {
     try {
@@ -143,7 +163,7 @@
   }
   function showScreen(phase) {
     state.phase = phase;
-    for (const name of ['wheel','game','results']) $(`#${name}-screen`).hidden = name !== phase;
+    for (const name of ['wheel','game','results','preview']) $(`#${name}-screen`).hidden = name === 'game' ? !['game','preview-game'].includes(phase) : name !== phase;
     window.scrollTo({top:0,behavior:'instant'});
   }
   function teardown() {
@@ -155,6 +175,7 @@
     teardown();
     const game = byId(state.selected[state.round]);
     showScreen('game');
+    setGameLayout(false);
     $('#game-title').textContent = game.title;
     $('#game-category').textContent = game.category;
     $('#game-heading-icon').innerHTML = icon(game.icon,32);
@@ -162,18 +183,23 @@
     $('#game-step').textContent = `CHALLENGE 0${state.round+1} / 03`;
     $('#journey-progress').innerHTML = state.selected.map((_,i) => `<span class="progress-step ${i === state.round ? 'active' : i < state.round ? 'complete' : ''}" aria-label="Challenge ${i+1}: ${i === state.round ? 'in progress' : i < state.round ? 'completed' : 'up next'}"></span>`).join('');
     $('#game-path').innerHTML = state.selected.map((id,index) => `<li class="game-path-item ${index === state.round ? 'active' : index < state.round ? 'complete' : ''}"><span class="path-number">${index < state.round ? icon('check') : `0${index+1}`}</span><span><strong>${byId(id).title}</strong><small>${index === state.round ? 'Playing now' : index < state.round ? 'Challenge complete' : 'The next move'}</small></span></li>`).join('');
+    mountGame(game,'game',result => {
+      state.results.push(result);
+      state.round++;
+      if (state.round < 3) showGame(); else showResults();
+      save();
+    });
+  }
+  function mountGame(game,phase,onFinish) {
     const mountedGeneration = generation;
     let completed = false;
     const api = {
       icon, shuffle, reducedMotion:reducedMotion.matches,
       finish(result) {
-        if (completed || mountedGeneration !== generation || state.phase !== 'game') return;
+        if (completed || mountedGeneration !== generation || state.phase !== phase) return;
         if (!result || !Number.isFinite(result.score) || !Number.isFinite(result.maxScore) || result.maxScore <= 0) throw new Error('Invalid game result.');
         completed = true;
-        state.results.push({id:game.id, percent:Math.round(Math.max(0,Math.min(1,result.score/result.maxScore))*100), lesson:String(result.lesson || 'Observe, check the source and follow company procedures.')});
-        state.round++;
-        if (state.round < 3) showGame(); else showResults();
-        save();
+        onFinish({id:game.id, percent:Math.round(Math.max(0,Math.min(1,result.score/result.maxScore))*100), lesson:String(result.lesson || 'Observe, check the source and follow company procedures.')});
       }
     };
     try {
@@ -184,6 +210,82 @@
       console.error(error);
     }
     $('#game-title').focus({preventScroll:true});
+  }
+  function setGameLayout(testMode) {
+    $('#game-screen').classList.toggle('preview-game',testMode);
+    $('#exit-game').innerHTML = icon('arrow-left') + (testMode ? ' All games' : ' Back to the wheel');
+    $('#preview-restart').hidden = !testMode;
+    $('#journey-progress').hidden = testMode;
+    $('#journey-title').textContent = testMode ? 'ALL GAMES' : 'YOUR JOURNEY';
+    $('#game-path').classList.toggle('preview-sidebar',testMode);
+    $('.journey-tip').innerHTML = testMode ? `<span>${icon('cards')}</span><strong>Try another approach.</strong><p>Restart a game to explore different choices, or jump to any other game.</p>` : journeyTip;
+  }
+  function rememberNormalPhase() {
+    if (normalPhases.includes(state.phase)) normalPhase = state.phase;
+  }
+  function showPreviewCatalogue() {
+    if (!preview.unlocked || state.spinning) return;
+    rememberNormalPhase();
+    teardown();
+    preview.activeId = null;
+    showScreen('preview');
+    $('#preview-nav').hidden = false;
+    $('#preview-catalogue').innerHTML = games.map((game,index) => `<button type="button" class="preview-card" data-preview-game="${game.id}" style="--game-color:${game.color}"><span class="preview-card-top"><span class="preview-card-icon">${icon(game.icon)}</span><span class="preview-card-index">0${index+1}</span></span><strong>${game.title}</strong><span class="preview-card-description">${game.description}</span><span class="preview-card-bottom"><span>Play game ${icon('arrow')}</span><small>${preview.results[game.id] ? `Last run: ${preview.results[game.id].percent}%` : 'Ready to test'}</small></span></button>`).join('');
+    const result = preview.results[preview.lastId];
+    $('#preview-result').hidden = !result;
+    $('#preview-result').innerHTML = result ? `<div><p class="eyebrow">LATEST TEST RESULT · ${result.percent}%</p><h2>${byId(result.id).title}</h2><p>${escape(result.lesson)}</p></div><button type="button" id="preview-replay" class="button button-secondary">${icon('rotate')} Play again</button>` : '';
+    savePreview();
+    $('#preview-title').focus({preventScroll:true});
+  }
+  function showPreviewGame(id) {
+    const game = byId(id);
+    if (!preview.unlocked || !game || state.spinning) return;
+    rememberNormalPhase();
+    teardown();
+    preview.activeId = id;
+    showScreen('preview-game');
+    setGameLayout(true);
+    $('#preview-nav').hidden = false;
+    $('#game-title').textContent = game.title;
+    $('#game-category').textContent = game.category;
+    $('#game-heading-icon').innerHTML = icon(game.icon,32);
+    $('#game-heading-icon').style.color = game.color;
+    $('#game-step').textContent = 'GAME PREVIEW';
+    $('#game-path').innerHTML = games.map(item => `<li><button type="button" class="preview-sidebar-button" data-preview-switch="${item.id}" aria-current="${item.id === id}" style="--game-color:${item.color}">${icon(item.icon)}<span>${item.title}</span></button></li>`).join('');
+    savePreview();
+    mountGame(game,'preview-game',result => {
+      preview.results[id] = result;
+      preview.lastId = id;
+      showPreviewCatalogue();
+    });
+  }
+  function exitPreview() {
+    if (!preview.unlocked) return;
+    teardown();
+    Object.assign(preview,{unlocked:false,activeId:null,results:{},lastId:null});
+    savePreview();
+    $('#preview-nav').hidden = true;
+    setGameLayout(false);
+    if (normalPhase === 'game') showGame();
+    else if (normalPhase === 'results') showResults();
+    else {
+      showScreen('wheel');
+      renderSelections();
+      $('#wheel-title').focus({preventScroll:true});
+    }
+  }
+  function openPreviewAccess() {
+    if (state.spinning) return;
+    if (preview.unlocked) { showPreviewCatalogue(); return; }
+    const dialog = $('#preview-access-dialog');
+    if (dialog.open) { $('#preview-code').focus(); return; }
+    // A native modal preserves the current game; timers pause while it is open.
+    document.querySelectorAll('dialog[open]').forEach(item => item.close());
+    $('#preview-access-error').textContent = '';
+    $('#preview-code').value = '';
+    $('#preview-code').removeAttribute('aria-invalid');
+    dialog.showModal();
+    $('#preview-code').focus();
   }
   function showResults() {
     teardown();
@@ -199,7 +301,7 @@
     $('#results-title').focus({preventScroll:true});
   }
   function reset() {
-    if (state.spinning) return;
+    if (state.spinning || !normalPhases.includes(state.phase)) return;
     teardown();
     Object.assign(state,{selected:[], results:[], round:0, phase:'wheel', spinning:false, rotation:0});
     $('#wheel').style.transform = 'rotate(0deg)';
@@ -211,23 +313,74 @@
   $('#spin-button').addEventListener('click',spin);
   $('#spin-center').addEventListener('click',spin);
   $('#start-button').addEventListener('click',() => {
-    if (state.selected.length !== 3 || state.spinning) return;
+    if (state.selected.length !== 3 || state.spinning || state.phase !== 'wheel') return;
     showGame(); save();
   });
   $('#help-button').addEventListener('click',() => $('#help-dialog').showModal());
   document.querySelectorAll('[data-close-dialog]').forEach(button => button.addEventListener('click',() => button.closest('dialog').close()));
-  $('#exit-game').addEventListener('click',() => $('#exit-dialog').showModal());
+  $('#exit-game').addEventListener('click',() => state.phase === 'preview-game' ? showPreviewCatalogue() : $('#exit-dialog').showModal());
   $('#confirm-exit').addEventListener('click',() => { $('#exit-dialog').close(); reset(); });
   $('#play-again').addEventListener('click',reset);
   $('#brand-home').addEventListener('click',event => {
     event.preventDefault();
     if (state.spinning) return;
+    if (preview.unlocked) { showPreviewCatalogue(); return; }
     if (state.selected.length > 0 && state.phase !== 'results') $('#exit-dialog').showModal(); else reset();
   });
+  $('#preview-access-form').addEventListener('submit',event => {
+    event.preventDefault();
+    if (state.spinning) return;
+    if ($('#preview-code').value.trim().toLowerCase() !== 'Gabriele&Alessia'.toLowerCase()) {
+      $('#preview-code').setAttribute('aria-invalid','true');
+      $('#preview-access-error').textContent = 'That code is not recognised. Please try again.';
+      $('#preview-code').focus();
+      $('#preview-code').select();
+      return;
+    }
+    preview.unlocked = true;
+    $('#preview-access-dialog').close();
+    showPreviewCatalogue();
+  });
+  $('#preview-access-dialog').addEventListener('close',() => { $('#preview-code').value = ''; });
+  $('#preview-code').addEventListener('input',() => {
+    $('#preview-code').removeAttribute('aria-invalid');
+    $('#preview-access-error').textContent = '';
+  });
+  document.addEventListener('keydown',event => {
+    if (!event.repeat && (event.ctrlKey || event.metaKey) && event.shiftKey && !event.altKey && event.key.toLowerCase() === 'g') {
+      event.preventDefault();
+      openPreviewAccess();
+    }
+  });
+  let footerClicks = 0;
+  let lastFooterClick = 0;
+  $('#preview-entry').addEventListener('click',() => {
+    const now = Date.now();
+    footerClicks = now - lastFooterClick <= 1500 ? footerClicks + 1 : 1;
+    lastFooterClick = now;
+    if (footerClicks === 3) { footerClicks = 0; openPreviewAccess(); }
+  });
+  $('#preview-nav').addEventListener('click',showPreviewCatalogue);
+  $('#preview-exit').addEventListener('click',exitPreview);
+  $('#preview-restart').addEventListener('click',() => { if (preview.activeId) showPreviewGame(preview.activeId); });
+  $('#preview-catalogue').addEventListener('click',event => {
+    const button = event.target.closest('[data-preview-game]');
+    if (button) showPreviewGame(button.dataset.previewGame);
+  });
+  $('#game-path').addEventListener('click',event => {
+    const button = event.target.closest('[data-preview-switch]');
+    if (button) showPreviewGame(button.dataset.previewSwitch);
+  });
+  $('#preview-result').addEventListener('click',event => { if (event.target.closest('#preview-replay')) showPreviewGame(preview.lastId); });
   restore();
+  normalPhase = state.phase;
+  restorePreview();
   $('#wheel').style.transform = `rotate(${state.rotation}deg)`;
   drawWheel(); renderSelections();
-  if (state.phase === 'game') showGame();
+  if (preview.unlocked) {
+    if (preview.activeId) showPreviewGame(preview.activeId); else showPreviewCatalogue();
+  }
+  else if (state.phase === 'game') showGame();
   else if (state.phase === 'results') showResults();
   else if (state.selected.length === 3) $('#spin-status').textContent = 'Your journey is ready. Press Start.';
   else if (state.selected.length > 0) $('#spin-status').textContent = 'Your journey is saved. Spin again!';

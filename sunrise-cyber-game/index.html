@@ -8,6 +8,7 @@
   <title>Cyber Play — BIP × Sunrise</title>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="preview.css">
   <link rel="stylesheet" href="games/detection.css">
   <link rel="stylesheet" href="games/decision.css">
   <link rel="stylesheet" href="games/interactive.css">
@@ -27,6 +28,7 @@
     </a>
     <div class="header-actions">
       <span class="edition"><i aria-hidden="true"></i> SUNRISE EDITION</span>
+      <button class="help-button" id="preview-nav" aria-label="All games" hidden><span data-icon="cards"></span><span>All games</span></button>
       <button class="help-button" id="help-button" aria-label="How to play"><span data-icon="help"></span><span>How to play</span></button>
     </div>
   </header>
@@ -72,10 +74,16 @@
       <p class="wheel-caption"><span>09 GAMES</span><i></i><span>03 DRAWS</span><i></i><span>100% CYBER INSTINCT</span></p>
     </section>
     <section id="game-screen" class="screen game-screen" hidden aria-labelledby="game-title">
-      <div class="game-topline"><button class="text-button" id="exit-game"><span data-icon="arrow-left"></span> Back to the wheel</button><span id="game-step" class="eyebrow">CHALLENGE 01 / 03</span></div>
+      <div class="game-topline"><button class="text-button" id="exit-game"><span data-icon="arrow-left"></span> Back to the wheel</button><div class="game-topline-actions"><button class="text-button" id="preview-restart" hidden><span data-icon="rotate"></span> Restart game</button><span id="game-step" class="eyebrow">CHALLENGE 01 / 03</span></div></div>
       <div class="game-heading"><div><p id="game-category" class="eyebrow"></p><h1 id="game-title" tabindex="-1"></h1></div><div class="game-heading-icon" id="game-heading-icon" aria-hidden="true"></div></div>
       <div class="journey-progress" id="journey-progress" aria-label="Progress through the three games"></div>
       <div class="game-body"><div id="game-content" class="game-content"></div><aside class="game-journey" aria-labelledby="journey-title"><p class="eyebrow" id="journey-title">YOUR JOURNEY</p><ol id="game-path"></ol><div class="journey-tip"><span data-icon="shield"></span><strong>Pausing is a smart move.</strong><p>Notice the details. Check the source. Then choose.</p></div></aside></div>
+    </section>
+    <section id="preview-screen" class="screen preview-screen" hidden aria-labelledby="preview-title">
+      <div class="preview-heading"><div><p class="eyebrow">TEST MODE · FREE ACCESS</p><h1 id="preview-title" tabindex="-1">Every game.<br><span class="accent">Your choice.</span></h1><p class="preview-description">Open any game, try different choices and replay it as often as you like.<br>Test results are separate from the three-game journey.</p></div><button class="button button-secondary" id="preview-exit"><span data-icon="close"></span> Exit test mode</button></div>
+      <section class="preview-result" id="preview-result" hidden aria-label="Latest test result" aria-live="polite"></section>
+      <div class="preview-catalogue" id="preview-catalogue" aria-label="Choose a game to test"></div>
+      <p class="preview-footnote">Returning to an unfinished journey restarts its current game. Completed scores and draws are kept.</p>
     </section>
     <section id="results-screen" class="screen results-screen" hidden aria-labelledby="results-title">
       <div class="results-header"><div class="result-emblem" data-icon="shield"></div><p class="eyebrow">MISSION COMPLETE</p><h1 id="results-title" tabindex="-1">Sharper instincts.<br>Stronger defences.</h1><p>Three challenges completed. Three ideas to take to work.</p></div>
@@ -84,7 +92,8 @@
       <div class="results-actions"><button id="play-again" class="button button-primary"><span data-icon="rotate"></span> New spins, new challenges <span data-icon="arrow"></span></button><p>Your next good decision starts with the small details.</p></div>
     </section>
   </main>
-  <footer class="site-footer"><div class="partner-lockup"><span class="partner-label">AN EXPERIENCE BY</span><img src="assets/bip-logo.svg" alt="BIP" class="bip-logo"><span class="partner-times" aria-hidden="true">×</span><img src="assets/sunrise-logo.svg" alt="Sunrise" class="sunrise-logo"></div><p>Learn. Choose. Protect.<span class="footer-dot" aria-hidden="true"></span><span class="footer-small">Cybersecurity in everyday life.</span></p></footer>
+  <footer class="site-footer"><div class="partner-lockup"><span class="partner-label">AN EXPERIENCE BY</span><img src="assets/bip-logo.svg" alt="BIP" class="bip-logo"><span class="partner-times" aria-hidden="true">×</span><img src="assets/sunrise-logo.svg" alt="Sunrise" class="sunrise-logo"></div><p><button class="footer-secret-entry" id="preview-entry" type="button">Learn. Choose. Protect.</button><span class="footer-dot" aria-hidden="true"></span><span class="footer-small">Cybersecurity in everyday life.</span></p></footer>
+  <dialog id="preview-access-dialog" class="app-dialog small-dialog" aria-labelledby="preview-access-title"><button class="dialog-close" data-close-dialog aria-label="Close"><span data-icon="close"></span></button><p class="eyebrow">GAME PREVIEW</p><h2 id="preview-access-title">Open test mode</h2><p>Enter your access code to choose and replay any game.</p><form id="preview-access-form"><label for="preview-code">Access code</label><input id="preview-code" name="preview-code" type="password" autocomplete="off" spellcheck="false" autocapitalize="off" aria-describedby="preview-access-error" required><p id="preview-access-error" class="preview-access-error" role="status" aria-live="polite"></p><button id="preview-unlock" class="button button-primary" type="submit">Unlock games <span data-icon="arrow"></span></button></form></dialog>
   <dialog id="help-dialog" class="app-dialog" aria-labelledby="help-title"><button class="dialog-close" data-close-dialog aria-label="Close"><span data-icon="close"></span></button><p class="eyebrow">HOW TO PLAY</p><h2 id="help-title">Three spins. Three chances<br>to make the right choice.</h2><ol class="help-steps"><li><span>01</span><div><strong>Draw your games</strong><p>Press “Spin the wheel” three times. Each spin picks a different game and adds it to your journey.</p></div></li><li><span>02</span><div><strong>Press “Start”</strong><p>Play the challenges in the order they were drawn. Read the feedback, then move on to the next one.</p></div></li><li><span>03</span><div><strong>See your results</strong><p>At the end, you’ll see your score and three practical tips. Spin again to start a new journey.</p></div></li></ol><p class="dialog-note">All messages and situations are simulations. Do not enter credentials or personal data. You can also play with a keyboard or on a smartphone.</p><button class="button button-primary" data-close-dialog>Ready, let’s play <span data-icon="arrow"></span></button></dialog>
   <dialog id="exit-dialog" class="app-dialog small-dialog" aria-labelledby="exit-title"><p class="eyebrow">NEW JOURNEY</p><h2 id="exit-title">Back to the wheel?</h2><p>Your current draws and results will be reset.</p><div class="dialog-actions"><button class="button button-secondary" data-close-dialog>Keep playing</button><button class="button button-primary" id="confirm-exit">Back to the wheel</button></div></dialog>
   <div id="live-announcement" class="sr-only" aria-live="polite"></div>
