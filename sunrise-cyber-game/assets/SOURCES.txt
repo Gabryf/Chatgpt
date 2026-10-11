@@ -27,3 +27,77 @@ BIP vector logo before event publication. White lettering fits the dark footer.
 The official web domains www.bip-group.com, bip-group.com and www.sunrise.ch were
 unavailable through the current network proxy (HTTP 403 / CONNECT tunnel failed).
 No network settings were changed. The app remains fully local at runtime.
+
+
+Microsoft product marks for the simulated Outlook screen (11 October 2026)
+
+outlook-logo.png
+Authentic Outlook product icon (1200 x 1200 transparent PNG), downloaded unchanged
+from the official Microsoft Adaptive Cards repository at immutable commit:
+https://raw.githubusercontent.com/microsoft/AdaptiveCards/59402c8d43f7a69a68e0b4fccc08f8a76fc98ccd/source/nodejs/adaptivecards-site/themes/adaptivecards/source/content/outlook-logo.png
+File SHA-256: d7ecc4fee9c1c274e7ca0230460246e26d8c066305559dbc3f1fedafe2c082f1
+Repository licence notice is included as LICENSE-Microsoft-AdaptiveCards.txt.
+
+microsoft-logo.svg
+Microsoft four-colour symbol, using the four original rectangle elements from
+Microsoft's official sign-in branding asset. Original positions, dimensions and
+colours are unchanged; only the SVG viewBox isolates the symbol from the surrounding
+sign-in button. No wordmark was recreated. Original asset at immutable commit:
+https://raw.githubusercontent.com/MicrosoftDocs/entra-docs/ac77894020a8f26763b0e63cc078e535eb094383/docs/identity-platform/media/howto-add-branding-in-apps/ms-symbollockup_signin_light.svg
+Original source SVG SHA-256: e06fb6b9c489d5719260945b5b9108f12fedd77e61206229f5fdd77a060e77a8
+Repository licence notice is included as LICENSE-MicrosoftDocs-Entra.txt.
+
+Microsoft and Outlook names, logos and product icons are Microsoft trademarks.
+Repository copyright licences do not grant trademark rights or imply Microsoft
+endorsement. These marks identify the product within a fictional awareness exercise.
+The proprietary brand marks are not claimed as CC0 or as original project artwork.
+Local assets require no network requests.
+
+Microsoft Adaptive Cards repository copyright notice:
+
+MIT License
+
+Copyright (c) 2017 Microsoft
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+MicrosoftDocs Entra repository copyright notice:
+
+    MIT License
+
+    Copyright (c) Microsoft Corporation.
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE

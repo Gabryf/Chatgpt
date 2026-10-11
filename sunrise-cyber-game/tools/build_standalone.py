@@ -33,6 +33,9 @@ def build(output):
     page = re.sub(r'((?:src|href)=")(assets/[^"]+)(")',
                   lambda asset: asset.group(1) + data_uri(ROOT / asset.group(2)) + asset.group(3), page)
     code = '\n;\n'.join(scripts).replace('</script', '<\\/script')
+    # Games also render local images from HTML strings inside their scripts.
+    code = re.sub(r'((?:src|href)=")(assets/[^"]+)(")',
+                  lambda asset: asset.group(1) + data_uri(ROOT / asset.group(2)) + asset.group(3), code)
     licences = '\n\n'.join((ROOT / 'assets' / name).read_text(encoding='utf-8')
                             for name in ['SOURCES.txt', 'OFL-Outfit.txt', 'CC0-Simple-Icons.md'])
     licences = licences.replace('--', '—')

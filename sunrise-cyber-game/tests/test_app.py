@@ -88,6 +88,7 @@ class CyberPlayTests(unittest.TestCase):
         elif game == 'risk':
             page.locator('[data-risk="sender"]').click()
             page.locator('[data-risk="link"]').click()
+            page.locator('[data-risk="urgency"]').click()
             page.locator('.det-finish').click()
         elif game == 'timeline':
             page.locator('[data-event="entry"]').click()
@@ -219,7 +220,7 @@ class CyberPlayTests(unittest.TestCase):
             subprocess.run([sys.executable, str(ROOT / 'tools/build_standalone.py'), str(output)],
                            check=True, capture_output=True)
             bundle = output.read_text(encoding='utf-8')
-            page, errors = self.new_page(6)
+            page, errors = self.new_page(0)
             requests = []
             standalone_url = self.url + '/standalone.html'
             page.route(standalone_url, lambda route: route.fulfill(body=bundle, content_type='text/html'))
@@ -229,7 +230,16 @@ class CyberPlayTests(unittest.TestCase):
             self.assertTrue(page.locator('img').evaluate_all('(imgs) => imgs.every(img => img.complete && img.naturalWidth > 0)'))
             self.draw_three(page)
             page.locator('#start-button').click()
-            for game in ['memory', 'drag', 'unlock']:
+            for game in ['impostor', 'risk', 'timeline']:
+                if game == 'risk':
+                    logos = page.locator('.det-outlook img')
+                    expect(logos).to_have_count(2)
+                    self.assertTrue(logos.evaluate_all(
+                        '(imgs) => imgs.every(img => img.getAttribute("src").startsWith("data:image/"))'
+                    ))
+                    page.wait_for_function(
+                        '() => [...document.querySelectorAll(".det-outlook img")].every(img => img.complete && img.naturalWidth > 0)'
+                    )
                 self.solve(page, game)
             expect(page.locator('#total-score')).to_have_text('100')
             self.assertEqual(requests, [standalone_url])

@@ -33,7 +33,7 @@ The order, completed results and current game are stored only in `sessionStorage
 | Game | Interaction |
 | --- | --- |
 | Cyber Impostor | Find the suspicious request among four Teams messages. |
-| Spot the Risk | Identify at least two warning signs in a simulated Microsoft 365 email. |
+| Spot the Risk | Find all three warning signs in a simulated Outlook inbox: the sender, urgency and link destination. Details have no visible quiz outlines before selection. |
 | Cyber Timeline | Trace the origin of an attack through four events. |
 | Choose Your Move | Choose an action and see how the Teams, MFA or AI scenario changes. |
 | MFA Reflex | Handle five sign-in requests with reporting and an optional timer. |
@@ -67,6 +67,8 @@ The supplied reference archive did not contain BIP or Sunrise logos, and the off
 - `assets/sunrise-logo.svg` combines the Sunrise symbol sourced from Simple Icons with a **temporary wordmark**, not the complete official logo.
 
 Replace these two files with approved brand assets, keeping the filenames. Choose versions suitable for the dark background. Provenance and licences are in `assets/SOURCES.txt`. The game is functionally complete; the full brand assets still need replacement before event use. Rebuild the standalone HTML after replacing assets.
+
+The Outlook product icon and Microsoft four-colour symbol used in **Spot the Risk** come from official Microsoft repositories. Their source URLs and notices are included in `assets/SOURCES.txt`. The Outlook interface and email are educational simulations, with inactive links.
 
 ## Accessibility
 

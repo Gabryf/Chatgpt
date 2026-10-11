@@ -89,49 +89,88 @@
 .det-risk-progress { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 0 0 14px; color: #b5c3d6; font-size: 12px; }
 .det-risk-progress > span:first-child { display: flex; align-items: center; gap: 8px; color: #f4f6fb; }
 .det-risk-progress svg { color: #ff795e; }
-.det-outlook-bar { background: #e7f0fa; }
-.det-outlook-logo { background: #0873ba; box-shadow: 5px -3px 0 #168ccb22; }
-.det-mail-search { width: 250px; background: #fff9; border-radius: 5px; margin-left: 30px; padding: 8px 12px; color: #73839b; font-size: 10px; }
-.det-mail-layout { display: flex; }
-.det-mail-sidebar { flex: 0 0 140px; padding: 22px 10px; background: #f2f5f9; border-right: 1px solid #e4e8ef; }
-.det-mail-folder { display: flex; justify-content: space-between; font-size: 11px; padding: 12px 10px; color: #68788f; border-radius: 4px; }
-.det-mail-folder-active { background: #e1ebf8; color: #266494; font-weight: 650; }
-.det-mail-folder b { font-size: 10px; }
-.det-mail-body { flex: 1; min-width: 0; background: #fff; padding: 0 25px 18px; }
-.det-mail-tools { display: flex; gap: 22px; font-size: 10px; color: #6d7b92; padding: 14px 0; border-bottom: 1px solid #ebedf1; }
-.det-mail-body h3 { font-size: 19px; line-height: 1.4; color: #24324a; font-weight: 650; margin: 21px 0 18px; }
-.det-email-header { display: flex; align-items: flex-start; gap: 11px; }
-.det-mail-avatar { display: grid; place-items: center; height: 33px; width: 33px; flex-shrink: 0; background: #e6ecfb; color: #4d67a3; border-radius: 50%; font-size: 13px; font-weight: 700; }
-.det-email-sender { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; min-width: 0; font-size: 11px; color: #69768a; }
-.det-email-sender > strong { color: #33425a; font-size: 11px; }
-.det-email-sender > span { margin-top: 1px; }
-.det-email-date { margin-left: auto; flex-shrink: 0; color: #6b778a; font-size: 10px !important; }
-.det-hotspot {
-  font: inherit;
-  border: 1px dashed #b4c3da;
-  border-radius: 4px;
-  padding: 4px 6px;
-  background: #f4f7fd;
-  color: inherit;
-  text-align: left;
-  cursor: pointer;
-  max-width: 100%;
-  overflow-wrap: anywhere;
-  transition: background .15s ease, border-color .15s ease;
+.det-outlook {
+  container-name: outlook;
+  container-type: inline-size;
+  border-color: #d8e1ec;
+  border-radius: 10px;
+  background: #f6f8fc;
+  color: #242b34;
+  font-family: "Segoe UI", Arial, sans-serif;
+  line-height: 1.5;
 }
-.det-hotspot:hover:not(:disabled) { border-color: #3777bb; background: #e7f0ff; }
-.det-hotspot:disabled { opacity: 1; cursor: default; }
-.det-email-address { font-size: 10px; }
-.det-email-text { padding: 17px 0 0 44px; font-size: 12px; line-height: 1.75; color: #44516a; }
-.det-email-text p { margin: 0 0 15px; }
-.det-urgency { padding: 8px 10px; line-height: 1.7; color: #3d4a62; }
-.det-email-cta { display: block; margin: 5px 0 22px; padding: 11px 19px; color: white; background: #176fbd; border-color: #176fbd; min-width: 240px; text-align: center; font-weight: 650; font-size: 12px; }
-.det-email-cta:hover:not(:disabled) { background: #105aa0; border-color: #105aa0; }
-.det-email-cta small { display: block; margin-top: 4px; font-size: 9px; font-weight: 400; opacity: .85; }
-.det-mail-signature { font-size: 11px; }
-.det-mail-simulation-note { margin-top: 22px; border-top: 1px solid #edf0f5; padding-top: 12px; color: #8691a3; font-size: 9px; }
-.det-hotspot.det-hotspot-correct { background: #e6f8ee; border: 1px solid #159b70; color: #146f51; box-shadow: 0 0 0 2px #159b7011; }
-.det-hotspot.det-hotspot-wrong { background: #fff0e9; border: 1px solid #d58366; color: #a95c41; }
+.game-body:has(.det-outlook) { grid-template-columns: minmax(0, 1fr); }
+.game-body:has(.det-outlook) > .game-journey { display: none; }
+.det-outlook .det-outlook-bar { display: flex; align-items: center; min-height: 48px; height: 48px; padding: 0 12px; gap: 10px; background: #f5f8fc; border-bottom: 1px solid #dce5ef; color: #253b54; }
+.det-outlook-bar > strong { font-size: 14px; font-weight: 600; color: #203852; }
+.det-launcher { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; width: 20px; color: #38546e; }
+.det-launcher svg { width: 19px; height: 19px; }
+.det-outlook .det-outlook-logo { display: block; width: 27px; height: 27px; border-radius: 0; object-fit: contain; background: transparent; box-shadow: none; }
+.det-mail-search { display: flex; align-items: center; gap: 8px; height: 30px; flex: 1; min-width: 65px; max-width: 320px; margin-left: 12px; padding: 0 10px; background: #fff; border: 1px solid #cad7e6; border-radius: 4px; color: #697c92; font-size: 11px; }
+.det-mail-search svg { width: 15px; height: 15px; flex-shrink: 0; color: #5c7490; }
+.det-outlook-header-tools { display: flex; align-items: center; justify-content: flex-end; gap: 13px; margin-left: auto; flex-shrink: 0; color: #516a84; }
+.det-outlook-header-tools > svg { width: 16px; height: 16px; }
+.det-account-avatar { display: inline-flex; align-items: center; justify-content: center; width: 27px; height: 27px; border-radius: 50%; background: #dceaf7; color: #244e76; font-size: 10px; font-weight: 600; }
+.det-outlook-tabs { display: flex; align-items: stretch; gap: 24px; height: 36px; padding: 0 14px; background: #f8fafd; border-bottom: 1px solid #dde5ee; color: #42566c; font-size: 11px; }
+.det-outlook-tabs > span:not(.det-simulation) { display: flex; align-items: center; border-bottom: 2px solid transparent; padding: 1px 0 0; }
+.det-outlook-tabs > span:first-child { border-bottom-color: #0f6cbd; color: #115da1; font-weight: 600; }
+.det-outlook-tabs .det-simulation { display: flex; align-items: center; font-size: 8px; letter-spacing: .06em; color: #698098; }
+.det-outlook-toolbar { display: flex; align-items: center; gap: 14px; height: 43px; padding: 7px 12px; overflow: hidden; background: #fff; border-bottom: 1px solid #dfe6ee; color: #42566b; font-size: 10px; }
+.det-outlook-toolbar > span { display: inline-flex; align-items: center; gap: 5px; flex-shrink: 0; white-space: nowrap; }
+.det-outlook-toolbar svg { width: 14px; height: 14px; }
+.det-outlook-toolbar .det-new-mail { padding: 5px 9px; height: 28px; border-radius: 3px; background: #0f6cbd; color: #fff; font-weight: 600; }
+.det-outlook-toolbar .det-toolbar-divider { width: 1px; height: 19px; margin: 0 1px; background: #d9e2ec; flex-shrink: 0; }
+.det-mail-layout { display: flex; min-height: 610px; background: #fff; }
+.det-outlook-rail { display: flex; flex-direction: column; align-items: center; gap: 13px; flex: 0 0 36px; padding: 12px 3px; background: #eff4fa; border-right: 1px solid #dfe7f0; color: #536b86; }
+.det-outlook-rail > span { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 31px; border-radius: 4px; }
+.det-outlook-rail > span:first-child { color: #0f6cbd; background: #dfeefb; box-shadow: inset 2px 0 0 #0f6cbd; }
+.det-outlook-rail svg { width: 17px; height: 17px; }
+.det-mail-sidebar { flex: 0 0 110px; min-width: 0; padding: 11px 4px; background: #f4f7fb; border-right: 1px solid #e1e7ef; }
+.det-folder-heading { display: block; margin: 8px 8px 10px; font-size: 10px; font-weight: 600; color: #435a73; }
+.det-mail-folder { display: flex; align-items: center; gap: 5px; min-height: 30px; padding: 7px 6px; border-radius: 4px; color: #4c6077; font-size: 10px; line-height: 1.4; }
+.det-mail-folder svg { width: 13px; height: 13px; flex-shrink: 0; color: #637b97; }
+.det-mail-folder-active { background: #dcebf9; color: #115fa6; font-weight: 600; }
+.det-mail-folder-active svg { color: #0f6cbd; }
+.det-mail-folder b { margin-left: auto; color: #5a7088; font-size: 9px; font-weight: 500; }
+.det-mail-list { flex: 0 0 145px; min-width: 0; background: #fff; border-right: 1px solid #dfe6ee; }
+.det-mail-list-heading { display: flex; align-items: center; justify-content: space-between; gap: 7px; padding: 13px 10px 7px; color: #263e59; font-size: 13px; font-weight: 600; }
+.det-mail-list-heading svg { width: 16px; height: 16px; color: #6d7f94; }
+.det-mail-list-tabs { display: flex; align-items: center; gap: 18px; padding: 0 10px; color: #738296; border-bottom: 1px solid #e3e9f0; font-size: 10px; }
+.det-mail-list-tabs > span { padding: 9px 0 7px; border-bottom: 2px solid transparent; }
+.det-mail-list-tabs > span:first-child { border-bottom-color: #0f6cbd; color: #164d80; font-weight: 600; }
+.det-mail-preview { padding: 13px 9px; border-bottom: 1px solid #e6ebf2; color: #273f59; }
+.det-mail-preview.selected { background: #e7f1fc; border-left: 3px solid #0f6cbd; padding-left: 6px; }
+.det-mail-preview > span { display: flex; justify-content: space-between; align-items: center; gap: 5px; color: #506982; font-size: 10px; }
+.det-mail-preview > span > b { min-width: 0; font-weight: 600; }
+.det-mail-preview > span > time { flex-shrink: 0; color: #77899e; font-size: 9px; }
+.det-mail-preview > strong { display: block; margin: 6px 0 5px; color: #344a63; font-size: 11px; font-weight: 600; line-height: 1.45; }
+.det-mail-preview > small { display: -webkit-box; overflow: hidden; -webkit-line-clamp: 2; -webkit-box-orient: vertical; color: #7b8da0; font-size: 9px; line-height: 1.5; }
+.det-mail-body { flex: 1; min-width: 0; padding: 18px 20px 20px; background: #fff; }
+.det-mail-body > h3 { margin: 0 0 20px; color: #20354d; font-size: 17px; font-weight: 600; line-height: 1.4; }
+.det-email-header { display: flex; align-items: flex-start; gap: 9px; }
+.det-mail-avatar { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; flex-shrink: 0; border-radius: 50%; background: #e9e0f2; color: #674886; font-size: 14px; font-weight: 600; }
+.det-email-sender { display: flex; flex: 1; flex-direction: column; align-items: flex-start; gap: 3px; min-width: 0; color: #62758b; font-size: 10px; line-height: 1.5; overflow-wrap: anywhere; }
+.det-email-sender > strong { color: #334b65; font-size: 11px; font-weight: 600; }
+.det-email-sender > span { margin-top: 1px; }
+.det-outlook .det-hotspot { appearance: none; border: 0; border-radius: 2px; padding: 0; margin: 0; background: transparent; color: inherit; box-shadow: none; font: inherit; text-align: left; max-width: 100%; overflow-wrap: anywhere; cursor: pointer; }
+.det-outlook .det-hotspot:hover:not(:disabled):not(.det-hotspot-correct):not(.det-hotspot-wrong) { border: 0; background: transparent; box-shadow: none; }
+.det-outlook .det-hotspot:disabled { opacity: 1; cursor: default; }
+.det-outlook .det-email-address { color: #5f7289; font-size: 10px; }
+.det-outlook .det-email-date { margin-left: auto; flex-shrink: 0; max-width: 76px; color: #78889b; font-size: 9px; line-height: 1.6; text-align: right; }
+.det-email-text { padding: 23px 0 0 41px; color: #2f333a; font-size: 12px; line-height: 1.8; }
+.det-microsoft-lockup { display: flex; align-items: center; gap: 7px; margin-bottom: 24px; }
+.det-microsoft-logo { display: block; width: 24px; height: 24px; flex-shrink: 0; object-fit: contain; }
+.det-microsoft-lockup > span { color: #666; font-size: 21px; font-weight: 500; line-height: 1; letter-spacing: -.5px; }
+.det-email-text > h4 { margin: 0 0 21px; color: #202c39; font-size: 19px; font-weight: 600; line-height: 1.35; }
+.det-email-text p { margin: 0 0 17px; }
+.det-outlook .det-urgency { display: inline; line-height: inherit; }
+.det-outlook .det-email-cta { display: block; margin: 0 0 22px; color: #0f6cbd; font-size: 12px; font-weight: 400; line-height: 1.7; text-decoration: underline; text-underline-offset: 2px; }
+.det-email-cta small { display: block; margin-top: 4px; color: #62758b; font-size: 10px; font-weight: 400; line-height: 1.6; }
+.det-mail-signature { font-size: 12px; }
+.det-mail-simulation-note { margin-top: 23px; padding-top: 12px; border-top: 1px solid #e8edf3; color: #8290a0; font-size: 9px; line-height: 1.7; }
+.det-outlook .det-hotspot.det-hotspot-correct { background: #e1f4e8; color: #146947; box-shadow: 0 0 0 2px #e1f4e8, inset 0 0 0 1px #2b9670; }
+.det-outlook .det-hotspot.det-hotspot-wrong { background: #fff0e9; color: #a45435; box-shadow: 0 0 0 2px #fff0e9, inset 0 0 0 1px #cc8468; }
+.det-outlook .det-hotspot:focus-visible { outline: 2px solid #0f6cbd; outline-offset: 3px; }
 .det-risk-recap { padding: 20px 24px; border: 1px solid #26384e; background: #131d2e; border-radius: 12px; margin-top: 16px; color: #a6b2c5; font-size: 12px; line-height: 1.6; }
 .det-risk-recap h3 { font-size: 14px; margin: 0 0 10px; color: #f4f6fb; }
 .det-risk-recap ul { padding-left: 18px; margin: 0; }
@@ -182,14 +221,6 @@
   .det-message.det-choice-correct,
   .det-message.det-choice-wrong { padding: 15px; }
   .det-app-bar { padding: 12px 15px; gap: 9px; }
-  .det-mail-sidebar { display: none; }
-  .det-mail-search { margin-left: 8px; flex: 1; width: auto; }
-  .det-mail-body { padding: 0 18px 16px; }
-  .det-email-date { align-self: flex-end; }
-  .det-email-header { flex-wrap: wrap; }
-  .det-email-sender { max-width: calc(100% - 44px); }
-  .det-email-text { padding-left: 0; }
-  .det-mail-body h3 { font-size: 17px; }
   .det-investigation { padding: 0 12px; }
   .det-investigation-header { flex-wrap: wrap; }
   .det-investigation-header .det-simulation { font-size: 8px; }
@@ -204,6 +235,57 @@
   .det-chain-arrow { display: none; }
   .det-finish-area { justify-content: stretch; }
   .det-finish { width: 100%; }
+}
+@container outlook (max-width: 690px) {
+  .det-mail-list { display: none; }
+  .det-mail-body { padding: 18px; }
+}
+@container outlook (max-width: 500px) {
+  .det-outlook-rail,
+  .det-mail-sidebar,
+  .det-launcher { display: none; }
+  .det-mail-body { padding: 17px; }
+  .det-email-text { padding-left: 0; }
+  .det-mail-search { margin-left: 4px; }
+  .det-outlook-header-tools { gap: 8px; }
+  .det-outlook-header-tools > svg { display: none; }
+}
+@container outlook (max-width: 350px) {
+  .det-outlook .det-outlook-bar { padding: 0 10px; gap: 9px; }
+  .det-outlook-bar > strong { display: none; }
+  .det-outlook-tabs { gap: 19px; padding: 0 12px; }
+  .det-outlook-tabs .det-simulation { font-size: 7px; }
+  .det-outlook-toolbar { gap: 12px; padding: 7px 10px; }
+  .det-outlook-toolbar > span:nth-child(n+3),
+  .det-outlook-toolbar .det-toolbar-divider { display: none; }
+  .det-mail-body { padding: 16px 12px; }
+  .det-mail-body > h3 { font-size: 16px; margin-bottom: 16px; }
+  .det-email-header { flex-wrap: wrap; gap: 8px; }
+  .det-email-sender { flex: 1; max-width: calc(100% - 40px); }
+  .det-outlook .det-email-date { width: calc(100% - 40px); max-width: none; margin-left: 40px; text-align: left; }
+  .det-email-text { padding-top: 20px; }
+  .det-email-text > h4 { font-size: 18px; }
+}
+@supports not (container-type: inline-size) {
+  @media (max-width: 1000px) {
+    .det-mail-list { display: none; }
+  }
+  @media (max-width: 700px) {
+    .det-outlook-rail,
+    .det-mail-sidebar,
+    .det-launcher { display: none; }
+    .det-mail-body { padding: 17px; }
+    .det-email-text { padding-left: 0; }
+    .det-outlook-header-tools > svg { display: none; }
+    .det-mail-search { margin-left: 4px; }
+  }
+  @media (max-width: 440px) {
+    .det-outlook-bar > strong { display: none; }
+    .det-outlook-toolbar > span:nth-child(n+3),
+    .det-outlook-toolbar .det-toolbar-divider { display: none; }
+    .det-email-header { flex-wrap: wrap; }
+    .det-outlook .det-email-date { width: calc(100% - 41px); max-width: none; margin-left: 41px; text-align: left; }
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .det-message,

@@ -146,6 +146,89 @@ class PreviewTests(unittest.TestCase):
                 self.assertEqual(self.stored(page, NORMAL_KEY), normal_before)
         self.assertEqual(errors, [])
 
+    def test_risk_needs_three_independently_found_clues_without_hint_boxes(self):
+        page, errors = self.new_page()
+        self.unlock(page)
+        self.launch(page, 'risk')
+        expect(page.locator('.det-clue-counter')).to_have_text('0 of 3 clues')
+        expect(page.locator('.det-finish')).not_to_be_visible()
+        expect(page.locator('.det-risk-recap')).not_to_be_visible()
+
+        for selector, label in (('.det-outlook-logo', 'Outlook'), ('.det-microsoft-logo', 'Microsoft')):
+            logo = page.locator(f'.det-outlook img{selector}')
+            expect(logo).to_have_count(1)
+            expect(logo).to_have_attribute('alt', label)
+            source = logo.get_attribute('src')
+            self.assertTrue(source.startswith(('assets/', 'data:image/')), source)
+            page.wait_for_function(
+                'selector => { const img = document.querySelector(selector); return img.complete && img.naturalWidth > 0; }',
+                arg=f'.det-outlook img{selector}',
+            )
+
+        # A mouse should not reveal the hidden quiz hit areas in the email.
+        for clue in ('sender', 'urgency', 'recipient', 'date', 'signature'):
+            with self.subTest(detail=clue):
+                detail = page.locator(f'[data-risk="{clue}"]')
+                for hovered in (False, True):
+                    if hovered:
+                        detail.hover()
+                    style = detail.evaluate('''el => {
+                        const style = getComputedStyle(el);
+                        return {
+                            borders: [style.borderTopWidth, style.borderRightWidth, style.borderBottomWidth, style.borderLeftWidth],
+                            background: style.backgroundColor,
+                            shadow: style.boxShadow,
+                            outline: style.outlineStyle,
+                        };
+                    }''')
+                    self.assertEqual(style['borders'], ['0px'] * 4)
+                    self.assertEqual(style['background'], 'rgba(0, 0, 0, 0)')
+                    self.assertEqual(style['shadow'], 'none')
+                    self.assertEqual(style['outline'], 'none')
+
+        # The invisible mouse hit areas must still have a visible keyboard focus ring.
+        sender = page.locator('[data-risk="sender"]')
+        sender.focus()
+        page.keyboard.press('Tab')
+        page.keyboard.press('Shift+Tab')
+        self.assertTrue(sender.evaluate('el => el.matches(":focus-visible")'))
+        focus = sender.evaluate('''el => {
+            const style = getComputedStyle(el);
+            return {width: parseFloat(style.outlineWidth), style: style.outlineStyle, color: style.outlineColor};
+        }''')
+        self.assertGreater(focus['width'], 0)
+        self.assertNotEqual(focus['style'], 'none')
+        self.assertNotIn(focus['color'], ('transparent', 'rgba(0, 0, 0, 0)'))
+
+        date = page.locator('[data-risk="date"]')
+        date.click()
+        expect(page.locator('.det-risk-score')).to_have_text('80 points available')
+        expect(page.locator('.det-clue-counter')).to_have_text('0 of 3 clues')
+        for _ in range(2):
+            date.dispatch_event('click')
+        expect(page.locator('.det-risk-score')).to_have_text('80 points available')
+
+        sender.click()
+        expect(page.locator('.det-clue-counter')).to_have_text('1 of 3 clues')
+        page.locator('[data-risk="link"]').click()
+        expect(page.locator('.det-clue-counter')).to_have_text('2 of 3 clues')
+        expect(page.locator('.det-finish')).not_to_be_visible()
+        expect(page.locator('.det-risk-recap')).not_to_be_visible()
+        urgency = page.locator('[data-risk="urgency"]')
+        expect(urgency).to_be_enabled()
+        self.assertFalse(urgency.evaluate('el => el.classList.contains("det-hotspot-correct")'))
+        self.assertEqual(urgency.evaluate('el => getComputedStyle(el).backgroundColor'), 'rgba(0, 0, 0, 0)')
+
+        urgency.press('Enter')
+        expect(page.locator('.det-clue-counter')).to_have_text('3 of 3 clues')
+        expect(page.locator('.det-finish')).to_be_visible()
+        expect(page.locator('.det-risk-recap')).to_be_visible()
+        page.locator('.det-finish').click()
+        expect(page.locator('#preview-screen')).to_be_visible()
+        expect(page.locator('#preview-result')).to_contain_text(re.compile(r'80\s*%'))
+        expect(page.locator('#results-screen')).not_to_be_visible()
+        self.assertEqual(errors, [])
+
     def test_restart_and_reload_restore_review_without_stale_answers(self):
         page, errors = self.new_page()
         self.unlock(page)
@@ -164,10 +247,10 @@ class PreviewTests(unittest.TestCase):
         expect(page.locator('#preview-nav')).to_be_visible()
         self.launch(page, 'risk')
         page.locator('[data-risk="sender"]').click()
-        expect(page.locator('.det-clue-counter')).to_have_text('1 of 2 clues')
+        expect(page.locator('.det-clue-counter')).to_have_text('1 of 3 clues')
         page.reload()
         expect(page.locator('#game-title')).to_have_text('Spot the Risk')
-        expect(page.locator('.det-clue-counter')).to_have_text('0 of 2 clues')
+        expect(page.locator('.det-clue-counter')).to_have_text('0 of 3 clues')
         expect(page.locator('[data-risk="sender"]')).to_be_enabled()
         page.locator('#preview-nav').click()
         expect(page.locator('#preview-screen')).to_be_visible()
@@ -267,7 +350,7 @@ class PreviewTests(unittest.TestCase):
         page.clock.run_for(20_000)
         expect(page.locator('#game-title')).to_have_text('Spot the Risk')
         self.assertEqual(page.locator('#game-content').inner_text(), before)
-        expect(page.locator('.det-clue-counter')).to_have_text('0 of 2 clues')
+        expect(page.locator('.det-clue-counter')).to_have_text('0 of 3 clues')
 
         page.locator('#exit-game').click()
         self.launch(page, 'mfa')
