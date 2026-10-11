@@ -65,7 +65,7 @@ This is a hidden testing shortcut in a static app. The code is visible in the so
 
 ## Logos
 
-The footer uses the red BIP and Sunrise artwork requested by the user, with a white background to preserve its appearance. The former typographic placeholders have been replaced. Provenance and licences are in `assets/SOURCES.txt`. Rebuild the standalone HTML after replacing any asset.
+The footer uses the red BIP and Sunrise artwork requested by the user, directly on the dark footer background. The former typographic placeholders have been replaced. Provenance and licences are in `assets/SOURCES.txt`. Rebuild the standalone HTML after replacing any asset.
 
 The Teams and Outlook product icons and Microsoft four-colour symbol come from official Microsoft repositories. Their source URLs and notices are included in `assets/SOURCES.txt`. Teams conversations in **Cyber Impostor** and **Choose Your Move**, and Outlook emails in **Spot the Risk**, **Safe or Suspicious?** and **Unlock the Screen**, include simulated client interfaces. All links are inactive.
 

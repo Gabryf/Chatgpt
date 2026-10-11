@@ -42,8 +42,8 @@ BIP sponsor to https://www.bip-group.com. No font or lettering was recreated.
 The two partner SVGs replace the former typographic placeholders. BIP and Sunrise
 logos are the trademarks of their respective owners; these full brand assets are
 not claimed as CC0 or as original project artwork. They identify the partners of
-the user-requested awareness game. Use their natural proportions on a white logo
-plate, as in the supplied references. The app remains fully local at runtime.
+the user-requested awareness game. Their transparent backgrounds and natural proportions are preserved; they
+are displayed directly on the dark footer as requested by the user. The app remains fully local at runtime.
 
 
 Microsoft product marks for the simulated Outlook screen (11 October 2026)
