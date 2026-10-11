@@ -15,18 +15,35 @@ Simple Icons project license: CC0 1.0 (CC0-Simple-Icons.md).
 Brand trademarks remain the property of their respective owners.
 
 sunrise-logo.svg
-Verified Sunrise symbol above, paired with a TEMPORARY TYPOGRAPHIC WORDMARK.
-The text is not a supplied official Sunrise wordmark. Replace this complete file
-with the approved official brand asset before event publication.
+Full authentic stacked Sunrise lockup, with the red symbol above the path-based
+Sunrise wordmark, matching the supplied brand reference. Transparent SVG; original
+geometry, aspect ratio (99 x 89) and brand colour #DA291C retained unchanged.
+Downloaded from an immutable public mirror of the Sunrise corporate brand asset:
+https://raw.githubusercontent.com/valerielinc-ops/frontaliere-si-o-no/2690b61937d18e4729fa1fba00412c1d62b9a89a/public/images/brands/sunrise-sede-ticino.svg
+SHA-256: dfac390063f580304a18f757503f3f8f0854a90a3f8eff48e7b18f2af1157616
+An official Sunrise website asset is referenced at:
+https://www.sunrise.ch/eshop/HeaderIcons/sunrise_new_logo.svg
+The official domain was unavailable through the environment proxy, so the original
+live file could not be compared byte-for-byte with this mirror. The downloaded
+lockup was visually checked against the supplied reference; no text was recreated.
+The same vector symbol and outlined wordmark are independently mirrored at:
+https://raw.githubusercontent.com/Jasmeet181/mediaportal-de-logos/8eabb30922657c839259795597d2cba35b8af18d/TV/Sunrise.svg
 
 bip-logo.svg
-TEMPORARY TYPOGRAPHIC PLACEHOLDER for Business Integration Partners (BIP).
-No official BIP logo could be downloaded or validated. Replace with the approved
-BIP vector logo before event publication. White lettering fits the dark footer.
+Authentic red stylised "bip." mark, matching the supplied brand reference.
+Transparent SVG; original geometry, aspect ratio (211 x 148) and #E1251B retained.
+Downloaded from the GDG Roma DevFest sponsor-assets repository at immutable commit:
+https://raw.githubusercontent.com/gdgromacitta/dev-fest-2026/2730b381d3ae17478bc31025bc630548216a1fa8/public/logos/bip.svg
+SHA-256: 7033276976e81bfeb12bc47d209e37394851a2234eb5f21947f10a655f7e8b7d
+The same commit's src/content/sponsors.ts explicitly records that this vector mark
+was extracted from the inline official bip-group.com header logo, and links the
+BIP sponsor to https://www.bip-group.com. No font or lettering was recreated.
 
-The official web domains www.bip-group.com, bip-group.com and www.sunrise.ch were
-unavailable through the current network proxy (HTTP 403 / CONNECT tunnel failed).
-No network settings were changed. The app remains fully local at runtime.
+The two partner SVGs replace the former typographic placeholders. BIP and Sunrise
+logos are the trademarks of their respective owners; these full brand assets are
+not claimed as CC0 or as original project artwork. They identify the partners of
+the user-requested awareness game. Use their natural proportions on a white logo
+plate, as in the supplied references. The app remains fully local at runtime.
 
 
 Microsoft product marks for the simulated Outlook screen (11 October 2026)
@@ -115,3 +132,16 @@ included as LICENSE-Microsoft-AdaptiveCards.txt.
 Microsoft Teams is a Microsoft trademark. The repository copyright licence does
 not grant trademark rights or imply endorsement. This local icon identifies the
 product in a fictional educational chat screen; it is not claimed as CC0.
+
+
+Password Lab estimator (11 October 2026)
+
+vendor/zxcvbn.js
+Unmodified browser build of Dropbox's zxcvbn 4.4.2, extracted from the official
+npm package. The estimator and its dictionaries are bundled locally; entered
+practice passwords are not transmitted or retained in browser storage.
+Package: https://registry.npmjs.org/zxcvbn/-/zxcvbn-4.4.2.tgz
+Upstream: https://github.com/dropbox/zxcvbn
+Package archive SHA-256: 0b3ebb60ec2df2340e1b8b70e4cb2657a3ceb192781d299310e7aceaa606cd22
+Browser build SHA-256: f42c651f40506acb6b662490f338dd47a5951d3312039c4ab8fe5090484f351a
+Original MIT licence included in vendor/LICENSE-zxcvbn.txt and the standalone HTML.

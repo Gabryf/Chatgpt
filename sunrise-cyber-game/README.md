@@ -26,7 +26,7 @@ Then open the local server in your browser. For an event stand, a screen resolut
 4. Read each challenge’s feedback and continue. At the end, you’ll see your score and a practical tip for each game.
 5. **New spins, new challenges** resets the journey for the next participant.
 
-The order, completed results and current game are stored only in `sessionStorage` in the browser tab. Refreshing resumes the current game from its beginning. No information is sent to a server; names, email addresses and credentials are not collected. Always use **New spins, new challenges** before handing the device to the next participant. If the browser blocks storage, the game still works without refresh recovery.
+The order, completed results and current game are stored only in `sessionStorage` in the browser tab. Refreshing resumes the current game from its beginning. No information is sent to a server. Password Lab is for made-up passwords only; the entered text is never stored, and is cleared on leaving or restarting the game. Always use **New spins, new challenges** before handing the device to the next participant. If the browser blocks storage, the game still works without refresh recovery.
 
 ## The nine games
 
@@ -38,13 +38,17 @@ The order, completed results and current game are stored only in `sessionStorage
 | Choose Your Move | Choose an action and see how the Teams, MFA or AI scenario changes. |
 | MFA Reflex | Handle five sign-in requests with reporting and an optional timer. |
 | Safe or Suspicious? | Classify five visual scenes involving QR codes, Wi-Fi, AI, passwords and attachments. |
-| Cyber Memory | Match four risks to the correct security behaviours. |
+| Password Lab | Inspect a sample password, improve a made-up password with local feedback, and choose a safe password-manager workflow. |
 | Drag & Drop Security | Match actions to Wi-Fi, MFA, USB and confidential-document situations. |
-| Unlock the Screen | Complete three tasks: spot an anomaly, choose an action and order events. |
+| Unlock the Screen | Find a Microsoft lookalike sender, inspect its letter substitution, compare an MFA request with your actual login, and rebuild the attack chain. |
 
 Your journey score is the average of the three game scores, each normalised to 100. Each game explains its own rules; mistakes and retries affect scores differently according to the mechanics. This is an awareness activity, not an assessment of an employee’s competence.
 
 All messages and addresses are simulations. Suspicious links are inactive. These are educational scenarios; references to IT reporting channels and approved tools should be aligned with Sunrise procedures before the event.
+
+In Unlock the Screen, `support@rnicrosoft.com` writes to `mark.webber@sunrise.net`. The `r` + `n` imitate an `m`, and the email offers a fake Microsoft sign-in link. Finding the sender reveals an enlarged comparison with `microsoft.com`. Inspecting the link provides feedback without opening it or losing points. The MFA task contrasts a login to Sunrise Company Portal on the usual Windows PC with an approval prompt for Exchange Online on a new Android phone.
+
+Password Lab uses the bundled zxcvbn estimator to identify common passwords and predictable patterns. Its 0–4 estimate is educational feedback, not proof that a password is secure, unique, or uncompromised. The lab target combines length and estimated guess resistance; it does not replace company policy. The final task explains unique, generated passwords and an approved password manager, using KeePass as an example. Only choices in that task affect the game score; password experiments are free.
 
 ## Hidden test mode
 
@@ -59,14 +63,9 @@ Test results are stored separately from the normal journey. Completed scores and
 
 This is a hidden testing shortcut in a static app. The code is visible in the source and is not a security boundary.
 
-## Logos: replace before the event
+## Logos
 
-The supplied reference archive did not contain BIP or Sunrise logos, and the official sites were unavailable in the development environment.
-
-- `assets/bip-logo.svg` is a **typographic placeholder**, not the official BIP logo.
-- `assets/sunrise-logo.svg` combines the Sunrise symbol sourced from Simple Icons with a **temporary wordmark**, not the complete official logo.
-
-Replace these two files with approved brand assets, keeping the filenames. Choose versions suitable for the dark background. Provenance and licences are in `assets/SOURCES.txt`. The game is functionally complete; the full brand assets still need replacement before event use. Rebuild the standalone HTML after replacing assets.
+The footer uses the red BIP and Sunrise artwork requested by the user, with a white background to preserve its appearance. The former typographic placeholders have been replaced. Provenance and licences are in `assets/SOURCES.txt`. Rebuild the standalone HTML after replacing any asset.
 
 The Teams and Outlook product icons and Microsoft four-colour symbol come from official Microsoft repositories. Their source URLs and notices are included in `assets/SOURCES.txt`. Teams conversations in **Cyber Impostor** and **Choose Your Move**, and Outlook emails in **Spot the Risk**, **Safe or Suspicious?** and **Unlock the Screen**, include simulated client interfaces. All links are inactive.
 
@@ -81,12 +80,13 @@ Buttons work with Tab and Enter, dialogs close with Escape, and feedback is anno
 - `preview.css`: hidden test mode catalogue, controls and access dialog.
 - `app.js`: draws, animation, game order, progression and results.
 - `simulations.js`, `simulations.css`: shared Teams and Outlook screens, chat messages and email attachments.
-- `games/detection.*`, `decision.*`, `interactive.*`: scenarios and mechanics.
+- `games/detection.*`, `decision.*`, `interactive.*`, `password.*`: scenarios and mechanics.
 - `assets/`: local assets and licences.
+- `vendor/`: the bundled password estimator and its licence.
 - `previews/`: screenshots of the English interface.
 - `tools/build_standalone.py`: generates the single-file HTML alternative.
 
-There are no runtime dependencies. To publish, upload the files to a static HTTPS host, retaining the folder structure. No backend service is required. The game does not include tracking, analytics or a shared leaderboard.
+All runtime files are bundled locally; no installation or remote services are needed. To publish, upload the files to a static HTTPS host, retaining the folder structure. No backend service is required. The game does not include tracking, analytics or a shared leaderboard.
 
 ## Automated checks
 
@@ -98,4 +98,4 @@ python3 -m playwright install chromium
 python3 -m unittest discover -s tests -v
 ```
 
-The runner uses system Chromium when available; set `CHROMIUM_PATH` to choose an executable. Tests manage their own local server and check all nine games in three complete journeys, unique draws, pointer alignment, the three-spin limit, game order, results, refresh, reset, dialogs, keyboard interaction and mobile layout after animations. Test mode checks cover access, all nine games, replay, refresh, mobile controls, timer cleanup and preservation of the normal journey. Regression checks also cover the complete Timeline reconstruction, both Choose Your Move branches, client logos and offline screens in the single-file version.
+The runner uses system Chromium when available; set `CHROMIUM_PATH` to choose an executable. Tests manage their own local server and check all nine games in three complete journeys, unique draws, pointer alignment, the three-spin limit, game order, results, refresh, reset, dialogs, keyboard interaction and mobile layout after animations. Test mode checks cover access, all nine games, replay, refresh, mobile controls, timer cleanup and preservation of the normal journey. Regression checks also cover Timeline reconstruction, both Choose Your Move branches, the lookalike-domain explanation and MFA context in Unlock, Password Lab feedback and input cleanup, client logos and the single-file version without asset requests.

@@ -13,9 +13,10 @@ import unittest
 from playwright.sync_api import sync_playwright, expect
 
 ROOT = Path(__file__).resolve().parents[1]
-IDS = ['impostor', 'risk', 'timeline', 'move', 'mfa', 'classify', 'memory', 'drag', 'unlock']
+IDS = ['impostor', 'risk', 'timeline', 'move', 'mfa', 'classify', 'password', 'drag', 'unlock']
 TITLES = ['Cyber Impostor', 'Spot the Risk', 'Cyber Timeline', 'Choose Your Move',
-          'MFA Reflex', 'Safe or Suspicious?', 'Cyber Memory', 'Drag & Drop Security', 'Unlock the Screen']
+          'MFA Reflex', 'Safe or Suspicious?', 'Password Lab', 'Drag & Drop Security', 'Unlock the Screen']
+LAB_PASSWORD = 'v7!Qm2#Rz8$Lp4@Tx9%N'  # Made-up laboratory sample, never a real credential.
 
 
 class QuietHandler(http.server.SimpleHTTPRequestHandler):
@@ -110,11 +111,13 @@ class CyberPlayTests(unittest.TestCase):
                 choice = 'safe' if case in ('ai', 'password') else 'suspicious'
                 page.locator(f'[data-dec-classify="{choice}"]').click()
                 page.locator(f'[data-dec-action="{"finish" if index == 4 else "next"}"]').click()
-        elif game == 'memory':
-            for pair in ['mfa', 'qr', 'usb', 'ai']:
-                page.get_by_test_id(f'memory-card-{pair}-risk').click()
-                page.get_by_test_id(f'memory-card-{pair}-action').click()
-            page.get_by_test_id('memory-finish').click()
+        elif game == 'password':
+            page.get_by_test_id('password-start').click()
+            page.get_by_test_id('password-input').fill(LAB_PASSWORD)
+            page.get_by_test_id('password-analyze').click()
+            page.get_by_test_id('password-continue').click()
+            page.get_by_test_id('password-manager-approved').click()
+            page.get_by_test_id('password-finish').click()
         elif game == 'drag':
             for pair in ['wifi', 'mfa', 'usb', 'ai']:
                 page.get_by_test_id(f'drag-action-{pair}').click()
@@ -125,15 +128,19 @@ class CyberPlayTests(unittest.TestCase):
             page.get_by_test_id('unlock-next').click()
             page.get_by_test_id('unlock-move-report').click()
             page.get_by_test_id('unlock-next').click()
-            for target, event in enumerate(['message', 'site', 'credentials', 'mfa']):
-                order = page.locator('[data-event-id]').evaluate_all('(els) => els.map(el => el.dataset.eventId)')
-                while order.index(event) > target:
-                    page.get_by_test_id(f'unlock-order-{event}-up').click()
-                    order = page.locator('[data-event-id]').evaluate_all('(els) => els.map(el => el.dataset.eventId)')
-            page.get_by_test_id('unlock-verify').click()
-            page.get_by_test_id('unlock-next').click()
+            CyberPlayTests.rebuild_unlock_attack(page)
         else:
             self.fail(f'Unknown game {game}')
+
+    @staticmethod
+    def rebuild_unlock_attack(page):
+        for target, event in enumerate(['message', 'site', 'credentials', 'mfa']):
+            order = page.locator('[data-event-id]').evaluate_all('(els) => els.map(el => el.dataset.eventId)')
+            while order.index(event) > target:
+                page.get_by_test_id(f'unlock-order-{event}-up').click()
+                order = page.locator('[data-event-id]').evaluate_all('(els) => els.map(el => el.dataset.eventId)')
+        page.get_by_test_id('unlock-verify').click()
+        page.get_by_test_id('unlock-next').click()
 
     def assert_simulated_client(self, page, client, offline=False):
         """Check that the visible simulated client has its actual loaded logo."""
@@ -206,7 +213,7 @@ class CyberPlayTests(unittest.TestCase):
                 self.assertFalse(page.evaluate('document.documentElement.scrollWidth > innerWidth'))
                 self.draw_three(page)
                 page.locator('#start-button').press('Enter')
-                self.solve(page, 'memory')
+                self.solve(page, 'password')
                 expect(page.locator('#game-title')).to_have_text('Drag & Drop Security')
                 for pair in ['wifi', 'mfa', 'usb', 'ai']:
                     page.get_by_test_id(f'drag-action-{pair}').press('Enter')
@@ -226,7 +233,7 @@ class CyberPlayTests(unittest.TestCase):
             crypto.getRandomValues = array => { array[0] = draws.shift(); return array; };
         }''')
         selected = self.draw_three(page)
-        self.assertEqual(selected, ['Cyber Memory', 'Choose Your Move', 'Safe or Suspicious?'])
+        self.assertEqual(selected, ['Password Lab', 'Choose Your Move', 'Safe or Suspicious?'])
         for width in (390, 320, 768):
             page.set_viewport_size({'width': width, 'height': 844})
             self.assertFalse(page.evaluate('document.documentElement.scrollWidth > innerWidth'))
@@ -275,6 +282,9 @@ class CyberPlayTests(unittest.TestCase):
                 choice = 'safe' if case in ('ai', 'password') else 'suspicious'
                 page.locator(f'[data-dec-classify="{choice}"]').click()
                 page.locator(f'[data-dec-action="{"finish" if index == 4 else "next"}"]').click()
+            page.locator('[data-preview-game="password"]').click()
+            self.solve(page, 'password')
+            expect(page.locator('#preview-result')).to_contain_text('100%')
             page.locator('[data-preview-game="unlock"]').click()
             self.assert_simulated_client(page, 'outlook', offline=True)
             page.get_by_test_id('unlock-anomaly-sender').click()

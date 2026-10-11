@@ -12,117 +12,6 @@
     node.textContent = message;
   }
 
-  const pairs = [
-    { id: 'mfa', icon: 'phone', risk: 'An MFA request you did not initiate', action: 'Deny and report', explanation: 'An unexpected sign-in request should be denied and reported through your company IT channel.' },
-    { id: 'qr', icon: 'search', risk: 'A QR code from an unknown source', action: 'Check the source and destination', explanation: 'A QR code hides its destination: check its source and where it leads before continuing.' },
-    { id: 'usb', icon: 'file', risk: 'A USB drive you found', action: 'Do not plug it in. Tell IT', explanation: 'An unknown USB drive may contain malware. Do not connect it to your computer.' },
-    { id: 'ai', icon: 'shield', risk: 'Confidential data in public AI', action: 'Use only authorised tools', explanation: 'Data classification and company policies determine which AI tools you can use.' }
-  ];
-
-  window.CyberGames.memory = {
-    mount(container, api) {
-      let disposed = false;
-      let first = null;
-      let busy = false;
-      let mistakes = 0;
-      let matched = 0;
-      let finished = false;
-      const timers = new Set();
-      const cards = shuffle(api, pairs.flatMap((pair) => [
-        { ...pair, kind: 'risk', label: pair.risk },
-        { ...pair, kind: 'action', label: pair.action }
-      ]));
-
-      container.innerHTML = `
-        <div class="game-intro"><p class="eyebrow">MATCH THE RISK TO THE RIGHT ACTION</p><h2>Cyber Memory</h2><p>Turn over two cards at a time. Find all 4 pairs: each situation has a safe response.</p></div>
-        <div class="int-game-meta"><span>${icon(api, 'search', 18)} <strong data-memory-count>0 / 4 pairs</strong></span><span data-memory-attempts>0 attempts</span></div>
-        <div class="int-memory-grid" aria-label="Memory cards">${cards.map((card, index) => `
-          <button type="button" class="int-memory-card" data-card-index="${index}" data-pair="${card.id}" data-kind="${card.kind}" data-testid="memory-card-${card.id}-${card.kind}" aria-label="Card ${index + 1}, face down" aria-pressed="false">
-            <span class="int-memory-flipper">
-              <span class="int-memory-back" aria-hidden="true">${icon(api, 'shield', 28)}<span>CYBER<br>MEMORY</span><small>TURN THE CARD</small></span>
-              <span class="int-memory-front" aria-hidden="true"><small>${card.kind === 'risk' ? 'SITUATION' : 'SAFE ACTION'}</small><span class="int-card-icon">${icon(api, card.icon, 25)}</span><strong>${escape(card.label)}</strong><span class="int-match-check">${icon(api, 'check', 16)}</span></span>
-            </span>
-          </button>`).join('')}</div>
-        <p class="feedback int-feedback" role="status" aria-live="polite" data-memory-feedback>Match each situation card with its safe action card.</p>
-        <div class="int-memory-end" data-memory-end hidden></div>`;
-
-      const board = container.querySelector('.int-memory-grid');
-      const status = container.querySelector('[data-memory-feedback]');
-      const count = container.querySelector('[data-memory-count]');
-      const attempts = container.querySelector('[data-memory-attempts]');
-      const end = container.querySelector('[data-memory-end]');
-      let turns = 0;
-
-      function reveal(button, card) {
-        button.classList.add('int-revealed');
-        button.setAttribute('aria-pressed', 'true');
-        button.setAttribute('aria-label', `${card.kind === 'risk' ? 'Situation' : 'Safe action'}: ${card.label}`);
-      }
-
-      function cover(button) {
-        button.classList.remove('int-revealed');
-        button.setAttribute('aria-pressed', 'false');
-        button.setAttribute('aria-label', `Card ${Number(button.dataset.cardIndex) + 1}, face down`);
-      }
-
-      function onClick(event) {
-        const finishButton = event.target.closest('[data-memory-finish]');
-        if (finishButton && !finished) {
-          finished = true;
-          api.finish({ score: Math.max(60, 100 - mistakes * 5), maxScore: 100, lesson: 'Recognising a risk is the first step. Follow it with a safe action: verify, deny or report through company channels.' });
-          return;
-        }
-        const button = event.target.closest('[data-card-index]');
-        if (!button || !board.contains(button) || busy || button.disabled || button === first?.button || disposed) return;
-        const card = cards[Number(button.dataset.cardIndex)];
-        reveal(button, card);
-        if (!first) {
-          first = { button, card };
-          feedback(status, 'Now find the card that completes this pair.');
-          return;
-        }
-
-        turns += 1;
-        attempts.textContent = `${turns} ${turns === 1 ? 'attempt' : 'attempts'}`;
-        const previous = first;
-        first = null;
-        if (previous.card.id === card.id && previous.card.kind !== card.kind) {
-          matched += 1;
-          [button, previous.button].forEach((matchedButton) => {
-            matchedButton.classList.add('int-matched');
-            matchedButton.disabled = true;
-            matchedButton.setAttribute('aria-label', matchedButton.getAttribute('aria-label') + ', pair found');
-          });
-          count.textContent = `${matched} / 4 pairs`;
-          feedback(status, card.explanation, 'success');
-          if (matched === 4) {
-            end.hidden = false;
-            end.innerHTML = `<div class="int-complete-badge">${icon(api, 'check', 22)}<div><strong>All 4 pairs are matched.</strong><p>Make these safe choices part of your everyday habits.</p></div></div><button type="button" class="button button-primary" data-memory-finish data-testid="memory-finish">Finish game ${icon(api, 'arrow', 18)}</button>`;
-          }
-        } else {
-          mistakes += 1;
-          busy = true;
-          feedback(status, 'These cards do not make a pair. Remember their positions and try again: each risk has its own safe action.');
-          const timer = setTimeout(() => {
-            timers.delete(timer);
-            if (disposed) return;
-            cover(previous.button);
-            cover(button);
-            busy = false;
-          }, 1300);
-          timers.add(timer);
-        }
-      }
-
-      container.addEventListener('click', onClick);
-      return () => {
-        disposed = true;
-        timers.forEach(clearTimeout);
-        container.removeEventListener('click', onClick);
-      };
-    }
-  };
-
   const situations = [
     { id: 'wifi', icon: 'wifi', title: 'Public Wi-Fi', detail: 'At the airport, you need to open a confidential company document.', action: 'Verify the network. Use a hotspot or company VPN.', hint: 'Verify a public network through an official source and use a protected connection in line with company policy.', matched: 'Network verified and connection protected.' },
     { id: 'mfa', icon: 'phone', title: 'Unexpected MFA', detail: 'Your phone asks you to approve a sign-in you did not initiate.', action: 'Deny the request and report it to IT.', hint: 'Do not approve an unexpected MFA request: deny it and report it through your company channel.', matched: 'Request denied and IT informed.' },
@@ -270,10 +159,10 @@
   };
 
   const chain = [
-    { id: 'message', title: 'A fake text message arrives', detail: '“Verify your company account now.”', icon: 'mail' },
-    { id: 'site', title: 'A lookalike website opens', detail: 'The link leads to a fake sign-in page.', icon: 'search' },
-    { id: 'credentials', title: 'Credentials are entered', detail: 'The website captures the sign-in details.', icon: 'lock' },
-    { id: 'mfa', title: 'An unexpected MFA request appears', detail: 'The attacker tries to sign in using the stolen details.', icon: 'phone' }
+    { id: 'message', title: 'A lookalike email arrives', detail: 'support@rnicrosoft.com asks Mark to verify his account.', icon: 'mail' },
+    { id: 'site', title: 'The link opens a fake sign-in page', detail: 'The email points to account.rnicrosoft.com/verify.', icon: 'search' },
+    { id: 'credentials', title: 'The fake page captures credentials', detail: 'Sign-in details entered on the imitation page are stolen.', icon: 'lock' },
+    { id: 'mfa', title: 'A mismatched MFA request appears', detail: 'Exchange Online on a new Android phone. The user denies and reports it.', icon: 'phone' }
   ];
 
   window.CyberGames.unlock = {
@@ -308,46 +197,63 @@
         const headerHTML = `<div class="det-email-header">
           <span class="det-mail-avatar" aria-hidden="true">M</span>
           <div class="det-email-sender"><strong>Microsoft 365 · Account support</strong>
-            <button type="button" class="det-hotspot det-email-address int-detail-hotspot ${solved ? 'det-hotspot-correct' : ''}" data-unlock-answer="sender" data-testid="unlock-anomaly-sender" aria-label="Inspect the sender’s domain" ${disabled}>support@sunrise-verify.example</button>
-            <span>To: you@sunrise.example</span>
+            <button type="button" class="det-hotspot det-email-address int-detail-hotspot ${solved ? 'det-hotspot-correct' : ''}" data-unlock-answer="sender" data-testid="unlock-anomaly-sender" aria-label="Inspect the sender’s domain" ${disabled}>support@rnicrosoft.com</button>
+            <span>To: mark.webber@sunrise.net</span>
           </div>
           <button type="button" class="det-hotspot det-email-date int-detail-hotspot" data-unlock-answer="time" data-testid="unlock-anomaly-time" aria-label="Inspect the email’s sending time" ${disabled}>Today, 08:42</button>
         </div>`;
         const body = `<button type="button" class="det-hotspot int-detail-hotspot int-brand-detail" data-unlock-answer="logo" data-testid="unlock-anomaly-logo" aria-label="Inspect the Microsoft logo" ${disabled}>${window.CyberScreens.microsoftBrand()}</button>
-          <h4>Check your account</h4>
-          <p>Dear colleague,</p>
-          <p>Please verify your company account.</p>
-          <p>An account check is available for your company profile.</p>
+          <h4>Keep your account active</h4>
+          <p>Dear Mark,</p>
+          <p>Please verify your Microsoft 365 sign-in details today to keep your email access active.</p>
+          <p>Complete the account check:</p>
+          <p><button type="button" class="det-hotspot int-unlock-phishing-link" data-unlock-inspect-link data-testid="unlock-anomaly-link" aria-label="Inspect the verification link without opening it" ${disabled}>https://account.rnicrosoft.com/verify</button></p>
           <p>Kind regards,<br>Microsoft 365 Account support</p>`;
         return `<h3>Spot the anomaly</h3><p class="int-proof-instruction">An email asks you to check your account. Which detail needs verification? Click or tap a detail to investigate.</p>${window.CyberScreens.outlook({
-          subject: 'Company account verification',
+          subject: 'Microsoft 365 account verification',
           senderName: 'Microsoft 365 · Account support',
-          from: 'support@sunrise-verify.example',
+          from: 'support@rnicrosoft.com',
+          recipient: 'mark.webber@sunrise.net',
           date: 'Today, 08:42',
           headerHTML,
           body
-        })}`;
+        })}${solved ? domainZoom() : ''}`;
+      }
+
+      function domainZoom() {
+        return `<section class="int-domain-zoom" data-testid="unlock-domain-zoom" aria-label="Magnified sender domain comparison">
+          <div class="int-domain-zoom-heading">${icon(api, 'search', 21)}<h4>A closer look at the sender</h4></div>
+          <div class="int-domain-comparison">
+            <div class="int-domain-example int-domain-lookalike"><small>LOOKALIKE DOMAIN</small><p class="int-zoom-domain" aria-label="@rnicrosoft.com">@<span class="int-domain-substitution" data-testid="unlock-domain-substitution">rn</span>icrosoft.com</p><span class="int-domain-annotation">The red box contains <strong>r + n</strong>.</span></div>
+            <div class="int-domain-example int-domain-official"><small>MICROSOFT DOMAIN</small><p class="int-zoom-domain">@microsoft.com</p><span class="int-domain-annotation">The first letter is a single <strong>m</strong>.</span></div>
+          </div>
+          <p class="int-domain-explanation">Two ordinary letters, <strong>r + n</strong>, imitate an <strong>m</strong>. The addresses can look similar at a glance, but they are different domains. Open your usual portal or check with a known IT contact before trusting a request.</p>
+        </section>`;
       }
 
       function move() {
-        return `<h3>Choose your move</h3><p class="int-proof-instruction">You have not started a sign-in, but you have already received 5 MFA requests.</p>
-          <div class="int-mfa-banner"><span class="int-card-icon">${icon(api, 'phone', 27)}</span><div><small>SIGN-IN REQUEST</small><strong>Approve this sign-in?</strong><p>New device · unknown location</p></div><span class="int-mfa-count">×5</span></div>
+        return `<h3>Choose your move</h3><p class="int-proof-instruction">You are signing in to your company portal. A prompt appears on your phone. Check whether its service and device match the sign-in you started.</p>
+          <div class="int-login-context" data-testid="unlock-login-context"><span>${icon(api, 'lock', 21)}</span><div><small>THE SIGN-IN YOU STARTED</small><strong>Sunrise Company Portal</strong><p>Your usual Windows PC · Windows 11</p></div></div>
+          <div class="int-mfa-phone"><div class="int-phone-status"><span>09:41</span><span>${icon(api, 'wifi', 13)}${icon(api, 'bolt', 12)}</span></div><div class="int-authenticator-app">${icon(api, 'shield', 21)}<strong>Microsoft Authenticator</strong></div>
+            <article class="int-phone-request" data-testid="unlock-mfa-notification"><small>SIGN-IN REQUEST</small><h4>Approve sign-in?</h4><p>Check these details before responding.</p><dl><div><dt>Service</dt><dd>Exchange Online</dd></div><div><dt>Device</dt><dd>Android phone <span class="int-phone-new-device">NEW DEVICE</span></dd></div><div><dt>Account</dt><dd>mark.webber@sunrise.net</dd></div></dl><span class="int-phone-request-time">Request received just now</span></article>
+            <span class="int-phone-home" aria-hidden="true"></span>
+          </div>
           <div class="int-move-options">${[
-            ['approve', 'Approve to stop the notifications', 'Acting in a hurry can help someone trying to access your account.'],
-            ['ignore', 'Ignore them and keep working', 'The potential attack remains unreported.'],
-            ['report', 'Deny and report through the company IT channel', 'Block the request and tell the team that can investigate.']
+            ['approve', 'Approve because I am signing in', 'Use this request to finish my current sign-in.'],
+            ['ignore', 'Ignore it and try signing in again', 'Leave this request unanswered.'],
+            ['report', 'Deny and report the mismatched request', 'Verify the attempt through the company IT channel.']
           ].map(([id, title, detail]) => `<button type="button" class="int-move-option ${solved && id === 'report' ? 'int-choice-correct' : ''}" data-unlock-answer="${id}" data-testid="unlock-move-${id}" ${solved ? 'disabled' : ''}><span class="int-option-dot">${solved && id === 'report' ? icon(api, 'check', 16) : ''}</span><span><strong>${title}</strong><small>${detail}</small></span></button>`).join('')}</div>`;
       }
 
       function timeline() {
-        return `<h3>Rebuild the attack chain</h3><p class="int-proof-instruction">Where did the attack start? Put the events in order using the arrows, then check the sequence.</p><ol class="int-timeline-order" aria-label="Sequence of events">${order.map((item, index) => `
+        return `<h3>Rebuild the attack chain</h3><p class="int-proof-instruction">Reconstruct how the email could lead to a mismatched request. Put the events in order; the final MFA is denied and reported.</p><ol class="int-timeline-order" aria-label="Sequence of events">${order.map((item, index) => `
           <li data-event-id="${item.id}"><span class="int-event-number">${index + 1}</span><span class="int-event-icon">${icon(api, item.icon, 19)}</span><div><strong>${item.title}</strong><p>${item.detail}</p></div><span class="int-order-controls"><button type="button" data-order-index="${index}" data-order-direction="up" data-testid="unlock-order-${item.id}-up" aria-label="Move ${escape(item.title)} up" ${solved || index === 0 ? 'disabled' : ''}>↑</button><button type="button" data-order-index="${index}" data-order-direction="down" data-testid="unlock-order-${item.id}-down" aria-label="Move ${escape(item.title)} down" ${solved || index === order.length - 1 ? 'disabled' : ''}>↓</button></span></li>`).join('')}</ol>${!solved ? '<button type="button" class="button button-secondary int-verify-order" data-unlock-verify data-testid="unlock-verify">Check the sequence</button>' : ''}`;
       }
 
       function solvedMessage() {
-        if (stage === 0) return 'The domain imitates Sunrise. A logo does not prove authenticity: verify through a known portal or contact and report the suspicious message.';
-        if (stage === 1) return 'The request has been denied. Reporting lets IT investigate the attempt and help protect your account.';
-        return 'It starts with the fake message. The website captures credentials and the attacker tries to sign in. Stop the chain as early as possible; deny and report unexpected MFA requests too.';
+        if (stage === 0) return 'rnicrosoft.com replaces the first m in microsoft.com with r + n. The link uses the same lookalike domain. Verify through a known portal and report the email.';
+        if (stage === 1) return 'You denied the Exchange Online request from a new Android phone. It does not match Sunrise Company Portal on your usual Windows PC. Report the attempt, even though your own sign-in is in progress.';
+        return 'If the email were trusted, the fake page could steal credentials and trigger Exchange Online access from a new Android phone. You blocked the mismatched request. Report both the suspicious email and the MFA attempt.';
       }
 
       function solve() {
@@ -363,12 +269,18 @@
         if (next && solved) {
           if (stage === 2 && !finished) {
             finished = true;
-            api.finish({ score, maxScore: 100, lesson: 'An attack often starts with a message. Verify the source, deny and report unexpected MFA requests, and recognise the chain before it is complete.' });
+            api.finish({ score, maxScore: 100, lesson: 'Inspect lookalike domains and match every MFA request to the service and device you actually used. Deny and report mismatches, even during your own sign-in.' });
           } else if (stage < 2) {
             stage += 1;
             solved = false;
             render();
           }
+          return;
+        }
+        const inspectedLink = event.target.closest('[data-unlock-inspect-link]');
+        if (inspectedLink && stage === 0 && !solved) {
+          event.preventDefault();
+          feedback(container.querySelector('[data-unlock-feedback]'), 'The destination uses account.rnicrosoft.com, which resembles a Microsoft address and deserves checking. Nothing was opened. Compare the sender domain to confirm the clue.');
           return;
         }
         const answer = event.target.closest('[data-unlock-answer]');
@@ -380,7 +292,7 @@
             if (stage === 0) answer.classList.add('det-hotspot-wrong');
             const message = stage === 0
               ? value === 'logo' ? 'A logo can be copied and does not prove who sent the message. Look at the sender domain.' : 'The time does not prove an email is genuine. Check the sender domain.'
-              : value === 'approve' ? 'Approving could let someone who has your credentials into your account. Try again: you can still block the request.' : 'Ignoring the requests does not help IT investigate. Deny them and report through your company channel.';
+              : value === 'approve' ? 'Your portal sign-in does not match Exchange Online on a new Android phone. Approving could authorise someone else’s request. Deny it and report the mismatch.' : 'Ignoring leaves the suspicious request unreported. Its service and device differ from your own sign-in. Deny it and report through your company IT channel.';
             feedback(container.querySelector('[data-unlock-feedback]'), message, 'danger');
           }
           return;
@@ -404,7 +316,7 @@
           if (order.every((item, index) => item.id === chain[index].id)) solve();
           else {
             attempted[stage] = true;
-            feedback(container.querySelector('[data-unlock-feedback]'), 'The sequence is not correct yet. Start with the text message: the link leads to the fake website, credentials are stolen, and then the MFA request appears. Reorder and try again.', 'danger');
+            feedback(container.querySelector('[data-unlock-feedback]'), 'The sequence is not correct yet. Start with the lookalike email, then its fake sign-in page and stolen credentials. Finally, the mismatched MFA request is denied and reported. Reorder and try again.', 'danger');
           }
         }
       }

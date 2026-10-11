@@ -36,8 +36,9 @@ def build(output):
     # Games also render local images from HTML strings inside their scripts.
     code = re.sub(r'((?:src|href)=")(assets/[^"]+)(")',
                   lambda asset: asset.group(1) + data_uri(ROOT / asset.group(2)) + asset.group(3), code)
-    licences = '\n\n'.join((ROOT / 'assets' / name).read_text(encoding='utf-8')
-                            for name in ['SOURCES.txt', 'OFL-Outfit.txt', 'CC0-Simple-Icons.md'])
+    licence_paths = [ROOT / 'assets' / name for name in ['SOURCES.txt', 'OFL-Outfit.txt', 'CC0-Simple-Icons.md']]
+    licence_paths.append(ROOT / 'vendor' / 'LICENSE-zxcvbn.txt')
+    licences = '\n\n'.join(path.read_text(encoding='utf-8') for path in licence_paths)
     licences = licences.replace('--', '—')
     page = page.replace('</body>', f'<script>\n{code}\n</script>\n<!--\nBundled asset notices\n{licences}\n-->\n</body>')
     output.parent.mkdir(parents=True, exist_ok=True)

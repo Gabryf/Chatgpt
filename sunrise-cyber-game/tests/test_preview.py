@@ -24,9 +24,9 @@ LESSON_WORDS = {
     'move': 'approved tools',
     'mfa': 'unexpected MFA',
     'classify': 'context',
-    'memory': 'safe action',
+    'password': 'password manager',
     'drag': 'unknown USB',
-    'unlock': 'Verify the source',
+    'unlock': 'lookalike domains',
 }
 
 
@@ -97,6 +97,10 @@ class PreviewTests(unittest.TestCase):
 
     def assert_simulated_client(self, page, client):
         return test_app.CyberPlayTests.assert_simulated_client(self, page, client)
+
+    def assert_lab_password_is_not_stored(self, page, candidate):
+        stored = page.evaluate('() => JSON.stringify({local: {...localStorage}, session: {...sessionStorage}})')
+        self.assertNotIn(candidate, stored)
 
     def test_access_is_hidden_and_wrong_code_does_not_unlock(self):
         page, errors = self.new_page()
@@ -354,6 +358,160 @@ class PreviewTests(unittest.TestCase):
                 page.get_by_test_id('unlock-anomaly-sender').click()
                 page.get_by_test_id('unlock-next').click()
                 expect(page.get_by_test_id('unlock-move-report')).to_be_visible()
+                self.assert_no_overflow(page)
+                self.assertEqual(errors, [])
+
+    def test_unlock_lookalike_domain_and_mismatching_mfa_are_checked_in_context(self):
+        for width in (1440, 320):
+            for wrong_choices in (False, True):
+                with self.subTest(width=width, wrong_choices=wrong_choices):
+                    page, errors = self.new_page(width)
+                    self.unlock(page)
+                    self.launch(page, 'unlock')
+                    mail = self.assert_simulated_client(page, 'outlook')
+                    sender = page.get_by_test_id('unlock-anomaly-sender')
+                    expect(sender).to_have_text('support@rnicrosoft.com')
+                    expect(mail).to_contain_text('mark.webber@sunrise.net')
+                    link = page.get_by_test_id('unlock-anomaly-link')
+                    expect(link).to_be_visible()
+                    expect(link).to_contain_text('rnicrosoft.com')
+                    self.assertIsNone(link.get_attribute('href'))
+                    zoom = page.get_by_test_id('unlock-domain-zoom')
+                    expect(zoom).not_to_be_visible()
+                    expect(page.get_by_test_id('unlock-next')).not_to_be_visible()
+                    self.assert_no_overflow(page)
+
+                    original_url = page.url
+                    outgoing_requests = []
+                    page.on('request', lambda request: outgoing_requests.append(request.url)
+                            if not request.url.startswith(self.url + '/') else None)
+                    link.click()
+                    self.assertEqual(page.url, original_url)
+                    self.assertEqual(outgoing_requests, [])
+                    expect(zoom).not_to_be_visible()
+                    expect(page.get_by_test_id('unlock-next')).not_to_be_visible()
+                    expect(sender).to_be_enabled()
+                    if wrong_choices:
+                        page.get_by_test_id('unlock-anomaly-time').click()
+                        expect(zoom).not_to_be_visible()
+                        expect(page.get_by_test_id('unlock-next')).not_to_be_visible()
+
+                    sender.click()
+                    expect(zoom).to_be_visible()
+                    expect(zoom).to_contain_text('@rnicrosoft.com')
+                    expect(zoom).to_contain_text('@microsoft.com')
+                    expect(zoom).to_contain_text('r + n')
+                    substitution = page.get_by_test_id('unlock-domain-substitution')
+                    expect(substitution).to_have_text('rn')
+                    box = substitution.evaluate('''el => {
+                        const style = getComputedStyle(el);
+                        return {width: parseFloat(style.borderTopWidth), style: style.borderTopStyle,
+                                color: style.borderTopColor};
+                    }''')
+                    self.assertGreater(box['width'], 0)
+                    self.assertEqual(box['style'], 'solid')
+                    red, green, blue = map(float, re.findall(r'[\d.]+', box['color'])[:3])
+                    self.assertGreater(red, green)
+                    self.assertGreater(red, blue)
+                    self.assert_no_overflow(page)
+                    page.get_by_test_id('unlock-next').click()
+
+                    context = page.get_by_test_id('unlock-login-context')
+                    expect(context).to_contain_text('Sunrise Company Portal')
+                    expect(context).to_contain_text('Windows PC')
+                    notification = page.get_by_test_id('unlock-mfa-notification')
+                    expect(notification).to_contain_text('Exchange Online')
+                    expect(notification).to_contain_text('Android')
+                    expect(page.get_by_test_id('unlock-next')).not_to_be_visible()
+                    if wrong_choices:
+                        page.get_by_test_id('unlock-move-approve').click()
+                        expect(page.get_by_test_id('unlock-next')).not_to_be_visible()
+                        expect(page.get_by_test_id('unlock-move-report')).to_be_enabled()
+                    page.get_by_test_id('unlock-move-report').click()
+                    expect(page.locator('[data-unlock-feedback]')).to_contain_text('denied')
+                    expect(page.locator('[data-unlock-feedback]')).to_contain_text('Exchange Online')
+                    expect(page.locator('[data-unlock-feedback]')).to_contain_text('Android')
+                    expect(page.locator('[data-unlock-feedback]')).to_contain_text('does not match')
+                    expect(page.locator('[data-unlock-feedback]')).to_contain_text('Report')
+                    self.assert_no_overflow(page)
+                    page.get_by_test_id('unlock-next').click()
+                    test_app.CyberPlayTests.rebuild_unlock_attack(page)
+                    expected_score = 80 if wrong_choices else 100
+                    expect(page.locator('#preview-result')).to_contain_text(re.compile(rf'{expected_score}\s*%'))
+                    self.assertEqual(errors, [])
+
+    def test_password_lab_estimates_patterns_and_requires_safe_storage_choice(self):
+        page, errors = self.new_page()
+        self.unlock(page)
+        self.launch(page, 'password')
+        page.get_by_test_id('password-start').click()
+        field = page.get_by_test_id('password-input')
+        strength = page.get_by_test_id('password-strength')
+        weak = 'passwordpasswordpasswordpassword'
+        outgoing_requests = []
+        page.on('request', lambda request: outgoing_requests.append(request.url)
+                if not request.url.startswith(self.url + '/') else None)
+
+        # Length alone must not make a repeated, common pattern strong.
+        field.fill(weak)
+        page.get_by_test_id('password-analyze').click()
+        self.assertLessEqual(int(strength.get_attribute('data-score')), 1)
+        expect(page.get_by_test_id('password-continue')).to_be_disabled()
+        self.assert_lab_password_is_not_stored(page, weak)
+
+        field.fill(test_app.LAB_PASSWORD)
+        page.get_by_test_id('password-analyze').click()
+        self.assertGreaterEqual(int(strength.get_attribute('data-score')), 3)
+        expect(page.get_by_test_id('password-continue')).to_be_enabled()
+        self.assert_lab_password_is_not_stored(page, test_app.LAB_PASSWORD)
+        field.fill(weak)
+        expect(page.get_by_test_id('password-continue')).to_be_disabled()
+        expect(strength).not_to_be_visible()
+        field.fill(test_app.LAB_PASSWORD)
+        page.get_by_test_id('password-analyze').click()
+        expect(page.get_by_test_id('password-continue')).to_be_enabled()
+        old_field = field.element_handle()
+        page.get_by_test_id('password-continue').click()
+        self.assertEqual(old_field.input_value(), '')
+        expect(page.get_by_test_id('password-manager-approved')).to_contain_text('KeePass')
+        expect(page.get_by_test_id('password-finish')).not_to_be_visible()
+        page.get_by_test_id('password-manager-reuse').click()
+        page.get_by_test_id('password-manager-reuse').dispatch_event('click')
+        expect(page.get_by_test_id('password-finish')).not_to_be_visible()
+        page.get_by_test_id('password-manager-public').click()
+        page.get_by_test_id('password-manager-approved').click()
+        page.get_by_test_id('password-finish').click()
+        expect(page.locator('#preview-result')).to_contain_text(re.compile(r'80\s*%'))
+        expect(page.locator('#preview-result')).to_contain_text('password manager')
+        self.assertNotIn(test_app.LAB_PASSWORD, page.locator('#preview-result').inner_text())
+        self.assert_lab_password_is_not_stored(page, test_app.LAB_PASSWORD)
+        self.assertEqual(outgoing_requests, [])
+        self.assertEqual(errors, [])
+
+    def test_password_lab_clears_typed_candidate_on_restart_and_exit(self):
+        for action in ('restart', 'exit'):
+            with self.subTest(action=action):
+                page, errors = self.new_page(320)
+                self.unlock(page)
+                self.launch(page, 'password')
+                page.get_by_test_id('password-start').click()
+                field = page.get_by_test_id('password-input')
+                expect(field).to_have_value('')
+                field.fill(test_app.LAB_PASSWORD)
+                page.get_by_test_id('password-analyze').click()
+                self.assert_no_overflow(page)
+                self.assert_lab_password_is_not_stored(page, test_app.LAB_PASSWORD)
+                old_field = field.element_handle()
+                if action == 'restart':
+                    page.locator('#preview-restart').click()
+                else:
+                    page.locator('#exit-game').click()
+                    self.launch(page, 'password')
+                self.assertEqual(old_field.input_value(), '')
+                page.get_by_test_id('password-start').click()
+                expect(page.get_by_test_id('password-input')).to_have_value('')
+                expect(page.get_by_test_id('password-continue')).to_be_disabled()
+                self.assert_lab_password_is_not_stored(page, test_app.LAB_PASSWORD)
                 self.assert_no_overflow(page)
                 self.assertEqual(errors, [])
 

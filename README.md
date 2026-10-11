@@ -14,10 +14,10 @@ The full project is in **[sunrise-cyber-game](sunrise-cyber-game/README.md)**.
 
 Alternatively, open [Sunrise_Cyber_Play_EN.html](sunrise-cyber-game/Sunrise_Cyber_Play_EN.html) on GitHub and use **Download raw file**. The downloaded HTML contains the entire game and can run on its own.
 
-The game works offline and requires no accounts, API keys or runtime dependencies. Source code, local assets, previews, development tests and build instructions are included. This repository contains the files; GitHub Pages hosting has not been enabled.
+The game works offline and requires no accounts, API keys or installation. Source code, local assets, the bundled password estimator, previews, development tests and build instructions are included. This repository contains the files; GitHub Pages hosting has not been enabled.
 
 To test any game freely, press **Ctrl + Shift + G** (**Cmd + Shift + G** on Mac), or click the footer **Learn. Choose. Protect.** three times quickly. Enter **`Gabriele&Alessia`** and select **Unlock games**. See [hidden test mode](sunrise-cyber-game/README.md#hidden-test-mode) for replay and exit controls.
 
-The complete BIP and Sunrise wordmarks are provisional. Replace them with approved brand assets before using the game at an event; see the [project README](sunrise-cyber-game/README.md#logos-replace-before-the-event).
+The footer uses the red BIP and Sunrise logos requested for the event; see [asset provenance](sunrise-cyber-game/README.md#logos). Password Lab replaces Cyber Memory, with local strength feedback and an introduction to password managers such as KeePass.
 
 ![Cyber Play preview](sunrise-cyber-game/previews/wheel-desktop.png)

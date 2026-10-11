@@ -8,7 +8,7 @@
     {id:'move', title:'Choose Your Move', short:['Choose','Your Move'], description:'One choice changes the story.', category:'DECIDE · DATA AND IDENTITY', icon:'split', color:'#ffad83', fill:'#573b34'},
     {id:'mfa', title:'MFA Reflex', short:['MFA','Reflex'], description:'Every sign-in deserves attention.', category:'REACT · AUTHENTICATION', icon:'bolt', color:'#f3d589', fill:'#504530'},
     {id:'classify', title:'Safe or Suspicious?', short:['Safe or','Suspicious?'], description:'Before you trust it, take a look.', category:'ASSESS · EVERYDAY CHOICES', icon:'eye', color:'#8dc6ff', fill:'#2e4563'},
-    {id:'memory', title:'Cyber Memory', short:['Cyber','Memory'], description:'Match the risk to the right defence.', category:'CONNECT · GOOD HABITS', icon:'cards', color:'#eaa1c6', fill:'#513347'},
+    {id:'password', title:'Password Lab', short:['Password','Lab'], description:'Try it. Improve it. Keep it safe.', category:'BUILD · STRONGER PASSWORD HABITS', icon:'lock', color:'#eaa1c6', fill:'#513347'},
     {id:'drag', title:'Drag & Drop Security', short:['Drag & Drop','Security'], description:'The right move, in the right place.', category:'MATCH · SECURE BEHAVIOURS', icon:'drag', color:'#91d8aa', fill:'#284b3f'},
     {id:'unlock', title:'Unlock the Screen', short:['Unlock','the Screen'], description:'Three tasks. One screen to unlock.', category:'UNLOCK · A MINI MISSION', icon:'lock', color:'#ffa29c', fill:'#573438'},
   ];
