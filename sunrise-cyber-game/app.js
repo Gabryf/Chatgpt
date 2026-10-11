@@ -4,7 +4,7 @@
   const games = [
     {id:'impostor', title:'Cyber Impostor', short:['Cyber','Impostor'], description:'Four messages. One doesn’t add up.', category:'OBSERVE · SOCIAL ENGINEERING', icon:'user', color:'#89a7ff', fill:'#253353'},
     {id:'risk', title:'Spot the Risk', short:['Spot','the Risk'], description:'The risk is hiding in the details.', category:'INVESTIGATE · PHISHING', icon:'search', color:'#77d8ce', fill:'#21474b'},
-    {id:'timeline', title:'Cyber Timeline', short:['Cyber','Timeline'], description:'Trace the attack back to its source.', category:'RECONSTRUCT · THE ATTACK CHAIN', icon:'timeline', color:'#c6a2ff', fill:'#433355'},
+    {id:'timeline', title:'Cyber Timeline', short:['Cyber','Timeline'], description:'Rebuild the attack, one step at a time.', category:'RECONSTRUCT · THE ATTACK CHAIN', icon:'timeline', color:'#c6a2ff', fill:'#433355'},
     {id:'move', title:'Choose Your Move', short:['Choose','Your Move'], description:'One choice changes the story.', category:'DECIDE · DATA AND IDENTITY', icon:'split', color:'#ffad83', fill:'#573b34'},
     {id:'mfa', title:'MFA Reflex', short:['MFA','Reflex'], description:'Every sign-in deserves attention.', category:'REACT · AUTHENTICATION', icon:'bolt', color:'#f3d589', fill:'#504530'},
     {id:'classify', title:'Safe or Suspicious?', short:['Safe or','Suspicious?'], description:'Before you trust it, take a look.', category:'ASSESS · EVERYDAY CHOICES', icon:'eye', color:'#8dc6ff', fill:'#2e4563'},

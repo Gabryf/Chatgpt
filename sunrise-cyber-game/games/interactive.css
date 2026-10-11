@@ -105,6 +105,7 @@
 .int-drag-action.int-action-used .int-drag-grip { display: none; }
 .int-mismatch { animation: int-shake .3s ease; }
 .int-unlock-layout { display: grid; grid-template-columns: minmax(210px, .72fr) minmax(0, 1.65fr); gap: 23px; margin-top: 26px; align-items: stretch; }
+.int-unlock-layout.int-outlook-stage { grid-template-columns: minmax(0, 1fr); }
 .int-lock-panel { background: radial-gradient(ellipse at 10% 0%, #2b3652, #131d2e 70%); border: 1px solid #31415a; border-radius: 18px; padding: 30px 20px 22px; text-align: center; overflow: hidden; }
 .int-lock-orbit { display: inline-flex; align-items: center; justify-content: center; width: 83px; height: 83px; border: 1px solid #ff795e4f; box-shadow: 0 0 0 12px #ff795e05, 0 0 0 24px #ff795e03; border-radius: 50%; color: #ff795e; background: #ff795e0b; margin: 14px 0 30px; }
 .int-lock-time { display: block; color: #f4f6fb; font-size: 2.8rem; font-weight: 300; letter-spacing: -.08em; line-height: 1; margin-bottom: 18px; }
@@ -119,30 +120,22 @@
 .int-unlock-steps .int-step-complete { color: #5fdbb1; }
 .int-unlock-steps .int-step-complete > span { border-color: #5fdbb16b; background: #5fdbb110; }
 .int-lock-panel.int-unlocked .int-lock-orbit { color: #5fdbb1; border-color: #5fdbb16b; background: #5fdbb112; animation: int-match-glow .65s ease; }
+.int-outlook-stage .int-lock-panel { display: grid; grid-template-columns: 56px minmax(0, 1fr) minmax(0, 1.7fr); gap: 0 16px; padding: 21px; text-align: left; }
+.int-outlook-stage .int-lock-orbit { grid-column: 1; grid-row: 1 / 4; width: 50px; height: 50px; margin: 3px 0 0; box-shadow: none; }
+.int-outlook-stage .int-lock-orbit svg { width: 25px; height: 25px; }
+.int-outlook-stage .int-lock-time { grid-column: 2; font-size: 1.35rem; margin: 0 0 7px; }
+.int-outlook-stage .int-lock-panel > strong { grid-column: 2; font-size: .83rem; }
+.int-outlook-stage .int-lock-panel > p { grid-column: 2; max-width: none; margin: 5px 0 0; font-size: .68rem; }
+.int-outlook-stage .int-unlock-steps { grid-column: 3; grid-row: 1 / 4; flex-direction: row; align-items: center; justify-content: space-between; gap: 14px; padding: 0 0 0 22px; margin: 0; border-top: 0; border-left: 1px solid #2b3b53; }
+.int-outlook-stage .int-unlock-steps li { flex: 1; font-size: .68rem; }
 .int-unlock-challenge { padding: 24px; border: 1px solid #2b3b53; border-radius: 18px; background: #131d2e; }
+.int-outlook-stage .int-unlock-challenge { padding: 0; border: 0; background: transparent; min-width: 0; }
 .int-challenge-label { font-size: .57rem; letter-spacing: .18em; color: #ff957f; font-weight: 800; margin-bottom: 11px; }
 .int-challenge-label > span { color: #61718a; margin-left: 4px; }
-.int-unlock-challenge h3 { margin: 0 0 8px; font-size: 1.18rem; color: #f4f6fb; }
+.int-unlock-challenge > h3 { margin: 0 0 8px; font-size: 1.18rem; color: #f4f6fb; }
 .int-proof-instruction { color: #a6b2c5; font-size: .8rem; line-height: 1.65; margin: 0 0 19px; }
-.int-mail-window { background: #f4f6fb; color: #172239; border-radius: 11px; overflow: hidden; border: 1px solid #a6b2c530; }
-.int-window-bar { display: flex; align-items: center; gap: 5px; background: #dde4ef; padding: 11px 13px; }
-.int-window-bar > span { width: 7px; height: 7px; border-radius: 50%; background: #acb8c8; }
-.int-window-bar > span:first-child { background: #ff795e; }
-.int-window-bar > strong { margin-left: auto; color: #67748b; font-size: .5rem; letter-spacing: .12em; }
-.int-mail-body { padding: 18px; }
-.int-mail-app { display: flex; align-items: center; gap: 8px; font-size: .75rem; color: #2c5caa; }
-.int-mail-body h4 { color: #172239; font-size: .88rem; margin: 15px 0 7px; }
-.int-mail-body > p:not(.int-simulation-note) { color: #526078; font-size: .7rem; line-height: 1.6; margin: 0 0 15px; }
-.int-detail-hotspot { display: flex; flex-direction: column; position: relative; gap: 5px; background: #e8edf5; color: #172239; border: 1px dashed #8d9db5; border-radius: 7px; padding: 12px; text-align: left; font: inherit; width: 100%; cursor: pointer; transition: border .2s, background .2s; }
-.int-detail-hotspot > small { color: #67748b; font-size: .49rem; letter-spacing: .09em; font-weight: 800; }
-.int-detail-hotspot > strong { font-size: .66rem; font-weight: 600; word-break: break-word; }
-.int-detail-hotspot > span { position: absolute; top: 11px; right: 11px; color: #657899; }
-.int-detail-hotspot[data-unlock-answer="sender"] { padding-right: 31px; }
-.int-detail-hotspot:hover:not(:disabled) { border-color: #d05d43; background: #fff0ec; }
-.int-detail-hotspot:focus-visible { outline: 3px solid #b3432d; outline-offset: 2px; }
-.int-mail-details { display: grid; grid-template-columns: .6fr 1fr; gap: 9px; margin-top: 9px; }
-.int-simulation-note { color: #67748b; font-size: .59rem; line-height: 1.5; margin: 13px 0 0; }
-.int-detail-hotspot.int-hotspot-correct { border-color: #168966; background: #d5f3e8; cursor: default; opacity: 1; }
+.int-outlook-stage .int-brand-detail { display: block; margin: 0 0 24px; }
+.int-brand-detail .det-microsoft-lockup { margin-bottom: 0; }
 .int-mfa-banner { display: flex; align-items: center; gap: 12px; padding: 18px 14px; background: #203046; border: 1px solid #38506b; border-radius: 13px; margin-bottom: 18px; }
 .int-mfa-banner small { display: block; color: #a6b2c5; font-size: .49rem; letter-spacing: .11em; margin-bottom: 6px; }
 .int-mfa-banner strong { color: #f4f6fb; font-size: .85rem; }
@@ -185,6 +178,9 @@
   .int-unlock-steps { grid-column: 1/-1; flex-direction: row; padding-top: 15px; margin-top: 17px; gap: 12px; justify-content: space-between; }
   .int-unlock-steps li { font-size: .58rem; gap: 6px; }
   .int-unlock-steps li > span { width: 21px; height: 21px; }
+  .int-outlook-stage .int-lock-panel { grid-template-columns: 56px minmax(0, 1fr); padding: 19px; gap: 0 15px; }
+  .int-outlook-stage .int-unlock-steps { grid-column: 1 / -1; grid-row: auto; padding: 15px 0 0; margin: 17px 0 0; border-left: 0; border-top: 1px solid #2b3b53; gap: 12px; }
+  .int-outlook-stage .int-unlock-steps li { font-size: .58rem; gap: 6px; }
   .int-drag-board { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 15px; }
   .int-drop-target { padding: 13px; }
   .int-drag-action { padding: 13px 10px; font-size: .74rem; }
@@ -206,8 +202,6 @@
   .int-drop-target.int-target-matched .int-drop-slot { font-size: .7rem; }
   .int-unlock-challenge { padding: 17px; }
   .int-unlock-steps li > strong { max-width: 88px; }
-  .int-mail-body { padding: 13px; }
-  .int-detail-hotspot > strong { font-size: .68rem; }
   .int-mfa-banner { gap: 8px; padding: 13px 10px; }
   .int-mfa-banner .int-card-icon { width: 34px; height: 39px; }
   .int-mfa-banner strong { font-size: .75rem; }

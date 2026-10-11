@@ -54,12 +54,18 @@
           tag: 'Project folder', suspicious: false
         }
       ];
-      var ordered = api.shuffle(messages);
+      var chatContent = messages.map(function (message) {
+        return '<button class="det-message" type="button" data-message="' + message.id + '" aria-label="Select the message from ' + message.name + '">' +
+          window.CyberScreens.teamsMessage({sender: message.name, initials: message.initials, time: message.time, body: '<p>' + message.text + '</p>', external: message.suspicious}) +
+          '<span class="det-message-verdict" hidden></span></button>';
+      }).join('');
       container.innerHTML = makeIntro('CYBER IMPOSTOR · 1 CHOICE', 'Four messages. One impostor.', 'Which request needs checking before you act? Select the suspicious message. Your first choice counts.') +
-        '<section class="det-teams" aria-label="Simulation of four Microsoft Teams messages"><div class="det-app-bar"><span class="det-teams-logo" aria-hidden="true">T</span><strong>Teams</strong><span class="det-app-divider"></span><span>Recent activity</span><span class="det-simulation">SIMULATION</span></div><div class="det-message-grid">' +
-        ordered.map(function (message, index) {
-          return '<button class="det-message" type="button" data-message="' + message.id + '" aria-label="Select the message from ' + message.name + '"><span class="det-message-head"><span class="det-avatar det-avatar-' + message.color + '" aria-hidden="true">' + message.initials + '</span><span class="det-sender"><strong>' + message.name + '</strong><span>' + message.channel + '</span></span><span class="det-message-time">' + message.time + '</span></span><span class="det-message-text">' + message.text + '</span><span class="det-message-bottom"><span class="det-message-tag">' + message.tag + '</span><span class="det-message-select">Message ' + (index + 1) + '<span aria-hidden="true"> ↗</span></span></span></button>';
-        }).join('') + '</div></section><div class="det-answer-area"><div class="feedback det-feedback" role="status" aria-live="polite" hidden></div><div class="det-finish-area" hidden>' + finishButton() + '</div></div>';
+        window.CyberScreens.teams({title: 'Project coordination', subtitle: 'Group chat · 4 participants', initials: 'PC', content: chatContent, chats: [
+          {name: 'Project coordination', initials: 'PC', preview: 'Sophie: The project slides are ready', active: true},
+          {name: 'Laura Bennett', initials: 'LB', preview: 'Updated meeting invitation'},
+          {name: 'IT Service Desk', initials: 'IT', preview: 'Security update'},
+          {name: 'Sophie Moore', initials: 'SM', preview: 'Project slides on SharePoint'}
+        ]}) + '<div class="det-answer-area"><div class="feedback det-feedback" role="status" aria-live="polite" hidden></div><div class="det-finish-area" hidden>' + finishButton() + '</div></div>';
 
       var feedback = container.querySelector('.det-feedback');
       var buttons = Array.from(container.querySelectorAll('[data-message]'));
@@ -73,10 +79,12 @@
             item.disabled = true;
             if (item.dataset.message === 'impostor') {
               item.classList.add('det-choice-correct');
-              item.querySelector('.det-message-select').textContent = 'Impostor identified';
+              item.querySelector('.det-message-verdict').textContent = 'Suspicious request identified';
+              item.querySelector('.det-message-verdict').hidden = false;
             } else if (item === button) {
               item.classList.add('det-choice-wrong');
-              item.querySelector('.det-message-select').textContent = 'Your choice';
+              item.querySelector('.det-message-verdict').textContent = 'Your choice';
+              item.querySelector('.det-message-verdict').hidden = false;
             }
           });
           announce(feedback, '<strong>' + (correct ? 'You spotted the suspicious request.' : 'The impostor is the message from “Mark Wilson”.') + '</strong><p>An external contact, pressure to act quickly, a request to send customer data to a lookalike email domain (sumrise.net) and instructions not to call: these are warning signs that need checking. A display name does not prove someone’s identity.</p><p><b>The safe response:</b> verify through a company channel you already know and report the message using your internal procedures.</p>', correct);
@@ -129,7 +137,7 @@
       }
       container.innerHTML = makeIntro('SPOT THE RISK · 3 CLUES', 'The risk is in the details.', 'Find all three warning signs in the email. Click or tap details to investigate. You start with 100 points; each false clue costs 20 points.') +
         '<div class="det-risk-progress" aria-live="polite"><span>' + api.icon('search', 18) + ' <strong class="det-clue-counter">0 of 3 clues</strong></span><span class="det-risk-score">100 points available</span></div>' +
-        `<section class="det-outlook" aria-label="Simulated Outlook inbox with a suspicious Microsoft 365 email">
+        `<section class="det-outlook" data-simulation="outlook" aria-label="Simulated Outlook inbox with a suspicious Microsoft 365 email">
           <header class="det-outlook-bar">
             <span class="det-launcher">${mailIcon('launcher')}</span>
             <img class="det-outlook-logo" src="assets/outlook-logo.png" alt="Outlook" width="30" height="30">
@@ -227,53 +235,77 @@
   window.CyberGames.timeline = {
     mount: function (container, api) {
       var listeners = [];
-      var settled = false;
       var finished = false;
-      var score = 0;
+      var completed = [];
+      var wrongAttempts = new Set();
+      var penalties = 0;
+      var order = ['entry', 'credentials', 'mfa', 'control'];
       var events = [
-        { id: 'known', time: '08:58', icon: 'lock', title: 'Company portal sign-in', source: 'Sign-in log', text: 'You start the sign-in yourself on your registered company laptop, using your usual network.' },
-        { id: 'entry', time: '09:06', icon: 'mail', title: 'A new Teams message', source: 'Message history', text: 'An external contact claims to be from IT: “New policy: verify your account”. You open login-sunrise.example.' },
-        { id: 'credentials', time: '09:09', icon: 'user', title: 'A familiar-looking page', source: 'Browser history', text: 'The message link takes you to a page that looks like Microsoft. You enter your company password.' },
-        { id: 'control', time: '09:11', icon: 'phone', title: 'An unexpected MFA request', source: 'Notifications and mail log', text: 'You approve a request you did not initiate. A mail-forwarding rule appears immediately afterwards.' }
+        { id: 'control', icon: 'mail', title: 'Mailbox forwarding enabled', source: 'Mailbox audit', text: 'A new rule sends incoming messages to an outside address.', explanation: 'With access to the mailbox, the attacker created a forwarding rule. Incoming messages could now be copied outside the company.' },
+        { id: 'entry', icon: 'user', title: 'A message from “IT”', source: 'Teams conversation', text: 'An external contact shares a link to a “new account policy” page.', explanation: 'The phishing message introduced the lure. Its link led the employee towards a fake sign-in page.' },
+        { id: 'mfa', icon: 'phone', title: 'An unexpected approval', source: 'Authenticator activity', text: 'An MFA prompt the employee did not initiate is approved.', explanation: 'The stolen credentials let the attacker attempt a real sign-in. Approving the unexpected MFA request allowed that sign-in to succeed.' },
+        { id: 'credentials', icon: 'lock', title: 'A password captured', source: 'Browser evidence', text: 'A Microsoft-lookalike site receives the employee’s company password.', explanation: 'Following the message link led to the cloned page. Entering the password there gave the attacker the credentials needed for a real sign-in.' }
       ];
-      container.innerHTML = makeIntro('CYBER TIMELINE · 4 PIECES OF EVIDENCE', 'Where did the attack begin?', 'Reconstruct the morning. Select the event that first introduced the attack. Your first choice counts.') +
-        '<section class="det-investigation" aria-label="Timeline of events to investigate"><div class="det-investigation-header"><span>' + api.icon('search', 19) + '<strong>Incident case file</strong></span><span class="det-simulation">4 EVENTS · CHRONOLOGICAL ORDER</span></div><div class="det-timeline">' +
-        events.map(function (event, index) {
-          return '<button class="det-timeline-event" type="button" data-event="' + event.id + '" aria-label="The attack starts at ' + event.time + ': ' + event.title + '"><span class="det-timeline-time">' + event.time + '<span class="det-timeline-dot" aria-hidden="true"></span></span><span class="det-event-icon" aria-hidden="true">' + api.icon(event.icon, 20) + '</span><span class="det-event-content"><span class="det-event-source">' + event.source + '</span><strong>' + event.title + '</strong><span class="det-event-description">' + event.text + '</span><span class="det-event-verdict" hidden></span></span><span class="det-event-number" aria-hidden="true">0' + (index + 1) + '</span></button>';
-        }).join('') + '</div></section><div class="det-answer-area"><div class="feedback det-feedback" role="status" aria-live="polite" hidden></div><div class="det-chain" hidden aria-label="Reconstructed attack chain"><div><span>01</span><strong>Fake message</strong><small>Attack entry point</small></div><span class="det-chain-arrow" aria-hidden="true">→</span><div><span>02</span><strong>Stolen credentials</strong><small>Phishing page</small></div><span class="det-chain-arrow" aria-hidden="true">→</span><div><span>03</span><strong>MFA approved</strong><small>Attacker signs in</small></div><span class="det-chain-arrow" aria-hidden="true">→</span><div><span>04</span><strong>Mailbox exposed</strong><small>Unauthorised forwarding</small></div></div><div class="det-finish-area" hidden>' + finishButton() + '</div></div>';
+      var pool = api.shuffle(events);
+      container.innerHTML = makeIntro('CYBER TIMELINE · BUILD THE CHAIN', 'Reconstruct the whole attack.', 'Choose the event that starts the attack, then add what happens next. Every new out-of-order choice costs 10 points at that step. Repeating the same choice at the same step costs nothing more.') +
+        '<div class="det-timeline-progress" aria-live="polite"><span>' + api.icon('search', 18) + ' <strong class="det-timeline-counter">0 of 4 steps</strong></span><span class="det-timeline-score">100 points available</span></div>' +
+        '<div class="det-timeline-workspace"><section class="det-investigation" aria-label="Unordered attack evidence"><div class="det-investigation-header"><span>' + api.icon('search', 19) + '<strong>Evidence board</strong></span><span class="det-simulation">4 UNORDERED EVENTS</span></div><p class="det-timeline-prompt">Which event starts the attack?</p><div class="det-timeline-pool">' +
+        pool.map(function (event) {
+          return '<button class="det-timeline-event" type="button" data-event="' + event.id + '" aria-label="Add to the attack chain: ' + event.title + '"><span class="det-event-icon" aria-hidden="true">' + api.icon(event.icon, 21) + '</span><span class="det-event-content"><span class="det-event-source">' + event.source + '</span><strong>' + event.title + '</strong><span class="det-event-description">' + event.text + '</span><span class="det-event-status">Add to the chain <span aria-hidden="true">→</span></span></span></button>';
+        }).join('') + '</div></section><section class="det-timeline-chain" aria-labelledby="det-chain-title"><div class="det-chain-heading"><span>' + api.icon('timeline', 21) + '</span><h3 id="det-chain-title">Your reconstructed chain</h3></div><p class="det-chain-empty">Your first correct event will appear here. Build the links one step at a time.</p><ol class="det-ordered-chain" aria-label="Completed attack stages in the order selected"></ol></section></div><div class="det-answer-area"><div class="feedback det-feedback" role="status" aria-live="polite" hidden></div><div class="det-finish-area" hidden>' + finishButton() + '</div></div>';
 
+      var feedback = container.querySelector('.det-feedback');
       var buttons = Array.from(container.querySelectorAll('[data-event]'));
-      var verdicts = {
-        known: 'Context: a legitimate sign-in you initiated',
-        entry: 'Entry point: a phishing message',
-        credentials: 'Consequence: credentials exposed',
-        control: 'Consequence: sign-in and mail forwarding'
-      };
+      var finish = container.querySelector('.det-finish');
+      finish.disabled = true;
+      function updateProgress() {
+        container.querySelector('.det-timeline-counter').textContent = completed.length + ' of 4 steps';
+        container.querySelector('.det-timeline-score').textContent = Math.max(0, 100 - penalties) + ' points available';
+      }
       buttons.forEach(function (button) {
         listen(button, function () {
-          if (settled) return;
-          settled = true;
-          var correct = button.dataset.event === 'entry';
-          score = correct ? 100 : 0;
-          buttons.forEach(function (item) {
-            item.disabled = true;
-            var id = item.dataset.event;
-            var verdict = item.querySelector('.det-event-verdict');
-            verdict.textContent = verdicts[id];
-            verdict.hidden = false;
-            if (id === 'entry') item.classList.add('det-choice-correct');
-            else if (item === button) item.classList.add('det-choice-wrong');
-            else item.classList.add('det-timeline-resolved');
-          });
-          announce(container.querySelector('.det-feedback'), '<strong>' + (correct ? 'Chain reconstructed: the entry point is at 09:06.' : 'The attack enters through the message at 09:06.') + '</strong><p>You initiated the first sign-in. The external message led to the fake page; the password and MFA approval then gave the attacker access to your mailbox.</p><p><b>Where to break the chain:</b> verify the message before opening the link. If you have already entered data, contact IT immediately and reject any MFA requests you did not initiate.</p>', correct);
-          container.querySelector('.det-chain').hidden = false;
-          container.querySelector('.det-finish-area').hidden = false;
+          if (finished || completed.length === order.length || button.disabled) return;
+          var id = button.dataset.event;
+          var step = completed.length;
+          if (id !== order[step]) {
+            var attempt = step + ':' + id;
+            var repeated = wrongAttempts.has(attempt);
+            if (!repeated) {
+              wrongAttempts.add(attempt);
+              penalties += 10;
+            }
+            button.classList.add('det-choice-wrong');
+            updateProgress();
+            announce(feedback, '<strong>' + (repeated ? 'Already tried at this step · no additional penalty.' : 'Not the next event · −10 points.') + '</strong><p>Nothing has been added to the chain. Look at the events and choose the action that makes the next stage possible.</p>', false);
+            return;
+          }
+          var event = events.find(function (item) { return item.id === id; });
+          completed.push(id);
+          buttons.forEach(function (item) { item.classList.remove('det-choice-wrong'); });
+          button.disabled = true;
+          button.classList.add('det-choice-correct');
+          button.querySelector('.det-event-status').textContent = 'Added to your chain';
+          container.querySelector('.det-chain-empty').hidden = true;
+          container.querySelector('.det-ordered-chain').insertAdjacentHTML('beforeend', '<li data-chain-event="' + id + '"><span class="det-chain-step" aria-label="Step ' + completed.length + '">0' + completed.length + '</span><div><strong>' + event.title + '</strong><p>' + event.explanation + '</p></div></li>');
+          updateProgress();
+          if (completed.length < order.length) {
+            container.querySelector('.det-timeline-prompt').textContent = 'Which event happens next?';
+            announce(feedback, '<strong>Step added to the chain.</strong><p>' + event.explanation + '</p><p>Choose the event that follows from this step.</p>', true);
+            var next = buttons.find(function (item) { return !item.disabled; });
+            if (next) next.focus({preventScroll: true});
+          } else {
+            container.querySelector('.det-timeline-prompt').textContent = 'The full attack chain is reconstructed.';
+            announce(feedback, '<strong>Four steps connected · ' + Math.max(0, 100 - penalties) + '/100 points.</strong><p>Phishing led to stolen credentials, an unexpected MFA approval and mailbox forwarding. Each step made the next one possible.</p><p><b>Break the chain:</b> verify unexpected messages, avoid sign-in links you have not checked, deny and report unexpected MFA requests, and contact IT immediately if you have already interacted.</p>', true);
+            finish.disabled = false;
+            container.querySelector('.det-finish-area').hidden = false;
+            finish.focus({preventScroll: true});
+          }
         }, listeners);
       });
-      listen(container.querySelector('.det-finish'), function () {
-        if (!settled || finished) return;
+      listen(finish, function () {
+        if (completed.length !== order.length || finished) return;
         finished = true;
-        api.finish({ score: score, maxScore: 100, lesson: 'Phishing can trigger a chain: fake page, stolen credentials, unexpected MFA and access to data. Verify at the entry point and report immediately if you have already interacted.' });
+        api.finish({ score: Math.max(0, 100 - penalties), maxScore: 100, lesson: 'Phishing can start a chain: a fake sign-in page captures a password, an unexpected MFA approval grants access, and a forwarding rule exposes the mailbox. Verify early, deny unexpected MFA and report immediately if you have interacted.' });
       }, listeners);
       return cleanup(listeners);
     }

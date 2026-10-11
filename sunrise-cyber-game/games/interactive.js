@@ -289,7 +289,7 @@
       function render() {
         container.innerHTML = `
           <div class="game-intro"><p class="eyebrow">THREE CHALLENGES. A SAFER SIGN-IN.</p><h2>Unlock the Screen</h2><p>Unlock the computer by completing three mini challenges. Each choice reveals part of the attack chain.</p></div>
-          <div class="int-unlock-layout">
+          <div class="int-unlock-layout ${stage === 0 ? 'int-outlook-stage' : ''}">
             <aside class="int-lock-panel ${stage === 2 && solved ? 'int-unlocked' : ''}" aria-label="Computer status">
               <div class="int-lock-orbit">${icon(api, stage === 2 && solved ? 'shield' : 'lock', 36)}</div>
               <span class="int-lock-time">09:41</span><strong>${stage === 2 && solved ? 'Access protected' : 'Session locked'}</strong><p>${stage === 2 && solved ? 'You have completed every check.' : 'Unlock better security one choice at a time.'}</p>
@@ -304,13 +304,29 @@
       }
 
       function anomaly() {
-        return `<h3>Spot the anomaly</h3><p class="int-proof-instruction">A notification asks you to check your account. Which detail needs verification?</p>
-          <div class="int-mail-window"><div class="int-window-bar"><span></span><span></span><span></span><strong>NOTIFICATION · SIMULATION</strong></div><div class="int-mail-body">
-            <div class="int-mail-app">${icon(api, 'mail', 22)}<strong>Microsoft 365</strong></div><h4>Check your account</h4><p>Please verify your company account.</p>
-            <button type="button" class="int-detail-hotspot ${solved ? 'int-hotspot-correct' : ''}" data-unlock-answer="sender" data-testid="unlock-anomaly-sender" ${solved ? 'disabled' : ''}><small>SENDER</small><strong>support@sunrise-verify.example</strong><span>${icon(api, 'search', 17)}</span></button>
-            <div class="int-mail-details"><button type="button" class="int-detail-hotspot" data-unlock-answer="time" data-testid="unlock-anomaly-time" ${solved ? 'disabled' : ''}><small>TIME</small><strong>08:42</strong></button><button type="button" class="int-detail-hotspot" data-unlock-answer="logo" data-testid="unlock-anomaly-logo" ${solved ? 'disabled' : ''}><small>APPEARANCE</small><strong>Microsoft 365 logo</strong></button></div>
-            <p class="int-simulation-note">Fictional message. No link opens an external page.</p>
-          </div></div>`;
+        const disabled = solved ? 'disabled' : '';
+        const headerHTML = `<div class="det-email-header">
+          <span class="det-mail-avatar" aria-hidden="true">M</span>
+          <div class="det-email-sender"><strong>Microsoft 365 · Account support</strong>
+            <button type="button" class="det-hotspot det-email-address int-detail-hotspot ${solved ? 'det-hotspot-correct' : ''}" data-unlock-answer="sender" data-testid="unlock-anomaly-sender" aria-label="Inspect the sender’s domain" ${disabled}>support@sunrise-verify.example</button>
+            <span>To: you@sunrise.example</span>
+          </div>
+          <button type="button" class="det-hotspot det-email-date int-detail-hotspot" data-unlock-answer="time" data-testid="unlock-anomaly-time" aria-label="Inspect the email’s sending time" ${disabled}>Today, 08:42</button>
+        </div>`;
+        const body = `<button type="button" class="det-hotspot int-detail-hotspot int-brand-detail" data-unlock-answer="logo" data-testid="unlock-anomaly-logo" aria-label="Inspect the Microsoft logo" ${disabled}>${window.CyberScreens.microsoftBrand()}</button>
+          <h4>Check your account</h4>
+          <p>Dear colleague,</p>
+          <p>Please verify your company account.</p>
+          <p>An account check is available for your company profile.</p>
+          <p>Kind regards,<br>Microsoft 365 Account support</p>`;
+        return `<h3>Spot the anomaly</h3><p class="int-proof-instruction">An email asks you to check your account. Which detail needs verification? Click or tap a detail to investigate.</p>${window.CyberScreens.outlook({
+          subject: 'Company account verification',
+          senderName: 'Microsoft 365 · Account support',
+          from: 'support@sunrise-verify.example',
+          date: 'Today, 08:42',
+          headerHTML,
+          body
+        })}`;
       }
 
       function move() {
@@ -361,8 +377,9 @@
           if (stage === 0 && value === 'sender' || stage === 1 && value === 'report') solve();
           else {
             attempted[stage] = true;
+            if (stage === 0) answer.classList.add('det-hotspot-wrong');
             const message = stage === 0
-              ? value === 'logo' ? 'A logo can be copied and does not prove who sent the message. Look at the sender domain.' : 'The time does not prove a notification is genuine. Check the sender domain.'
+              ? value === 'logo' ? 'A logo can be copied and does not prove who sent the message. Look at the sender domain.' : 'The time does not prove an email is genuine. Check the sender domain.'
               : value === 'approve' ? 'Approving could let someone who has your credentials into your account. Try again: you can still block the request.' : 'Ignoring the requests does not help IT investigate. Deny them and report through your company channel.';
             feedback(container.querySelector('[data-unlock-feedback]'), message, 'danger');
           }

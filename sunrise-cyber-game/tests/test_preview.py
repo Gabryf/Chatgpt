@@ -95,6 +95,9 @@ class PreviewTests(unittest.TestCase):
     def assert_no_overflow(self, page):
         self.assertFalse(page.evaluate('document.documentElement.scrollWidth > innerWidth'))
 
+    def assert_simulated_client(self, page, client):
+        return test_app.CyberPlayTests.assert_simulated_client(self, page, client)
+
     def test_access_is_hidden_and_wrong_code_does_not_unlock(self):
         page, errors = self.new_page()
         expect(page.locator('#preview-screen')).not_to_be_visible()
@@ -228,6 +231,131 @@ class PreviewTests(unittest.TestCase):
         expect(page.locator('#preview-result')).to_contain_text(re.compile(r'80\s*%'))
         expect(page.locator('#results-screen')).not_to_be_visible()
         self.assertEqual(errors, [])
+
+    def test_timeline_requires_each_step_and_restart_clears_partial_reconstruction(self):
+        page, errors = self.new_page()
+        self.unlock(page)
+        self.launch(page, 'timeline')
+        expect(page.locator('.det-timeline-counter')).to_have_text('0 of 4 steps')
+        expect(page.locator('.det-timeline-score')).to_have_text('100 points available')
+        expect(page.locator('[data-chain-event]')).to_have_count(0)
+        expect(page.locator('.det-finish')).not_to_be_visible()
+
+        wrong = page.locator('[data-event="control"]')
+        wrong.click()
+        for _ in range(2):
+            wrong.dispatch_event('click')
+        expect(page.locator('.det-timeline-score')).to_have_text('90 points available')
+        expect(page.locator('.det-timeline-counter')).to_have_text('0 of 4 steps')
+        expect(page.locator('[data-chain-event]')).to_have_count(0)
+        expect(page.locator('.det-finish')).not_to_be_visible()
+
+        sequence = ['entry', 'credentials', 'mfa', 'control']
+        for index, event in enumerate(sequence, start=1):
+            page.locator(f'[data-event="{event}"]').press('Enter')
+            expect(page.locator('.det-timeline-counter')).to_have_text(f'{index} of 4 steps')
+            self.assertEqual(
+                page.locator('[data-chain-event]').evaluate_all('els => els.map(el => el.dataset.chainEvent)'),
+                sequence[:index],
+            )
+            if index < 4:
+                expect(page.locator('.det-finish')).not_to_be_visible()
+                expect(page.locator(f'[data-event="{sequence[index]}"]')).to_be_enabled()
+        expect(page.locator('.det-timeline-score')).to_have_text('90 points available')
+        expect(page.locator('.det-finish')).to_be_enabled()
+        page.locator('.det-finish').click()
+        expect(page.locator('#preview-result')).to_contain_text(re.compile(r'90\s*%'))
+
+        page.locator('#preview-replay').click()
+        page.locator('[data-event="control"]').click()
+        expect(page.locator('.det-timeline-score')).to_have_text('90 points available')
+        page.locator('[data-event="entry"]').click()
+        page.locator('[data-event="control"]').click()
+        page.locator('[data-event="control"]').dispatch_event('click')
+        expect(page.locator('.det-timeline-score')).to_have_text('80 points available')
+        expect(page.locator('.det-timeline-counter')).to_have_text('1 of 4 steps')
+        old_button = page.locator('[data-event="credentials"]').element_handle()
+        page.locator('#preview-restart').click()
+        # A detached button from the prior mount must not answer the new game.
+        old_button.dispatch_event('click')
+        expect(page.locator('.det-timeline-counter')).to_have_text('0 of 4 steps')
+        expect(page.locator('.det-timeline-score')).to_have_text('100 points available')
+        expect(page.locator('[data-chain-event]')).to_have_count(0)
+        expect(page.locator('.det-feedback')).not_to_be_visible()
+        self.solve(page, 'timeline')
+        expect(page.locator('#preview-result')).to_contain_text(re.compile(r'100\s*%'))
+        self.assertEqual(errors, [])
+
+    def test_choose_your_move_names_and_both_consequence_paths(self):
+        for width in (1440, 320):
+            for first_choice, second_name, second_choice, score in (
+                ('verify', 'Anna Weber', 'approved', 100),
+                ('send', 'Mark Keller', 'recover', 50),
+            ):
+                with self.subTest(width=width, branch=first_choice):
+                    page, errors = self.new_page(width)
+                    self.unlock(page)
+                    self.launch(page, 'move')
+                    screen = self.assert_simulated_client(page, 'teams')
+                    expect(screen.locator('.sim-teams-chat-header strong')).to_have_text('Mark Keller')
+                    expect(screen.locator('.sim-teams-message-meta strong')).to_have_text('Mark Keller')
+                    expect(screen).to_contain_text('mark.keller@gmail.com')
+                    self.assertNotRegex(screen.inner_text(), r'(?i)\b(?:Leadership|Customer operations)\b')
+                    self.assert_no_overflow(page)
+                    page.locator(f'[data-dec-choice="{first_choice}"]').click()
+                    page.locator('[data-dec-action="next"]').click()
+                    screen = self.assert_simulated_client(page, 'teams')
+                    expect(screen.locator('.sim-teams-chat-header strong')).to_have_text(second_name)
+                    expect(screen.locator('.sim-teams-message-meta strong')).to_have_text(second_name)
+                    self.assertNotRegex(screen.inner_text(), r'(?i)\b(?:Leadership|Customer operations)\b')
+                    self.assert_no_overflow(page)
+                    page.locator(f'[data-dec-choice="{second_choice}"]').click()
+                    page.locator('[data-dec-action="finish"]').click()
+                    expect(page.locator('#preview-result')).to_contain_text(re.compile(rf'{score}\s*%'))
+                    self.assertEqual(errors, [])
+
+    def test_other_teams_and_outlook_screens_keep_game_interactions(self):
+        for width in (1440, 320):
+            with self.subTest(width=width):
+                page, errors = self.new_page(width)
+                self.unlock(page)
+                self.launch(page, 'impostor')
+                screen = self.assert_simulated_client(page, 'teams')
+                expect(screen.locator('[data-message]')).to_have_count(4)
+                expect(screen).to_contain_text('Mark Wilson')
+                expect(screen).to_contain_text('director@sumrise.net')
+                self.assert_no_overflow(page)
+                self.solve(page, 'impostor')
+                expect(page.locator('#preview-result')).to_contain_text(re.compile(r'100\s*%'))
+
+                self.launch(page, 'classify')
+                found_invoice = False
+                for index in range(5):
+                    case = page.locator('[data-dec-case]').get_attribute('data-dec-case')
+                    if case == 'attachment':
+                        found_invoice = True
+                        screen = self.assert_simulated_client(page, 'outlook')
+                        expect(screen).to_contain_text('October_invoice.xlsm')
+                        expect(screen).to_contain_text('payments@urgent-invoices.example')
+                        self.assert_no_overflow(page)
+                    choice = 'safe' if case in ('ai', 'password') else 'suspicious'
+                    page.locator(f'[data-dec-classify="{choice}"]').click()
+                    page.locator(f'[data-dec-action="{"finish" if index == 4 else "next"}"]').click()
+                self.assertTrue(found_invoice)
+                expect(page.locator('#preview-result')).to_contain_text(re.compile(r'100\s*%'))
+
+                self.launch(page, 'unlock')
+                self.assert_simulated_client(page, 'outlook')
+                self.assert_no_overflow(page)
+                for detail in ('sender', 'time', 'logo'):
+                    expect(page.get_by_test_id(f'unlock-anomaly-{detail}')).to_be_visible()
+                page.get_by_test_id('unlock-anomaly-time').click()
+                expect(page.get_by_test_id('unlock-anomaly-sender')).to_be_enabled()
+                page.get_by_test_id('unlock-anomaly-sender').click()
+                page.get_by_test_id('unlock-next').click()
+                expect(page.get_by_test_id('unlock-move-report')).to_be_visible()
+                self.assert_no_overflow(page)
+                self.assertEqual(errors, [])
 
     def test_restart_and_reload_restore_review_without_stale_answers(self):
         page, errors = self.new_page()

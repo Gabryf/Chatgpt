@@ -17,7 +17,18 @@
       let destroyed = false;
 
       function chatMarkup(title, subtitle, message, extra = '') {
-        return `<div class="dec-chat"><aside class="dec-chat-rail"><span class="dec-teams-mark">T</span>${ico(api, 'user', 21)}${ico(api, 'mail', 21)}${ico(api, 'file', 21)}</aside><div class="dec-chat-body"><div class="dec-window-bar"><span class="dec-online-dot"></span><strong>${title}</strong><span class="dec-window-dots">•••</span></div><div class="dec-chat-person"><span class="dec-avatar">${stage === 0 ? 'ML' : firstWasCorrect ? 'AC' : 'ML'}</span><div><strong>${title}</strong><small>${subtitle}</small></div><span class="dec-chat-time">09:41</span></div><div class="dec-message">${message}${extra}</div><div class="dec-chat-input">Type a message… <span>↗</span></div></div></div>`;
+        const initials = title === 'Anna Weber' ? 'AW' : 'MK';
+        return window.CyberScreens.teams({
+          title,
+          subtitle,
+          initials,
+          chats: [
+            { name: 'Mark Keller', initials: 'MK', preview: 'Customer data for the meeting', active: title === 'Mark Keller' },
+            { name: 'Anna Weber', initials: 'AW', preview: 'Customers_Q4.xlsx', active: title === 'Anna Weber' },
+            { name: 'Security team', initials: 'ST', preview: 'Security awareness event', active: false }
+          ],
+          content: window.CyberScreens.teamsMessage({ sender: title, initials, time: stage === 0 ? '09:41' : '09:42', body: `${message}${extra}` })
+        });
       }
 
       function renderStage() {
@@ -27,7 +38,7 @@
         if (stage === 0) {
           title = 'The boss is in a hurry. Your move.';
           copy = 'A message arrives on Teams. Every choice changes what happens next.';
-          visual = chatMarkup('Marco · Leadership', 'Direct message', '<p>I need all the customer data for the meeting right now.</p><p>Send it to <strong class="dec-highlight">marco.director@personal-mail.example</strong>. The company portal is down and I cannot answer the phone.</p><span class="dec-urgency">URGENT · within 5 minutes</span>');
+          visual = chatMarkup('Mark Keller', 'Direct message', '<p>I need all the customer data for the meeting right now.</p><p>Send it to <strong class="dec-highlight">mark.keller@gmail.com</strong>. The company portal is down and I cannot answer the phone.</p><span class="dec-urgency">URGENT · within 5 minutes</span>');
           options = [
             ['send', 'Send the file to the personal email address', 'The message appears to come from the director.'],
             ['verify', 'Verify through an established channel', 'Call the number already in my contacts and use approved company channels.'],
@@ -36,7 +47,7 @@
         } else if (firstWasCorrect) {
           title = 'Request checked. What about AI?';
           copy = 'You stopped the impersonation attempt. A colleague has another suggestion.';
-          visual = chatMarkup('Anna · Customer Operations', 'Colleague · internal channel', '<p>Shall we upload this customer document to a public AI tool for the report? It can summarise it in a second.</p>', `<div class="dec-attachment">${ico(api, 'file', 25)}<div><strong>Customers_Q4.xlsx</strong><small>Classification: CONFIDENTIAL</small></div></div>`);
+          visual = chatMarkup('Anna Weber', 'Direct message', '<p>Shall we upload this customer document to a public AI tool for the report? It can summarise it in a second.</p>', `<div class="dec-attachment">${ico(api, 'file', 25)}<div><strong>Customers_Q4.xlsx</strong><small>Classification: CONFIDENTIAL</small></div></div>`);
           options = [
             ['public', 'Upload it using my personal public AI account', 'My account is protected by a password.'],
             ['anonymous', 'Remove the names and upload it anyway', 'Other confidential data may remain in the document.'],
@@ -45,7 +56,7 @@
         } else {
           title = 'The attack evolves: an MFA request arrives.';
           copy = 'In this scenario, the attacker already has compromised credentials and is trying to complete the sign-in with MFA. You can still stop them.';
-          visual = chatMarkup('Marco · Leadership', 'New message · 1 minute later', '<p>Perfect. Now approve this MFA request to finish accessing the file.</p><p>Or send me the 6-digit code instead. This is an exceptional procedure.</p>', `<div class="dec-mfa-preview">${ico(api, 'lock', 25)}<div><strong>Sign-in request</strong><small>You have not started any sign-in</small></div></div>`);
+          visual = chatMarkup('Mark Keller', 'New message · 1 minute later', '<p>Perfect. Now approve this MFA request to finish accessing the file.</p><p>Or send me the 6-digit code instead. This is an exceptional procedure.</p>', `<div class="dec-mfa-preview">${ico(api, 'lock', 25)}<div><strong>Sign-in request</strong><small>You have not started any sign-in</small></div></div>`);
           options = [
             ['approve', 'Approve to finish the task', 'The request seems related to the meeting.'],
             ['recover', 'Deny and contact the security team', 'Report the earlier interaction too and follow their instructions to contain the risk.'],
@@ -222,14 +233,21 @@
         { id: 'wifi', safe: false, label: 'At the airport', title: 'Which network is actually official?', rationale: 'Two almost identical names do not tell you which network is legitimate. Check the name using official signs or ask airport staff, and follow company rules for connections.', visual: () => `<div class="dec-settings"><div class="dec-settings-header">${ico(api, 'wifi', 24)}<strong>Wi-Fi</strong><span class="dec-toggle"></span></div><div class="dec-settings-caption">AVAILABLE NETWORKS</div><div class="dec-network">${ico(api, 'wifi', 24)}<div><strong>Airport_Free_WiFi</strong><small>Open network · source unverified</small></div><span>ⓘ</span></div><div class="dec-network">${ico(api, 'wifi', 24)}<div><strong>Airport_Free_WiFi_5G</strong><small>Open network · source unverified</small></div><span>ⓘ</span></div><p class="dec-settings-note">No official source has been checked yet.</p></div>` },
         { id: 'ai', safe: true, label: 'Preparing a presentation', title: 'AI, with the right checks.', rationale: 'In this scenario, the tool is approved, the document is public and the use is permitted by policy. Those conditions make the action appropriate; do not automatically assume the same for confidential documents.', visual: () => `<div class="dec-ai-window"><div class="dec-window-bar">${ico(api, 'bolt', 19)}<strong>Company AI assistant</strong><span class="dec-approved-badge">IT approved</span></div><div class="dec-ai-content"><span class="dec-tag dec-tag-green">Use permitted by policy</span><div class="dec-attachment">${ico(api, 'file', 29)}<div><strong>Public_presentation.pdf</strong><small>Classification: PUBLIC</small></div></div><div class="dec-ai-prompt">Summarise the key points of this presentation, already published on the company website.</div><span class="dec-ai-policy">${ico(api, 'check', 16)} Tool, data and purpose checked</span></div></div>` },
         { id: 'password', safe: true, label: 'Creating a new account', title: 'Long, unique and stored securely.', rationale: 'A long, unpredictable and unique passphrase is a good choice. Here, it is generated and saved in the approved manager, without reuse. The string shown is only an example: do not use it as a real password.', visual: () => `<div class="dec-vault"><span class="dec-vault-icon">${ico(api, 'lock', 28)}</span><h3>Approved password manager</h3><small>NEW PASSWORD · FICTIONAL EXAMPLE</small><div class="dec-passphrase">orbit-COPPER-cedar-47-mist</div><div class="dec-strength"><i></i><i></i><i></i><i></i><i></i></div><div class="dec-password-checks"><span>${ico(api, 'check', 16)} Randomly generated</span><span>${ico(api, 'check', 16)} Unique to this account</span><span>${ico(api, 'check', 16)} Saved in the approved manager</span></div></div>` },
-        { id: 'attachment', safe: false, label: 'An invoice by email', title: 'An attachment that asks too much.', rationale: 'An unexpected invoice asking you to enable macros or active content is a warning sign. Do not enable them: verify the request through an established channel and report the email according to company procedures.', visual: () => `<div class="dec-email"><div class="dec-window-bar">${ico(api, 'mail', 19)}<strong>Inbox</strong><span class="dec-window-dots">•••</span></div><div class="dec-email-content"><span class="dec-email-from">From: Billing &lt;payments@urgent-invoices.example&gt;</span><h3>Overdue payment — action required</h3><p>Open the attached document to view the invoice.</p><div class="dec-attachment">${ico(api, 'file', 26)}<div><strong>October_invoice.xlsm</strong><small>Excel file with macros</small></div></div><div class="dec-macro-banner">⚠ To view the invoice, enable content and macros.</div></div></div>` }
+        { id: 'attachment', safe: false, label: 'An invoice by email', title: 'An attachment that asks too much.', rationale: 'An unexpected invoice asking you to enable macros or active content is a warning sign. Do not enable them: verify the request through an established channel and report the email according to company procedures.', visual: () => window.CyberScreens.outlook({
+          subject: 'Overdue payment — action required',
+          senderName: 'Billing',
+          from: 'payments@urgent-invoices.example',
+          recipient: 'you@sunrise.example',
+          date: 'Today, 09:41',
+          body: `<div class="dec-outlook-message"><p>Open the attached document to view the invoice.</p>${window.CyberScreens.attachment({ filename: 'October_invoice.xlsm', detail: 'Excel file with macros' })}<div class="sim-mail-warning">To view the invoice, enable content and macros.</div></div>`
+        }) }
       ]);
       let index = 0, score = 0, answered = false, destroyed = false, finished = false;
       function render() {
         if (destroyed) return;
         answered = false;
         const scenario = cases[index];
-        container.innerHTML = `<div class="dec-game" data-dec-case="${scenario.id}">${intro('SAFE OR SUSPICIOUS?', 'Would you trust this scene?', 'Look at the details. “Safe” means the necessary checks have been made in the context shown.')}${progress(index + 1, cases.length, score)}<div class="dec-classify-layout"><div class="dec-visual-frame">${scenario.visual()}</div><div class="dec-classify-controls"><span class="eyebrow">${scenario.label}</span><h3>${scenario.title}</h3><p>How would you classify this situation?</p><div class="dec-classify-actions" role="group" aria-label="Classify the situation"><button class="button dec-safe" data-dec-classify="safe">${ico(api, 'shield', 22)} Safe</button><button class="button dec-suspicious" data-dec-classify="suspicious">${ico(api, 'flag', 22)} Suspicious</button></div><div class="dec-feedback-slot"></div></div></div></div>`;
+        container.innerHTML = `<div class="dec-game" data-dec-case="${scenario.id}">${intro('SAFE OR SUSPICIOUS?', 'Would you trust this scene?', 'Look at the details. “Safe” means the necessary checks have been made in the context shown.')}${progress(index + 1, cases.length, score)}<div class="dec-classify-layout${scenario.id === 'attachment' ? ' dec-classify-outlook' : ''}"><div class="dec-visual-frame">${scenario.visual()}</div><div class="dec-classify-controls"><span class="eyebrow">${scenario.label}</span><h3>${scenario.title}</h3><p>How would you classify this situation?</p><div class="dec-classify-actions" role="group" aria-label="Classify the situation"><button class="button dec-safe" data-dec-classify="safe">${ico(api, 'shield', 22)} Safe</button><button class="button dec-suspicious" data-dec-classify="suspicious">${ico(api, 'flag', 22)} Suspicious</button></div><div class="dec-feedback-slot"></div></div></div></div>`;
       }
       function answer(value) {
         if (answered || destroyed) return;

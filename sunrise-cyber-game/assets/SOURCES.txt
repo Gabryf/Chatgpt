@@ -101,3 +101,17 @@ MicrosoftDocs Entra repository copyright notice:
     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE
+
+
+Microsoft Teams product mark for the simulated chat screens (11 October 2026)
+
+teams-logo.png
+Authentic Microsoft Teams product icon (1200 x 1200 transparent PNG), downloaded
+unchanged from the official Microsoft Adaptive Cards repository at immutable commit:
+https://raw.githubusercontent.com/microsoft/AdaptiveCards/59402c8d43f7a69a68e0b4fccc08f8a76fc98ccd/source/nodejs/adaptivecards-site/themes/adaptivecards/source/content/teams-logo.png
+File SHA-256: b92aa97cd6279f849b48430556747b2f5ac59bce3fb9d13b4e241b6af46b600a
+The Adaptive Cards copyright/licence notice is already reproduced above and
+included as LICENSE-Microsoft-AdaptiveCards.txt.
+Microsoft Teams is a Microsoft trademark. The repository copyright licence does
+not grant trademark rights or imply endorsement. This local icon identifies the
+product in a fictional educational chat screen; it is not claimed as CC0.

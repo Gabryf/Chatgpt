@@ -1,0 +1,64 @@
+.sim-teams{container:teams / inline-size;background:#fff;color:#242424;border:1px solid #d7d7df;border-radius:10px;overflow:hidden;font-family:"Segoe UI",Arial,sans-serif;font-size:13px;line-height:1.5;box-shadow:0 18px 48px #02061026}
+.sim-teams svg{flex-shrink:0;vertical-align:middle}
+.sim-teams-bar{display:flex;align-items:center;gap:10px;height:49px;background:#f0f0f5;border-bottom:1px solid #d9d9e0;padding:0 15px}
+.sim-teams-logo{display:block;width:27px;height:27px;object-fit:contain}
+.sim-teams-bar>strong{font-size:13px;font-weight:600;white-space:nowrap}
+.sim-teams-search{display:flex;align-items:center;gap:10px;min-width:50px;width:42%;max-width:380px;height:30px;margin-left:35px;padding:0 11px;border:1px solid #dedee7;border-radius:4px;background:#fff;color:#686876;font-size:11px}
+.sim-teams-top-tools{display:flex;align-items:center;gap:15px;margin-left:auto;color:#5c5c6b}
+.sim-teams-profile{display:grid;place-items:center;width:29px;height:29px;border-radius:50%;background:#dbd7ef;color:#555089;font-size:10px;font-weight:600}
+.sim-teams-workspace{display:flex;min-height:535px}
+.sim-teams-rail{display:flex;flex-direction:column;align-items:center;gap:10px;flex:0 0 58px;padding:14px 5px;background:#f0f0f5;border-right:1px solid #e0e0e8;color:#616174}
+.sim-teams-rail>span{position:relative;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 3px;width:100%;border-radius:4px}
+.sim-teams-rail small{font-size:9px;line-height:1.3}
+.sim-teams-rail .sim-teams-app-active{background:#e5e3ef;color:#5b4da3}
+.sim-teams-app-active:before{content:"";position:absolute;left:-3px;top:9px;bottom:9px;width:3px;border-radius:2px;background:#6654ad}
+.sim-teams-chats{flex:0 0 184px;min-width:0;background:#fafafa;border-right:1px solid #e3e3e8;padding:17px 9px}
+.sim-teams-chats-title{display:flex;align-items:center;justify-content:space-between;padding:0 8px;color:#30303a}
+.sim-teams-chats-title strong{font-size:18px;font-weight:600}
+.sim-teams-chat-filters{display:flex;gap:5px;flex-wrap:wrap;margin:14px 4px 18px;color:#666674;font-size:9px}
+.sim-teams-chat-filters>span{padding:3px 7px;border:1px solid #dddde5;border-radius:12px;background:#fff}
+.sim-teams-chat-filters>span:nth-child(2){background:#e8e3f5;color:#5c4495;border-color:#ddd5ef}
+.sim-teams-recents{margin:10px 8px!important;color:#797984;font-size:10px!important}
+.sim-teams-chat-row{display:flex;align-items:center;gap:9px;padding:10px 8px;border-radius:5px;min-width:0}
+.sim-teams-chat-active{background:#eae7f2}
+.sim-teams-chat-avatar,.sim-teams-contact-avatar,.sim-teams-message-avatar{display:grid;place-items:center;flex-shrink:0;background:#e4e0ee;color:#63518e;border-radius:50%;font-size:10px;font-weight:600}
+.sim-teams-chat-avatar{width:30px;height:30px}
+.sim-teams-chat-row>div{min-width:0}
+.sim-teams-chat-row strong{display:block;font-size:11px;font-weight:600;line-height:1.5}
+.sim-teams-chat-row small{display:block;color:#7a7884;font-size:9px;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}
+.sim-teams-conversation{display:flex;flex-direction:column;flex:1;min-width:0;background:#fff}
+.sim-teams-chat-header{display:flex;align-items:center;gap:10px;min-height:63px;padding:13px 21px}
+.sim-teams-contact-avatar{width:34px;height:34px;font-size:11px}
+.sim-teams-chat-header>div{min-width:0}
+.sim-teams-chat-header strong{display:block;font-size:15px;font-weight:600;overflow-wrap:anywhere}
+.sim-teams-chat-header small{display:block;color:#777782;font-size:10px;margin-top:2px}
+.sim-teams-call-tools{display:flex;align-items:center;gap:13px;margin-left:auto;color:#686877}
+.sim-teams-chat-tabs{display:flex;align-items:center;gap:22px;height:35px;padding:0 22px;border-bottom:1px solid #e3e3e8;color:#666673;font-size:11px}
+.sim-teams-chat-tabs>span:first-child{align-self:stretch;display:flex;align-items:center;color:#5c4799;font-weight:600;border-bottom:2px solid #6753a7}
+.sim-teams-simulation{margin-left:auto;color:#898994;font-size:8px;letter-spacing:.08em}
+.sim-teams-feed{flex:1;min-width:0;padding:16px 24px 25px;background:#fff}
+.sim-teams-date{text-align:center;font-size:9px;color:#8b8b97;margin:0 0 22px}
+.sim-teams-message{display:flex;align-items:flex-start;gap:10px;margin:0 0 19px;max-width:690px;text-align:left}
+.sim-teams-message-avatar{width:30px;height:30px;margin-top:25px}
+.sim-teams-message-column{min-width:0;flex:1}
+.sim-teams-message-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 5px;font-size:10px;color:#686876}
+.sim-teams-message-meta strong{font-weight:600;color:#484851;font-size:11px}
+.sim-teams-message-meta time{font-size:9px;color:#92919c}
+.sim-teams-external{font-size:8px;border:1px solid #dcdce4;border-radius:3px;padding:0 4px;color:#72717f;background:#fff}
+.sim-teams-bubble{padding:13px 16px;border-radius:0 7px 7px 7px;background:#f1f1f5;color:#30303a;font-size:12px;line-height:1.7;overflow-wrap:anywhere}
+.sim-teams-bubble p{margin:0 0 9px}
+.sim-teams-bubble p:last-child{margin-bottom:0}
+.sim-teams-composer{margin:4px 24px 20px 64px;padding:12px 14px 9px;min-height:58px;border:1px solid #dad9e2;border-bottom:2px solid #a99bc7;border-radius:5px;color:#8b8996;font-size:11px}
+.sim-teams-composer>div{display:flex;align-items:center;gap:12px;margin-top:9px;color:#7f7b8d}
+.sim-teams-composer>div>svg:last-child{margin-left:auto;color:#746490}
+.sim-mail-attachment{display:flex;align-items:center;gap:11px;padding:12px 14px;margin:16px 0;background:#fafafa;border:1px solid #dcdfe5;border-radius:5px;max-width:360px;color:#246ba5}
+.sim-mail-attachment strong{display:block;color:#384b5d;font-size:12px;font-weight:600;overflow-wrap:anywhere}
+.sim-mail-attachment small{display:block;color:#738292;font-size:10px;line-height:1.5;margin-top:3px}
+.sim-mail-warning{padding:10px 13px;background:#fff4cf;color:#705b26;border-left:3px solid #dfbd50;font-size:11px;line-height:1.7;margin:15px 0}
+.sim-outlook .det-email-date:not(button){color:#78889b;font-size:9px;flex-shrink:0;margin-left:auto;max-width:76px;text-align:right;line-height:1.6}
+.game-body:has(.sim-teams){grid-template-columns:minmax(0,1fr)}
+.game-body:has(.sim-teams)>.game-journey{display:none}
+@container teams (max-width:720px){.sim-teams-chats{flex-basis:156px}.sim-teams-chat-header{padding:13px 16px}.sim-teams-feed{padding:16px}.sim-teams-composer{margin-left:55px;margin-right:16px}.sim-teams-search{margin-left:10px;flex:1}}
+@container teams (max-width:580px){.sim-teams-chats{display:none}.sim-teams-rail{flex-basis:48px}.sim-teams-call-tools{gap:9px}.sim-teams-feed{padding:16px}.sim-teams-chat-header{padding:13px 15px}}
+@container teams (max-width:360px){.sim-teams-rail{display:none}.sim-teams-bar{padding:0 10px;gap:9px}.sim-teams-bar>strong{display:none}.sim-teams-search{margin-left:0;flex:1}.sim-teams-top-tools>svg{display:none}.sim-teams-chat-header{gap:8px;padding:12px}.sim-teams-chat-header strong{font-size:13px}.sim-teams-call-tools>svg:not(:last-child){display:none}.sim-teams-chat-tabs{gap:17px;padding:0 13px}.sim-teams-feed{padding:16px 12px}.sim-teams-message{gap:7px}.sim-teams-message-avatar{width:25px;height:25px;font-size:8px}.sim-teams-bubble{padding:11px;font-size:12px}.sim-teams-composer{margin:0 12px 15px 43px}}
+@supports not (container-type:inline-size){@media(max-width:900px){.sim-teams-chats{display:none}.sim-teams-search{margin-left:10px;flex:1}}@media(max-width:440px){.sim-teams-rail{display:none}.sim-teams-bar>strong{display:none}.sim-teams-feed{padding:16px 12px}.sim-teams-chat-header{padding:12px}.sim-teams-composer{margin-left:43px;margin-right:12px}}}

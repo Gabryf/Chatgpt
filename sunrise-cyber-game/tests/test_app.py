@@ -91,7 +91,8 @@ class CyberPlayTests(unittest.TestCase):
             page.locator('[data-risk="urgency"]').click()
             page.locator('.det-finish').click()
         elif game == 'timeline':
-            page.locator('[data-event="entry"]').click()
+            for event in ['entry', 'credentials', 'mfa', 'control']:
+                page.locator(f'[data-event="{event}"]').click()
             page.locator('.det-finish').click()
         elif game == 'move':
             page.locator('[data-dec-choice="verify"]').click()
@@ -133,6 +134,23 @@ class CyberPlayTests(unittest.TestCase):
             page.get_by_test_id('unlock-next').click()
         else:
             self.fail(f'Unknown game {game}')
+
+    def assert_simulated_client(self, page, client, offline=False):
+        """Check that the visible simulated client has its actual loaded logo."""
+        screen = page.locator(f'[data-simulation="{client}"]')
+        expect(screen).to_have_count(1)
+        expect(screen).to_be_visible()
+        selector, label = ('.sim-teams-logo', 'Microsoft Teams') if client == 'teams' else ('.det-outlook-logo', 'Outlook')
+        logo = screen.locator(f'img{selector}')
+        expect(logo).to_have_count(1)
+        expect(logo).to_have_attribute('alt', label)
+        source = logo.get_attribute('src')
+        self.assertTrue(source.startswith('data:image/') if offline else source.startswith(('assets/', 'data:image/')), source)
+        page.wait_for_function(
+            'selector => { const img = document.querySelector(selector); return img.complete && img.naturalWidth > 0; }',
+            arg=f'[data-simulation="{client}"] img{selector}',
+        )
+        return screen
 
     def test_all_nine_games_in_three_full_journeys(self):
         for seed in (0, 3, 6):
@@ -231,17 +249,36 @@ class CyberPlayTests(unittest.TestCase):
             self.draw_three(page)
             page.locator('#start-button').click()
             for game in ['impostor', 'risk', 'timeline']:
+                if game == 'impostor':
+                    self.assert_simulated_client(page, 'teams', offline=True)
                 if game == 'risk':
-                    logos = page.locator('.det-outlook img')
-                    expect(logos).to_have_count(2)
-                    self.assertTrue(logos.evaluate_all(
-                        '(imgs) => imgs.every(img => img.getAttribute("src").startsWith("data:image/"))'
-                    ))
-                    page.wait_for_function(
-                        '() => [...document.querySelectorAll(".det-outlook img")].every(img => img.complete && img.naturalWidth > 0)'
-                    )
+                    self.assert_simulated_client(page, 'outlook', offline=True)
                 self.solve(page, game)
             expect(page.locator('#total-score')).to_have_text('100')
+
+            # The other registry scripts also create Teams/Outlook images at runtime.
+            page.keyboard.press('Control+Shift+G')
+            page.locator('#preview-code').fill('Gabriele&Alessia')
+            page.locator('#preview-code').press('Enter')
+            page.locator('[data-preview-game="move"]').click()
+            self.assert_simulated_client(page, 'teams', offline=True)
+            page.locator('[data-dec-choice="verify"]').click()
+            page.locator('[data-dec-action="next"]').click()
+            self.assert_simulated_client(page, 'teams', offline=True)
+            page.locator('[data-dec-choice="approved"]').click()
+            page.locator('[data-dec-action="finish"]').click()
+            page.locator('[data-preview-game="classify"]').click()
+            for index in range(5):
+                case = page.locator('[data-dec-case]').get_attribute('data-dec-case')
+                if case == 'attachment':
+                    self.assert_simulated_client(page, 'outlook', offline=True)
+                choice = 'safe' if case in ('ai', 'password') else 'suspicious'
+                page.locator(f'[data-dec-classify="{choice}"]').click()
+                page.locator(f'[data-dec-action="{"finish" if index == 4 else "next"}"]').click()
+            page.locator('[data-preview-game="unlock"]').click()
+            self.assert_simulated_client(page, 'outlook', offline=True)
+            page.get_by_test_id('unlock-anomaly-sender').click()
+            page.get_by_test_id('unlock-next').click()
             self.assertEqual(requests, [standalone_url])
             self.assertEqual(errors, [])
 

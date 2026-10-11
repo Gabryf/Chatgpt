@@ -32,9 +32,9 @@ The order, completed results and current game are stored only in `sessionStorage
 
 | Game | Interaction |
 | --- | --- |
-| Cyber Impostor | Find the suspicious request among four Teams messages. |
+| Cyber Impostor | Find the suspicious request among four messages in a simulated Teams group chat. |
 | Spot the Risk | Find all three warning signs in a simulated Outlook inbox: the sender, urgency and link destination. Details have no visible quiz outlines before selection. |
-| Cyber Timeline | Trace the origin of an attack through four events. |
+| Cyber Timeline | Reconstruct all four attack stages one at a time, linking each event to its consequence. A new out-of-order choice costs 10 points at that step. |
 | Choose Your Move | Choose an action and see how the Teams, MFA or AI scenario changes. |
 | MFA Reflex | Handle five sign-in requests with reporting and an optional timer. |
 | Safe or Suspicious? | Classify five visual scenes involving QR codes, Wi-Fi, AI, passwords and attachments. |
@@ -68,7 +68,7 @@ The supplied reference archive did not contain BIP or Sunrise logos, and the off
 
 Replace these two files with approved brand assets, keeping the filenames. Choose versions suitable for the dark background. Provenance and licences are in `assets/SOURCES.txt`. The game is functionally complete; the full brand assets still need replacement before event use. Rebuild the standalone HTML after replacing assets.
 
-The Outlook product icon and Microsoft four-colour symbol used in **Spot the Risk** come from official Microsoft repositories. Their source URLs and notices are included in `assets/SOURCES.txt`. The Outlook interface and email are educational simulations, with inactive links.
+The Teams and Outlook product icons and Microsoft four-colour symbol come from official Microsoft repositories. Their source URLs and notices are included in `assets/SOURCES.txt`. Teams conversations in **Cyber Impostor** and **Choose Your Move**, and Outlook emails in **Spot the Risk**, **Safe or Suspicious?** and **Unlock the Screen**, include simulated client interfaces. All links are inactive.
 
 ## Accessibility
 
@@ -80,6 +80,7 @@ Buttons work with Tab and Enter, dialogs close with Escape, and feedback is anno
 - `style.css`: colours, font, wheel and overall layout.
 - `preview.css`: hidden test mode catalogue, controls and access dialog.
 - `app.js`: draws, animation, game order, progression and results.
+- `simulations.js`, `simulations.css`: shared Teams and Outlook screens, chat messages and email attachments.
 - `games/detection.*`, `decision.*`, `interactive.*`: scenarios and mechanics.
 - `assets/`: local assets and licences.
 - `previews/`: screenshots of the English interface.
@@ -97,4 +98,4 @@ python3 -m playwright install chromium
 python3 -m unittest discover -s tests -v
 ```
 
-The runner uses system Chromium when available; set `CHROMIUM_PATH` to choose an executable. Tests manage their own local server and check all nine games in three complete journeys, unique draws, pointer alignment, the three-spin limit, game order, results, refresh, reset, dialogs, keyboard interaction and mobile layout after animations. Test mode checks cover access, all nine games, replay, refresh, mobile controls, timer cleanup and preservation of the normal journey.
+The runner uses system Chromium when available; set `CHROMIUM_PATH` to choose an executable. Tests manage their own local server and check all nine games in three complete journeys, unique draws, pointer alignment, the three-spin limit, game order, results, refresh, reset, dialogs, keyboard interaction and mobile layout after animations. Test mode checks cover access, all nine games, replay, refresh, mobile controls, timer cleanup and preservation of the normal journey. Regression checks also cover the complete Timeline reconstruction, both Choose Your Move branches, client logos and offline screens in the single-file version.
