@@ -679,7 +679,7 @@ window.CyberIcons = (() => {
         },
         {
           id: 'impostor', initials: 'MW', name: 'Mark Wilson', channel: 'External contact · director’s display name', time: '09:45', color: 'coral',
-          text: 'I am in a meeting. This is urgent: send the full customer list to director.private@example.com immediately. Do not call me.',
+          text: 'I am in a meeting. This is urgent: send the full customer list to director@sumrise.net immediately. Do not call me.',
           tag: 'Urgent request', suspicious: true
         },
         {
@@ -713,7 +713,7 @@ window.CyberIcons = (() => {
               item.querySelector('.det-message-select').textContent = 'Your choice';
             }
           });
-          announce(feedback, '<strong>' + (correct ? 'You spotted the suspicious request.' : 'The impostor is the message from “Mark Wilson”.') + '</strong><p>An external contact, pressure to act quickly, a request to send customer data to a personal email address and instructions not to call: these are warning signs that need checking. A display name does not prove someone’s identity.</p><p><b>The safe response:</b> verify through a company channel you already know and report the message using your internal procedures.</p>', correct);
+          announce(feedback, '<strong>' + (correct ? 'You spotted the suspicious request.' : 'The impostor is the message from “Mark Wilson”.') + '</strong><p>An external contact, pressure to act quickly, a request to send customer data to a lookalike email domain (sumrise.net) and instructions not to call: these are warning signs that need checking. A display name does not prove someone’s identity.</p><p><b>The safe response:</b> verify through a company channel you already know and report the message using your internal procedures.</p>', correct);
           container.querySelector('.det-finish-area').hidden = false;
         }, listeners);
       });
