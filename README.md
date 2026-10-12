@@ -18,6 +18,6 @@ The game works offline and requires no accounts, API keys or installation. Sourc
 
 To test any game freely, press **Ctrl + Shift + G** (**Cmd + Shift + G** on Mac), or click the footer **Learn. Choose. Protect.** three times quickly. Enter **`Gabriele&Alessia`** and select **Unlock games**. See [hidden test mode](sunrise-cyber-game/README.md#hidden-test-mode) for replay and exit controls.
 
-The footer uses the red BIP and Sunrise logos requested for the event; see [asset provenance](sunrise-cyber-game/README.md#logos). Password Lab replaces Cyber Memory, with local strength feedback and an introduction to password managers such as KeePass.
+The footer displays the BIP and Sunrise logos in white on the dark background; see [asset provenance](sunrise-cyber-game/README.md#logos). Password Lab replaces Cyber Memory, with local strength feedback and an introduction to password managers such as KeePass.
 
 ![Cyber Play preview](sunrise-cyber-game/previews/wheel-desktop.png)
