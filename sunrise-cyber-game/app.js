@@ -145,6 +145,12 @@
       ));
       await Promise.all([wheelAnimation.finished, ...labelAnimations.map(animation => animation.finished)]);
       $('#wheel').style.transform = `rotate(${target}deg)`;
+      // WAAPI animations have no fill by default, so their temporary inverse
+      // rotation disappears when they finish. Persist the final label angle
+      // before the transfer-card animation starts to avoid a one-frame snap.
+      document.querySelectorAll('.wheel-label').forEach(label => {
+        label.style.transform = `rotate(${-target}deg)`;
+      });
       state.rotation = target;
       $('#wheel-stage').classList.remove('spinning');
       state.selected.push(game.id);

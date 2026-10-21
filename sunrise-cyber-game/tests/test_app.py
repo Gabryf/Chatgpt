@@ -216,16 +216,24 @@ class CyberPlayTests(unittest.TestCase):
         page.locator('#spin-button').click()
         expect(page.locator('#wheel-stage')).to_have_class(re.compile(r'\bspinning\b'))
         page.wait_for_timeout(900)
-        angles = page.locator('#wheel').evaluate("""wheel => {
+        read_angles = """wheel => {
           const angle = element => {
             const matrix = new DOMMatrix(getComputedStyle(element).transform);
             return Math.atan2(matrix.b, matrix.a) * 180 / Math.PI;
           };
           return [angle(wheel), ...[...wheel.querySelectorAll('.wheel-label')].map(angle)];
-        }""")
-        for label_angle in angles[1:]:
-            combined = ((angles[0] + label_angle + 180) % 360) - 180
-            self.assertAlmostEqual(combined, 0, delta=3)
+        }"""
+
+        def assert_upright(angles):
+            for label_angle in angles[1:]:
+                combined = ((angles[0] + label_angle + 180) % 360) - 180
+                self.assertAlmostEqual(combined, 0, delta=3)
+
+        assert_upright(page.locator('#wheel').evaluate(read_angles))
+        expect(page.locator('#wheel-stage')).not_to_have_class(re.compile(r'\bspinning\b'), timeout=5000)
+        # The labels must also stay upright during the card-transfer pause
+        # immediately after the wheel animation has stopped.
+        assert_upright(page.locator('#wheel').evaluate(read_angles))
         expect(page.locator('.selection-card.picked')).to_have_count(1, timeout=5000)
 
     def test_small_screens_and_keyboard_selection(self):
