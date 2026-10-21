@@ -173,7 +173,7 @@
               <h3>Your Microsoft 365 account is about to be disabled</h3>
               <div class="det-email-header">
                 <span class="det-mail-avatar" aria-hidden="true">M</span>
-                <div class="det-email-sender"><strong>Microsoft 365 · Account support</strong><button type="button" class="det-hotspot det-email-address" data-risk="sender" aria-label="Inspect the sender’s domain">microsoft-security@account-check.example</button><span>To: <button type="button" class="det-hotspot" data-risk="recipient" aria-label="Inspect the recipient">you@sunrise.example</button></span></div>
+                <div class="det-email-sender"><strong>Microsoft 365 · Account support</strong><button type="button" class="det-hotspot det-email-address" data-risk="sender" aria-label="Inspect the sender’s domain">microsoft-security@account-check.example</button><span>To: <button type="button" class="det-hotspot" data-risk="recipient" aria-label="Inspect the recipient">gabriele.bianchi@sunrise.net</button></span></div>
                 <button type="button" class="det-hotspot det-email-date" data-risk="date" aria-label="Inspect the email’s sending time">Today, 10:24</button>
               </div>
               <div class="det-email-text">

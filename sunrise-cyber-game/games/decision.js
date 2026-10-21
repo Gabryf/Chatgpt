@@ -237,7 +237,7 @@
           subject: 'Overdue payment — action required',
           senderName: 'Billing',
           from: 'payments@urgent-invoices.example',
-          recipient: 'you@sunrise.example',
+          recipient: 'gabriele.bianchi@sunrise.net',
           date: 'Today, 09:41',
           body: `<div class="dec-outlook-message"><p>Open the attached document to view the invoice.</p>${window.CyberScreens.attachment({ filename: 'October_invoice.xlsm', detail: 'Excel file with macros' })}<div class="sim-mail-warning">To view the invoice, enable content and macros.</div></div>`
         }) }
