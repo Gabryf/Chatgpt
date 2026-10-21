@@ -602,13 +602,10 @@ class PreviewTests(unittest.TestCase):
         expect(page.locator('#start-button')).to_be_disabled()
         self.assertEqual(self.stored(page, NORMAL_KEY), partial_session)
 
-        for count in (2, 3):
-            page.locator('#spin-button').click()
-            expect(page.locator('.selection-card.picked')).to_have_count(count)
-            if count == 2:
-                expect(page.locator('#spin-button')).to_be_enabled()
-            else:
-                expect(page.locator('#start-button')).to_be_enabled()
+        page.locator('#spin-button').click()
+        expect(page.locator('.selection-card.picked')).to_have_count(2)
+        expect(page.locator('#spin-button')).to_be_disabled()
+        expect(page.locator('#start-button')).to_be_enabled()
         page.locator('#start-button').click()
         self.solve(page, 'impostor')
         expect(page.locator('#game-title')).to_have_text('Spot the Risk')
@@ -620,10 +617,9 @@ class PreviewTests(unittest.TestCase):
         page.locator('#preview-exit').click()
         expect(page.locator('#game-screen')).to_be_visible()
         expect(page.locator('#game-title')).to_have_text('Spot the Risk')
-        expect(page.locator('#game-step')).to_have_text('CHALLENGE 02 / 03')
+        expect(page.locator('#game-step')).to_have_text('CHALLENGE 02 / 02')
         self.assertEqual(self.stored(page, NORMAL_KEY), active_session)
         self.solve(page, 'risk')
-        self.solve(page, 'timeline')
         expect(page.locator('#results-screen')).to_be_visible()
         expect(page.locator('#total-score')).to_have_text('100')
         self.assertIsNone(self.stored(page, PREVIEW_KEY))

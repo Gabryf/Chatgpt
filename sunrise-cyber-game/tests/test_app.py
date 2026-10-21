@@ -47,8 +47,8 @@ class CyberPlayTests(unittest.TestCase):
         cls.server.shutdown()
         cls.server.server_close()
 
-    def new_page(self, seed=None, width=1440):
-        context = self.browser.new_context(viewport={'width': width, 'height': 960}, reduced_motion='reduce')
+    def new_page(self, seed=None, width=1440, height=960):
+        context = self.browser.new_context(viewport={'width': width, 'height': height}, reduced_motion='reduce')
         if seed is not None:
             # Control only randomness in the browser test, never in the app itself.
             context.add_init_script(f'crypto.getRandomValues = array => {{ array[0] = {seed}; return array; }};')
@@ -61,13 +61,13 @@ class CyberPlayTests(unittest.TestCase):
         self.addCleanup(context.close)
         return page, errors
 
-    def draw_three(self, page):
+    def draw_two(self, page):
         expect(page.locator('#start-button')).to_be_disabled()
         titles = []
-        for count in range(1, 4):
+        for count in range(1, 3):
             page.locator('#spin-button').click()
             expect(page.locator('.selection-card.picked')).to_have_count(count)
-            if count < 3:
+            if count < 2:
                 expect(page.locator('#spin-button')).to_be_enabled()
                 expect(page.locator('#start-button')).to_be_disabled()
             else:
@@ -80,7 +80,7 @@ class CyberPlayTests(unittest.TestCase):
         expect(page.locator('#spin-button')).to_be_disabled()
         expect(page.locator('#spin-center')).to_be_disabled()
         page.locator('#spin-center').dispatch_event('click')
-        expect(page.locator('.selection-card.picked')).to_have_count(3)
+        expect(page.locator('.selection-card.picked')).to_have_count(2)
         return titles
 
     def solve(self, page, game):
@@ -160,14 +160,15 @@ class CyberPlayTests(unittest.TestCase):
         )
         return screen
 
-    def test_all_nine_games_in_three_full_journeys(self):
-        for seed in (0, 3, 6):
+    def test_all_nine_games_across_two_game_journeys(self):
+        for seed in (0, 2, 4, 6, 8):
             with self.subTest(first_game=IDS[seed]):
                 page, errors = self.new_page(seed)
-                selected_titles = self.draw_three(page)
-                self.assertEqual(selected_titles, TITLES[seed:seed+3])
+                selected_titles = self.draw_two(page)
+                selected_ids = [IDS[seed], IDS[(seed + 1) % len(IDS)]]
+                self.assertEqual(selected_titles, [TITLES[IDS.index(game)] for game in selected_ids])
                 page.locator('#start-button').click()
-                for index, game in enumerate(IDS[seed:seed+3]):
+                for index, game in enumerate(selected_ids):
                     expect(page.locator('#game-title')).to_have_text(selected_titles[index])
                     expect(page.locator('.progress-step.active')).to_have_count(1)
                     self.assertNotRegex(page.locator('body').inner_text().lower(),
@@ -177,7 +178,7 @@ class CyberPlayTests(unittest.TestCase):
                         page.reload()  # Next game and prior score survive refreshing.
                 expect(page.locator('#results-screen')).to_be_visible()
                 expect(page.locator('#total-score')).to_have_text('100')
-                expect(page.locator('.result-card')).to_have_count(3)
+                expect(page.locator('.result-card')).to_have_count(2)
                 self.assertEqual(page.locator('.result-card h2').all_text_contents(), selected_titles)
                 page.reload()
                 expect(page.locator('#total-score')).to_have_text('100')
@@ -189,7 +190,7 @@ class CyberPlayTests(unittest.TestCase):
 
     def test_random_selection_help_and_cancelled_exit(self):
         page, errors = self.new_page()
-        titles = self.draw_three(page)
+        titles = self.draw_two(page)
         page.reload()
         self.assertEqual(page.locator('.selection-card.picked h3').all_text_contents(), titles)
         expect(page.locator('#start-button')).to_be_enabled()
@@ -236,12 +237,33 @@ class CyberPlayTests(unittest.TestCase):
         assert_upright(page.locator('#wheel').evaluate(read_angles))
         expect(page.locator('.selection-card.picked')).to_have_count(1, timeout=5000)
 
+    def test_primary_landing_controls_fit_without_scrolling(self):
+        for width, height in ((1024, 768), (1280, 720), (1366, 768), (1440, 900), (1920, 1080)):
+            with self.subTest(viewport=(width, height)):
+                page, errors = self.new_page(0, width, height)
+                diagnostics = page.evaluate("""() => ({
+                  viewport: [innerWidth, innerHeight],
+                  compact: matchMedia('(min-width:761px) and (max-height:900px)').matches,
+                  header: getComputedStyle(document.querySelector('.site-header')).height,
+                  wheel: document.querySelector('.wheel-stage').getBoundingClientRect().toJSON(),
+                  intro: document.querySelector('.intro-row').getBoundingClientRect().toJSON()
+                })""")
+                for selector in ('#spin-button', '.selection-card:last-child', '#start-button'):
+                    with self.subTest(viewport=(width, height), selector=selector):
+                        box = page.locator(selector).bounding_box()
+                        self.assertIsNotNone(box)
+                        self.assertGreaterEqual(box['x'], 0)
+                        self.assertGreaterEqual(box['y'], 0)
+                        self.assertLessEqual(box['x'] + box['width'], width)
+                        self.assertLessEqual(box['y'] + box['height'], height, diagnostics)
+                self.assertEqual(errors, [])
+
     def test_small_screens_and_keyboard_selection(self):
         for width in (320, 390, 768):
             with self.subTest(width=width):
                 page, errors = self.new_page(6, width)
                 self.assertFalse(page.evaluate('document.documentElement.scrollWidth > innerWidth'))
-                self.draw_three(page)
+                self.draw_two(page)
                 page.locator('#start-button').press('Enter')
                 self.solve(page, 'password')
                 expect(page.locator('#game-title')).to_have_text('Drag & Drop Security')
@@ -250,7 +272,6 @@ class CyberPlayTests(unittest.TestCase):
                     page.get_by_test_id(f'drag-target-{pair}').press('Enter')
                 self.assertFalse(page.evaluate('document.documentElement.scrollWidth > innerWidth'))
                 page.get_by_test_id('drag-finish').press('Enter')
-                self.solve(page, 'unlock')
                 expect(page.locator('#results-screen')).to_be_visible()
                 self.assertFalse(page.evaluate('document.documentElement.scrollWidth > innerWidth'))
                 self.assertEqual(errors, [])
@@ -259,11 +280,11 @@ class CyberPlayTests(unittest.TestCase):
         page, errors = self.new_page()
         page.emulate_media(reduced_motion='no-preference')
         page.evaluate('''() => {
-            const draws = [6, 3, 4];
+            const draws = [6, 3];
             crypto.getRandomValues = array => { array[0] = draws.shift(); return array; };
         }''')
-        selected = self.draw_three(page)
-        self.assertEqual(selected, ['Password Lab', 'Choose Your Move', 'Safe or Suspicious?'])
+        selected = self.draw_two(page)
+        self.assertEqual(selected, ['Password Lab', 'Choose Your Move'])
         for width in (390, 320, 768):
             page.set_viewport_size({'width': width, 'height': 844})
             self.assertFalse(page.evaluate('document.documentElement.scrollWidth > innerWidth'))
@@ -283,9 +304,9 @@ class CyberPlayTests(unittest.TestCase):
             page.goto(standalone_url)
             expect(page.locator('html')).to_have_attribute('lang', 'en')
             self.assertTrue(page.locator('img').evaluate_all('(imgs) => imgs.every(img => img.complete && img.naturalWidth > 0)'))
-            self.draw_three(page)
+            self.draw_two(page)
             page.locator('#start-button').click()
-            for game in ['impostor', 'risk', 'timeline']:
+            for game in ['impostor', 'risk']:
                 if game == 'impostor':
                     self.assert_simulated_client(page, 'teams', offline=True)
                 if game == 'risk':

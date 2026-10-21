@@ -15,6 +15,7 @@
   const $ = selector => document.querySelector(selector);
   const byId = id => games.find(game => game.id === id);
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const JOURNEY_LENGTH = 2;
   const state = {selected:[], results:[], round:0, phase:'wheel', spinning:false, rotation:0};
   const preview = {unlocked:false, activeId:null, results:{}, lastId:null};
   const normalPhases = ['wheel','game','results'];
@@ -57,11 +58,11 @@
   function restore() {
     try {
       const data = JSON.parse(sessionStorage.getItem('cyberplay-session-en-v2'));
-      if (!data || !Array.isArray(data.selected) || data.selected.length > 3 || !data.selected.every(byId) || new Set(data.selected).size !== data.selected.length) return;
+      if (!data || !Array.isArray(data.selected) || data.selected.length > JOURNEY_LENGTH || !data.selected.every(byId) || new Set(data.selected).size !== data.selected.length) return;
       if (!['wheel','game','results'].includes(data.phase)) return;
-      if (data.phase !== 'wheel' && data.selected.length !== 3) return;
-      if (!Number.isInteger(data.round) || data.round < 0 || data.round > 3 || !Array.isArray(data.results) || data.results.length !== data.round) return;
-      if (data.phase === 'game' && data.round >= 3 || data.phase === 'results' && data.round !== 3) return;
+      if (data.phase !== 'wheel' && data.selected.length !== JOURNEY_LENGTH) return;
+      if (!Number.isInteger(data.round) || data.round < 0 || data.round > JOURNEY_LENGTH || !Array.isArray(data.results) || data.results.length !== data.round) return;
+      if (data.phase === 'game' && data.round >= JOURNEY_LENGTH || data.phase === 'results' && data.round !== JOURNEY_LENGTH) return;
       if (data.results.some((r,i) => r.id !== data.selected[i] || !Number.isFinite(r.percent) || r.percent < 0 || r.percent > 100 || typeof r.lesson !== 'string')) return;
       Object.assign(state, data);
       if (state.selected.length) state.rotation = (360 - games.findIndex(game => game.id === state.selected.at(-1)) * 40) % 360;
@@ -82,25 +83,25 @@
     }).join('') + '<circle cx="250" cy="250" r="226" fill="none" stroke="#9db1cc33" stroke-width="1"/>';
   }
   function cardMarkup(game,index) {
-    return `<span class="selection-number">0${index+1}</span><span class="selection-icon">${icon(game ? game.icon : 'lock')}</span><div><h3>${game ? game.title : ['Your first challenge awaits','Another spin, another game','Your journey is taking shape'][index]}</h3><p>${game ? game.description : 'Spin the wheel to reveal it'}</p></div>`;
+    return `<span class="selection-number">0${index+1}</span><span class="selection-icon">${icon(game ? game.icon : 'lock')}</span><div><h3>${game ? game.title : ['Your first challenge awaits','Another spin, another game'][index]}</h3><p>${game ? game.description : 'Spin the wheel to reveal it'}</p></div>`;
   }
   function renderSelections(pending = -1) {
-    $('#selection-list').innerHTML = [0,1,2].map(index => {
+    $('#selection-list').innerHTML = Array.from({length:JOURNEY_LENGTH},(_,index) => {
       const game = byId(state.selected[index]);
       return `<li class="selection-card ${game ? 'picked' : ''} ${pending === index ? 'card-pending' : ''}" ${game ? `style="--game-color:${game.color}"` : ''}>${cardMarkup(game,index)}</li>`;
     }).join('');
-    $('#selection-count').innerHTML = `${state.selected.length}<span>/3</span>`;
-    $('#spin-dots').setAttribute('aria-label', `${state.selected.length} of 3 games drawn`);
+    $('#selection-count').innerHTML = `${state.selected.length}<span>/${JOURNEY_LENGTH}</span>`;
+    $('#spin-dots').setAttribute('aria-label', `${state.selected.length} of ${JOURNEY_LENGTH} games drawn`);
     [...$('#spin-dots').children].forEach((dot,index) => dot.classList.toggle('filled',index < state.selected.length));
-    const ready = state.selected.length === 3 && !state.spinning;
+    const ready = state.selected.length === JOURNEY_LENGTH && !state.spinning;
     $('#start-button').disabled = !ready;
-    $('#spin-button').disabled = state.spinning || state.selected.length === 3;
-    $('#spin-center').disabled = state.spinning || state.selected.length === 3;
-    $('#spin-center strong').textContent = state.selected.length === 3 ? 'READY' : 'SPIN';
-    $('#spin-label').textContent = state.spinning ? 'The wheel is spinning…' : state.selected.length === 3 ? 'Journey ready' : state.selected.length === 0 ? 'Spin the wheel' : `Spin again · ${state.selected.length + 1}/3`;
+    $('#spin-button').disabled = state.spinning || state.selected.length === JOURNEY_LENGTH;
+    $('#spin-center').disabled = state.spinning || state.selected.length === JOURNEY_LENGTH;
+    $('#spin-center strong').textContent = state.selected.length === JOURNEY_LENGTH ? 'READY' : 'SPIN';
+    $('#spin-label').textContent = state.spinning ? 'The wheel is spinning…' : state.selected.length === JOURNEY_LENGTH ? 'Journey ready' : state.selected.length === 0 ? 'Spin the wheel' : `Spin again · ${state.selected.length + 1}/${JOURNEY_LENGTH}`;
     $('#ready-icon').innerHTML = icon(ready ? 'check' : 'lock');
     $('#ready-icon').style.color = ready ? 'var(--green)' : '';
-    $('#ready-note').innerHTML = ready ? 'Your journey is ready.<br><span>Three challenges, in the order you drew them.</span>' : 'Draw three games to get started.<br><span>You’ll play them from top to bottom.</span>';
+    $('#ready-note').innerHTML = ready ? 'Your journey is ready.<br><span>Two challenges, in the order you drew them.</span>' : 'Draw two games to get started.<br><span>You’ll play them from top to bottom.</span>';
   }
   async function transferCard(game,index) {
     if (reducedMotion.matches) return;
@@ -118,7 +119,7 @@
     } finally { flying.remove(); }
   }
   async function spin() {
-    if (state.spinning || state.selected.length >= 3 || state.phase !== 'wheel') return;
+    if (state.spinning || state.selected.length >= JOURNEY_LENGTH || state.phase !== 'wheel') return;
     state.spinning = true;
     renderSelections();
     $('#spin-status').textContent = 'A new game is about to join your journey…';
@@ -161,10 +162,10 @@
       renderSelections();
       drawWheel();
       save();
-      $('#spin-status').textContent = state.selected.length === 3 ? 'Three games, one journey. Now press Start.' : `${game.title} has joined your journey. Spin again!`;
-      $('#live-announcement').textContent = `Game ${state.selected.length} of 3: ${game.title}. ${state.selected.length === 3 ? 'The Start button is now available.' : 'You can spin again.'}`;
+      $('#spin-status').textContent = state.selected.length === JOURNEY_LENGTH ? 'Two games, one journey. Now press Start.' : `${game.title} has joined your journey. Spin again!`;
+      $('#live-announcement').textContent = `Game ${state.selected.length} of ${JOURNEY_LENGTH}: ${game.title}. ${state.selected.length === JOURNEY_LENGTH ? 'The Start button is now available.' : 'You can spin again.'}`;
       // The native spin button becomes disabled after the last draw; move focus to the next action.
-      if (state.selected.length === 3) $('#start-button').focus({preventScroll:true});
+      if (state.selected.length === JOURNEY_LENGTH) $('#start-button').focus({preventScroll:true});
     } catch (error) {
       state.spinning = false;
       $('#wheel-stage').classList.remove('spinning');
@@ -192,13 +193,13 @@
     $('#game-category').textContent = game.category;
     $('#game-heading-icon').innerHTML = icon(game.icon,32);
     $('#game-heading-icon').style.color = game.color;
-    $('#game-step').textContent = `CHALLENGE 0${state.round+1} / 03`;
+    $('#game-step').textContent = `CHALLENGE 0${state.round+1} / 0${JOURNEY_LENGTH}`;
     $('#journey-progress').innerHTML = state.selected.map((_,i) => `<span class="progress-step ${i === state.round ? 'active' : i < state.round ? 'complete' : ''}" aria-label="Challenge ${i+1}: ${i === state.round ? 'in progress' : i < state.round ? 'completed' : 'up next'}"></span>`).join('');
     $('#game-path').innerHTML = state.selected.map((id,index) => `<li class="game-path-item ${index === state.round ? 'active' : index < state.round ? 'complete' : ''}"><span class="path-number">${index < state.round ? icon('check') : `0${index+1}`}</span><span><strong>${byId(id).title}</strong><small>${index === state.round ? 'Playing now' : index < state.round ? 'Challenge complete' : 'The next move'}</small></span></li>`).join('');
     mountGame(game,'game',result => {
       state.results.push(result);
       state.round++;
-      if (state.round < 3) showGame(); else showResults();
+      if (state.round < JOURNEY_LENGTH) showGame(); else showResults();
       save();
     });
   }
@@ -302,7 +303,7 @@
   function showResults() {
     teardown();
     showScreen('results');
-    const percent = Math.round(state.results.reduce((sum,result) => sum+result.percent,0) / 3);
+    const percent = Math.round(state.results.reduce((sum,result) => sum+result.percent,0) / JOURNEY_LENGTH);
     $('#total-score').textContent = percent;
     $('#result-badge').textContent = percent >= 80 ? 'CYBER DEFENDER' : percent >= 50 ? 'CYBER EXPLORER' : 'CYBER STARTER';
     $('#result-caption').textContent = percent >= 80 ? 'You spotted the warning signs and chose carefully. Keep checking, even when everything looks normal.' : percent >= 50 ? 'You have good instincts. The tips below will help you make your next decision even safer.' : 'Every challenge is a chance to learn. Start with the warning signs and safe choices you’ve discovered.';
@@ -325,7 +326,7 @@
   $('#spin-button').addEventListener('click',spin);
   $('#spin-center').addEventListener('click',spin);
   $('#start-button').addEventListener('click',() => {
-    if (state.selected.length !== 3 || state.spinning || state.phase !== 'wheel') return;
+    if (state.selected.length !== JOURNEY_LENGTH || state.spinning || state.phase !== 'wheel') return;
     showGame(); save();
   });
   $('#help-button').addEventListener('click',() => $('#help-dialog').showModal());
@@ -394,6 +395,6 @@
   }
   else if (state.phase === 'game') showGame();
   else if (state.phase === 'results') showResults();
-  else if (state.selected.length === 3) $('#spin-status').textContent = 'Your journey is ready. Press Start.';
+  else if (state.selected.length === JOURNEY_LENGTH) $('#spin-status').textContent = 'Your journey is ready. Press Start.';
   else if (state.selected.length > 0) $('#spin-status').textContent = 'Your journey is saved. Spin again!';
 })();

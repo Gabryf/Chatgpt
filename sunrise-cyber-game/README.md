@@ -1,6 +1,6 @@
 # Cyber Play — BIP × Sunrise
 
-An English-language cybersecurity game for a company event: a wheel, three unique draws, and three challenges played in the order drawn.
+An English-language cybersecurity game for a company event: a wheel, two unique draws, and two challenges played in the order drawn.
 
 ## Getting started
 
@@ -21,8 +21,8 @@ Then open the local server in your browser. For an event stand, a screen resolut
 ## How it works
 
 1. Press **Spin the wheel** to draw the first game. An animation transfers it to the first card in your journey.
-2. Spin twice more. Games already drawn cannot be selected again. Controls are locked during each spin to prevent multiple draws.
-3. **Start** becomes available after the third spin. Games run from top to bottom, in the order drawn.
+2. Spin once more. Games already drawn cannot be selected again. Controls are locked during each spin to prevent multiple draws.
+3. **Start** becomes available after the second spin. Games run from top to bottom, in the order drawn.
 4. Read each challenge’s feedback and continue. At the end, you’ll see your score and a practical tip for each game.
 5. **New spins, new challenges** resets the journey for the next participant.
 
@@ -42,7 +42,7 @@ The order, completed results and current game are stored only in `sessionStorage
 | Drag & Drop Security | Match actions to Wi-Fi, MFA, USB and confidential-document situations. |
 | Unlock the Screen | Find a Microsoft lookalike sender, inspect its letter substitution, compare an MFA request with your actual login, and rebuild the attack chain. |
 
-Your journey score is the average of the three game scores, each normalised to 100. Each game explains its own rules; mistakes and retries affect scores differently according to the mechanics. This is an awareness activity, not an assessment of an employee’s competence.
+Your journey score is the average of the two game scores, each normalised to 100. Each game explains its own rules; mistakes and retries affect scores differently according to the mechanics. This is an awareness activity, not an assessment of an employee’s competence.
 
 All messages and addresses are simulations. Suspicious links are inactive. These are educational scenarios; references to IT reporting channels and approved tools should be aligned with Sunrise procedures before the event.
 
@@ -98,4 +98,4 @@ python3 -m playwright install chromium
 python3 -m unittest discover -s tests -v
 ```
 
-The runner uses system Chromium when available; set `CHROMIUM_PATH` to choose an executable. Tests manage their own local server and check all nine games in three complete journeys, unique draws, pointer alignment, the three-spin limit, game order, results, refresh, reset, dialogs, keyboard interaction and mobile layout after animations. Test mode checks cover access, all nine games, replay, refresh, mobile controls, timer cleanup and preservation of the normal journey. Regression checks also cover Timeline reconstruction, both Choose Your Move branches, the lookalike-domain explanation and MFA context in Unlock, Password Lab feedback and input cleanup, client logos and the single-file version without asset requests.
+The runner uses system Chromium when available; set `CHROMIUM_PATH` to choose an executable. Tests manage their own local server and check all nine games across complete two-game journeys, unique draws, pointer alignment, the two-spin limit, game order, results, refresh, reset, dialogs, keyboard interaction and mobile layout after animations. Test mode checks cover access, all nine games, replay, refresh, mobile controls, timer cleanup and preservation of the normal journey. Regression checks also cover Timeline reconstruction, both Choose Your Move branches, the lookalike-domain explanation and MFA context in Unlock, Password Lab feedback and input cleanup, client logos and the single-file version without asset requests.

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0a101c">
-  <meta name="description" content="Three interactive challenges to train your security instincts. An experience by BIP for Sunrise.">
+  <meta name="description" content="Two interactive challenges to train your security instincts. An experience by BIP for Sunrise.">
   <title>Cyber Play — BIP × Sunrise</title>
   <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTgiIGZpbGw9IiMwYTEwMWMiLz48cGF0aCBkPSJNMzIgMTAgNDkgMTd2MTRjMCAxMS05IDE5LTE3IDIzLTgtNC0xNy0xMi0xNy0yM1YxN1oiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmNzk1ZSIgc3Ryb2tlLXdpZHRoPSI0Ii8+PHBhdGggZD0ibTI0IDMxIDYgNiAxMS0xMyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPgo=" type="image/svg+xml">
   <style>
@@ -15,6 +15,8 @@
 @keyframes page-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}@keyframes pointer-tick{from{transform:rotate(-9deg)}to{transform:rotate(9deg)}}@keyframes card-reveal{from{opacity:.15;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
 @media(min-width:1500px){.intro-row{padding-top:65px}.wheel-stage{max-width:500px}.wheel-layout{gap:80px}.playlist-panel{padding:30px}.selection-card{min-height:99px}.wheel-caption{margin-top:40px}}
 @media(max-width:1000px){.site-header,.site-footer{width:calc(100% - 56px)}main{width:calc(100% - 56px)}.wheel-layout{gap:25px;grid-template-columns:1.06fr 1fr}.hero-copy h1{font-size:55px}.playlist-panel{padding:22px 19px 17px}.playlist-heading h2{font-size:20px}.selection-card{gap:10px;min-height:88px;padding:15px 11px}.selection-icon{width:37px;height:37px}.selection-card h3{font-size:13px}.selection-card p{font-size:9px}.selection-number{top:6px;right:8px;font-size:9px}.game-body{grid-template-columns:minmax(0,1fr) 190px;gap:23px}.game-content{padding:23px}.footer-small,.footer-dot{display:none}.how-it-works{margin-right:0}}
+@media(min-width:761px) and (max-height:900px){.site-header{height:76px}.intro-row{padding:18px 0 14px}.hero-copy h1{font-size:42px;line-height:.98;letter-spacing:-2px;margin:8px 0 10px}.hero-description{font-size:12px;line-height:1.45}.how-it-works{gap:10px;margin:0}.how-it-works li{gap:12px}.step-number{width:28px;height:28px}.wheel-layout{gap:38px}.wheel-stage{max-width:min(440px,calc(100vh - 360px))}.spin-controls{margin-top:10px}.spin-status{margin:7px 0 5px}.playlist-panel{padding:18px 20px 14px}.playlist-heading{padding-bottom:12px}.playlist-heading h2{font-size:20px;margin-top:5px}.selection-list{gap:10px}.selection-card{min-height:78px;padding:12px}.selection-icon{width:38px;height:38px}.ready-panel{margin-top:14px;padding-top:14px}.ready-note{margin-bottom:10px}.session-note{margin-top:9px}.wheel-caption{margin:15px 0 20px}}
+@media(min-width:761px) and (max-height:760px){.wheel-caption{display:none}.intro-row{padding-top:12px;padding-bottom:10px}.hero-copy h1{font-size:38px}.how-it-works small{display:none}.wheel-stage{max-width:min(390px,calc(100vh - 340px))}}
 @media(max-width:760px){.site-header{height:83px}.edition{display:none}.header-actions{gap:12px}.app-brand{font-size:20px}.brand-symbol{width:37px;height:37px}.help-button{padding:9px 11px}.help-button>span:last-child{display:none}.help-button svg{height:18px;width:18px}.intro-row{padding-top:35px;padding-bottom:25px}.hero-copy h1{font-size:49px;letter-spacing:-2px}.how-it-works{display:none}.hero-description{font-size:13px}.wheel-layout{grid-template-columns:1fr;gap:28px}.wheel-stage{isolation:isolate;overflow:clip;overflow-clip-margin:12px;width:min(100%,420px);max-width:420px}.spin-controls{margin-top:14px}.spin-button{width:258px}.playlist-panel{width:min(100%,500px);margin:auto;padding:24px 20px 18px}.playlist-heading h2{font-size:22px}.selection-card{min-height:84px;gap:14px;padding:15px}.selection-icon{width:43px;height:43px}.selection-card h3{font-size:15px}.selection-card p{font-size:11px}.selection-number{top:11px;right:14px;font-size:10px}.playlist-heading{padding-bottom:20px}.wheel-caption{font-size:7px;gap:10px;letter-spacing:1.3px;margin:28px 0}.site-footer{padding:22px 0;flex-direction:column;gap:17px}.partner-label{font-size:7px}.partner-lockup{gap:19px}.site-footer>p{font-size:10px}.game-screen{padding-top:20px}.game-topline{margin-bottom:25px}.game-heading h1{font-size:36px}.game-heading-icon{width:52px;height:52px;border-radius:14px}.game-heading-icon svg{width:25px;height:25px}.game-heading .eyebrow{font-size:8px;letter-spacing:1.5px}.game-body{grid-template-columns:1fr}.game-journey{display:none}.game-content{padding:22px 19px;border-radius:15px}.game-content .game-intro h2{font-size:21px}.game-content .game-intro p{font-size:13px}.journey-progress{margin:21px 0 23px}.game-step{font-size:8px!important}.result-cards{grid-template-columns:1fr}.result-card{padding:22px}.result-card-top{margin-bottom:15px}.result-card p{font-size:13px}.result-card h2{font-size:21px}.result-card .result-pct{padding-top:15px}.score-panel{padding:22px;margin-top:28px}.score-number strong{font-size:45px}.score-number small{font-size:6px;letter-spacing:.5px}.score-panel .eyebrow{font-size:10px;letter-spacing:1.5px}.score-panel p{font-size:12px}.results-header h1{font-size:44px}.results-header>p:last-child{font-size:12px}.results-screen{padding-top:30px}.results-actions .button{font-size:12px;padding:13px 17px;gap:9px}.app-dialog{padding:30px 25px}.app-dialog h2{font-size:26px}.dialog-actions{flex-wrap:wrap}.dialog-actions .button{flex:1;white-space:normal}.game-heading-icon{flex-shrink:0}}
 @media(max-width:380px){main,.site-header,.site-footer{width:calc(100% - 32px)}.hero-copy h1{font-size:43px}.wheel-stage{margin-top:4px}.playlist-panel{padding:20px 15px}.playlist-heading h2{font-size:20px}.selection-card p{font-size:10px}.selection-card h3{font-size:14px}.score-panel{padding:17px;gap:15px}.score-number strong{font-size:39px}.game-heading h1{font-size:30px}.game-content{padding:19px 14px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}#wheel{will-change:auto}}
@@ -675,10 +677,10 @@
         <div class="hero-copy">
           <p class="eyebrow"><span class="tiny-line"></span> TRAIN YOUR CYBER INSTINCT</p>
           <h1 id="wheel-title" tabindex="-1">The next move<br>is <span class="accent">yours.</span></h1>
-          <p class="hero-description">Threats evolve. Your instincts can, too.<br>Spin the wheel. Take on three security challenges.</p>
+          <p class="hero-description">Threats evolve. Your instincts can, too.<br>Spin the wheel. Take on two security challenges.</p>
         </div>
         <ol class="how-it-works" aria-label="How it works">
-          <li><span class="step-number">01</span><span><strong>Spin the wheel</strong><small>Three spins, three different games</small></span></li>
+          <li><span class="step-number">01</span><span><strong>Spin the wheel</strong><small>Two spins, two different games</small></span></li>
           <li><span class="step-number">02</span><span><strong>Take on the challenge</strong><small>Play in the order drawn</small></span></li>
           <li><span class="step-number">03</span><span><strong>Take away an idea</strong><small>For your everyday work</small></span></li>
         </ol>
@@ -695,35 +697,35 @@
           <div class="spin-controls">
             <button class="button button-primary spin-button" id="spin-button"><span data-icon="rotate"></span><span id="spin-label">Spin the wheel</span><span class="button-arrow" aria-hidden="true">↗</span></button>
             <p id="spin-status" class="spin-status" role="status" aria-live="polite">Your first challenge is one spin away.</p>
-            <div class="spin-dots" aria-label="0 of 3 games drawn" id="spin-dots"><span></span><span></span><span></span></div>
+            <div class="spin-dots" aria-label="0 of 2 games drawn" id="spin-dots"><span></span><span></span></div>
           </div>
         </div>
         <aside class="playlist-panel" aria-labelledby="playlist-title">
-          <div class="playlist-heading"><div><p class="eyebrow">YOUR JOURNEY</p><h2 id="playlist-title">Three challenges. One goal.</h2></div><span id="selection-count" class="count-badge">0<span>/3</span></span></div>
+          <div class="playlist-heading"><div><p class="eyebrow">YOUR JOURNEY</p><h2 id="playlist-title">Two challenges. One goal.</h2></div><span id="selection-count" class="count-badge">0<span>/2</span></span></div>
           <ol class="selection-list" id="selection-list"></ol>
           <div class="ready-panel">
-            <div class="ready-note"><span data-icon="lock" id="ready-icon"></span><p id="ready-note">Draw three games to get started.<br><span>You’ll play them from top to bottom.</span></p></div>
+            <div class="ready-note"><span data-icon="lock" id="ready-icon"></span><p id="ready-note">Draw two games to get started.<br><span>You’ll play them from top to bottom.</span></p></div>
             <button id="start-button" class="button button-primary start-button" disabled>Start<span data-icon="arrow"></span></button>
           </div>
           <p class="session-note"><span data-icon="clock"></span> Just a few minutes. No personal data.</p>
         </aside>
       </div>
-      <p class="wheel-caption"><span>09 GAMES</span><i></i><span>03 DRAWS</span><i></i><span>100% CYBER INSTINCT</span></p>
+      <p class="wheel-caption"><span>09 GAMES</span><i></i><span>02 DRAWS</span><i></i><span>100% CYBER INSTINCT</span></p>
     </section>
     <section id="game-screen" class="screen game-screen" hidden aria-labelledby="game-title">
-      <div class="game-topline"><button class="text-button" id="exit-game"><span data-icon="arrow-left"></span> Back to the wheel</button><div class="game-topline-actions"><button class="text-button" id="preview-restart" hidden><span data-icon="rotate"></span> Restart game</button><span id="game-step" class="eyebrow">CHALLENGE 01 / 03</span></div></div>
+      <div class="game-topline"><button class="text-button" id="exit-game"><span data-icon="arrow-left"></span> Back to the wheel</button><div class="game-topline-actions"><button class="text-button" id="preview-restart" hidden><span data-icon="rotate"></span> Restart game</button><span id="game-step" class="eyebrow">CHALLENGE 01 / 02</span></div></div>
       <div class="game-heading"><div><p id="game-category" class="eyebrow"></p><h1 id="game-title" tabindex="-1"></h1></div><div class="game-heading-icon" id="game-heading-icon" aria-hidden="true"></div></div>
-      <div class="journey-progress" id="journey-progress" aria-label="Progress through the three games"></div>
+      <div class="journey-progress" id="journey-progress" aria-label="Progress through the two games"></div>
       <div class="game-body"><div id="game-content" class="game-content"></div><aside class="game-journey" aria-labelledby="journey-title"><p class="eyebrow" id="journey-title">YOUR JOURNEY</p><ol id="game-path"></ol><div class="journey-tip"><span data-icon="shield"></span><strong>Pausing is a smart move.</strong><p>Notice the details. Check the source. Then choose.</p></div></aside></div>
     </section>
     <section id="preview-screen" class="screen preview-screen" hidden aria-labelledby="preview-title">
-      <div class="preview-heading"><div><p class="eyebrow">TEST MODE · FREE ACCESS</p><h1 id="preview-title" tabindex="-1">Every game.<br><span class="accent">Your choice.</span></h1><p class="preview-description">Open any game, try different choices and replay it as often as you like.<br>Test results are separate from the three-game journey.</p></div><button class="button button-secondary" id="preview-exit"><span data-icon="close"></span> Exit test mode</button></div>
+      <div class="preview-heading"><div><p class="eyebrow">TEST MODE · FREE ACCESS</p><h1 id="preview-title" tabindex="-1">Every game.<br><span class="accent">Your choice.</span></h1><p class="preview-description">Open any game, try different choices and replay it as often as you like.<br>Test results are separate from the two-game journey.</p></div><button class="button button-secondary" id="preview-exit"><span data-icon="close"></span> Exit test mode</button></div>
       <section class="preview-result" id="preview-result" hidden aria-label="Latest test result" aria-live="polite"></section>
       <div class="preview-catalogue" id="preview-catalogue" aria-label="Choose a game to test"></div>
       <p class="preview-footnote">Returning to an unfinished journey restarts its current game. Completed scores and draws are kept.</p>
     </section>
     <section id="results-screen" class="screen results-screen" hidden aria-labelledby="results-title">
-      <div class="results-header"><div class="result-emblem" data-icon="shield"></div><p class="eyebrow">MISSION COMPLETE</p><h1 id="results-title" tabindex="-1">Sharper instincts.<br>Stronger defences.</h1><p>Three challenges completed. Three ideas to take to work.</p></div>
+      <div class="results-header"><div class="result-emblem" data-icon="shield"></div><p class="eyebrow">MISSION COMPLETE</p><h1 id="results-title" tabindex="-1">Sharper instincts.<br>Stronger defences.</h1><p>Two challenges completed. Two ideas to take to work.</p></div>
       <div class="score-panel"><div><span id="result-badge" class="eyebrow">CYBER DEFENDER</span><p id="result-caption"></p></div><div class="score-number"><strong id="total-score">100</strong><span>%</span><small>YOUR JOURNEY SCORE</small></div></div>
       <div class="result-cards" id="result-cards"></div>
       <div class="results-actions"><button id="play-again" class="button button-primary"><span data-icon="rotate"></span> New spins, new challenges <span data-icon="arrow"></span></button><p>Your next good decision starts with the small details.</p></div>
@@ -731,7 +733,7 @@
   </main>
   <footer class="site-footer"><div class="partner-lockup"><span class="partner-label">AN EXPERIENCE BY</span><span class="partner-marks"><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjExIiBoZWlnaHQ9IjE0OCIgdmlld0JveD0iMCAwIDIxMSAxNDgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTI1LjkzIDExNC45N0gxMC44N1Y5My4yMkgyNS45M0MzNi43OSA5My4yMiA0NS42MyA4NC4zOCA0NS42MyA3My41MUM0NS42MyA2Mi42NCAzNi43OSA1My44MSAyNS45MyA1My44MUgwVjBIMjEuNzVWMzIuMDZIMjUuOTNDMzcgMzIuMDYgNDcuNDEgMzYuMzcgNTUuMjQgNDQuMkM2My4wNyA1Mi4wMyA2Ny4zOCA2Mi40NCA2Ny4zOCA3My41MUM2Ny4zOCA4NC41OCA2My4wNyA5NC45OSA1NS4yNCAxMDIuODJDNDcuNDEgMTEwLjY1IDM3IDExNC45NiAyNS45MyAxMTQuOTYiIGZpbGw9IiNFMTI1MUIiPjwvcGF0aD48cGF0aCBkPSJNMTM2LjE5IDE0Ny4wMjFIMTE0LjQ0VjkzLjIyMDVIMTQwLjM3QzE1MS4yMyA5My4yMjA1IDE2MC4wOCA4NC4zODA1IDE2MC4wOCA3My41MTA1QzE2MC4wOCA2Mi42NDA1IDE1MS4yNCA1My44MTA1IDE0MC4zNyA1My44MTA1SDEyNS4zMVYzMi4wNjA1SDE0MC4zN0MxNTEuNDQgMzIuMDYwNSAxNjEuODUgMzYuMzcwNSAxNjkuNjggNDQuMjAwNUMxNzcuNTEgNTIuMDMwNSAxODEuODIgNjIuNDQwNSAxODEuODIgNzMuNTEwNUMxODEuODIgODQuNTgwNSAxNzcuNTEgOTQuOTkwNSAxNjkuNjggMTAyLjgyMUMxNjEuODUgMTEwLjY1MSAxNTEuNDQgMTE0Ljk2MSAxNDAuMzcgMTE0Ljk2MUgxMzYuMTlWMTQ3LjAxMVYxNDcuMDIxWiIgZmlsbD0iI0UxMjUxQiI+PC9wYXRoPjxwYXRoIGQ9Ik0xMDAuOTYgMzEuOTAwNEg3OS4yMVYxMTQuNzNIMTAwLjk2VjMxLjkwMDRaIiBmaWxsPSIjRTEyNTFCIj48L3BhdGg+PHBhdGggZD0iTTIxMC43OCA5My4wOTk2SDE4OS4wM1YxMTQuNzRIMjEwLjc4VjkzLjA5OTZaIiBmaWxsPSIjRTEyNTFCIj48L3BhdGg+PC9zdmc+Cg==" alt="BIP" class="bip-logo"><span class="partner-times" aria-hidden="true">×</span><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTkiIGhlaWdodD0iODkiIHZpZXdCb3g9IjAgMCA5OSA4OSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAwXzkxNV8xMjg1MSkiPgo8cGF0aCBkPSJNNDkuNDE0OSAwLjI0NzIzMUM0My42OTkyIDAuMjQ2NzQyIDM4LjExMTggMS45NDEyMiAzMy4zNTkyIDUuMTE2MzZDMjguNjA2NiA4LjI5MTUgMjQuOTAyMyAxMi44MDQ3IDIyLjcxNDggMTguMDg1MkMyMC41MjczIDIzLjM2NTcgMTkuOTU0OCAyOS4xNzYzIDIxLjA2OTcgMzQuNzgyMUMyMi4xODQ3IDQwLjM4OCAyNC45MzcgNDUuNTM3MyAyOC45Nzg2IDQ5LjU3ODlDMzMuMDIwMSA1My42MjA0IDM4LjE2OTUgNTYuMzcyNyA0My43NzUzIDU3LjQ4NzdDNDkuMzgxMiA1OC42MDI2IDU1LjE5MTggNTguMDMwMiA2MC40NzIyIDU1Ljg0MjZDNjUuNzUyNyA1My42NTUxIDcwLjI2NTkgNDkuOTUwOCA3My40NDExIDQ1LjE5ODJDNzYuNjE2MiA0MC40NDU2IDc4LjMxMDcgMzQuODU4MiA3OC4zMTAyIDI5LjE0MjZDNzguMzAyMyAyMS40ODE0IDc1LjI1NTUgMTQuMTM2NCA2OS44MzgzIDguNzE5MTVDNjQuNDIxMSAzLjMwMTkzIDU3LjA3NiAwLjI1NTA4NCA0OS40MTQ5IDAuMjQ3MjMxWk00OS40MTQ5IDYuMTgwNTZDNTMuMjcwMyA2LjE3ODU1IDU3LjA2NDEgNy4xNDc4OCA2MC40NDYgOC45OTkwNUM2My44MjggMTAuODUwMiA2Ni42ODkgMTMuNTIzNiA2OC43NjUxIDE2Ljc3MjNDNzAuODQxMSAyMC4wMjEgNzIuMDY1MyAyMy43NDA0IDcyLjMyNDUgMjcuNTg3MUM3Mi41ODM4IDMxLjQzMzggNzEuODY5NyAzNS4yODM5IDcwLjI0ODMgMzguNzgxOEgyOC41NzlDMjYuOTU3NSAzNS4yODM3IDI2LjI0MzQgMzEuNDMzNCAyNi41MDI4IDI3LjU4NjVDMjYuNzYyMSAyMy43Mzk2IDI3Ljk4NjUgMjAuMDIwMSAzMC4wNjI4IDE2Ljc3MTNDMzIuMTM5MiAxMy41MjI1IDM1LjAwMDYgMTAuODQ5MiAzOC4zODI5IDguOTk4MTZDNDEuNzY1MSA3LjE0NzE2IDQ1LjU1OTIgNi4xNzgxNCA0OS40MTQ5IDYuMTgwNTZaIiBmaWxsPSIjREEyOTFDIi8+CjxwYXRoIGQ9Ik03Ljc4OTk3IDg4LjU3NzNDNC43OTExNyA4OC41NzczIDEuNzcyNTggODcuNDk5NCAwIDg1LjY0MDNMMy4wMjYgODIuMTk2NUM0LjMyODc2IDgzLjQzMzcgNi4wNTI3NCA4NC4xMyA3Ljg0OTMgODQuMTQ0NkM5LjU1NTEzIDg0LjE0NDYgMTAuNjA1OCA4My41MDE4IDEwLjYwNTggODIuNDE0QzEwLjYwNTggODEuMzYzMyA5LjkzODMzIDgwLjkzMDcgNy43MDA5NyA4MC4xNTJDNC4xNzMxMSA3OC45MzA3IDEuMDI1OTcgNzcuODUwMyAxLjAyNTk3IDczLjc1NjNDMS4wMjU5NyA2OS44OTIzIDQuMDIyMyA2Ny4zNzU1IDguODQ1NjEgNjcuMzc1NUMxMS4yOTQ4IDY3LjM0NzMgMTMuNjY2MyA2OC4yMzQyIDE1LjQ5NTkgNjkuODYyNkwxMi41MjkyIDczLjMwNjRDMTEuNTA0OSA3Mi4zNDg2IDEwLjE1NjQgNzEuODEzNCA4Ljc1NDE0IDcxLjgwODJDNy4xNTcwOCA3MS44MDgyIDYuMjEwMjIgNzIuNDM2MiA2LjIxMDIyIDczLjQ1NzJDNi4yMTAyMiA3NC45OTk5IDguNzgxMzMgNzUuMzIxMiAxMS4zMjAzIDc2LjQzODdDMTQuMTU1OSA3Ny42NzQ4IDE1Ljg4NCA3OS4xMTEyIDE1Ljg4NCA4Mi4yMzM2QzE1Ljg3NjYgODYuMTg5MSAxMi45MDAxIDg4LjU3NzMgNy43ODk5NyA4OC41NzczWk0yMi4zNzYxIDg4LjU3NzNDMTguOTE1IDg4LjU3NzMgMTcuMjgzMyA4Ni4yNjA4IDE3LjI4MzMgODIuMTY2OFY3Mi42NDE0SDIyLjM5ODNWODEuNTA5MkMyMi4zOTgzIDgzLjMwNTcgMjMuMDk3MSA4NC4yMDQ4IDI0LjQ5NDggODQuMjA2NEMyNS44MDUgODQuMjA2NCAyNi43NDIgODMuMzQ2MSAyNi43NDIgODEuMjY5NFY3Mi42NDE0SDMxLjg2NDVWODguMDk3N0gyNi44NDgzTDI2Ljc4OSA4Ni4yMTE0QzI2LjA3NDUgODcuNTUxMyAyNC42MjMzIDg4LjU3NzMgMjIuMzc4NSA4OC41NzczSDIyLjM3NjFaTTM0LjAyNzYgNzIuNjQxNEgzOS4wMzE0TDM5LjA5MDggNzQuNTg3QzM5Ljg0OTcgNzMuMjEgNDEuMzQ1NCA3Mi4xNjE3IDQzLjQzNDUgNzIuMTYxN0M0Ni44NDYxIDcyLjE2MTcgNDguNjI2MSA3NC4zODY3IDQ4LjYyNjEgNzguNjkwOVY4OC4wODUzSDQzLjQ5NjNWNzkuMjU5NUM0My40OTYzIDc3LjQ0NjUgNDIuODA3MyA3Ni41NDAxIDQxLjQyOTUgNzYuNTQwMUMzOS45NjEgNzYuNTQwMSAzOS4xNTI2IDc3LjU0NjMgMzkuMTUyNiA3OS40NzQ2Vjg4LjEwMjZIMzQuMDMwMUwzNC4wMjc2IDcyLjY0MTRaTTUwLjY4NTUgNzIuNjQxNEg1NS42NTcxTDU1LjY4NjggNzUuNDI1MUM1Ni4yNTU0IDczLjcyNjcgNTcuNTE2MiA3Mi4zMzk3IDU5LjYxMDIgNzIuMzM5N0M2MC4xMzc4IDcyLjMzMDQgNjAuNjYzOCA3Mi40MDEzIDYxLjE3MDIgNzIuNTQ5OVY3Ny4yMjI0QzYwLjU0MzIgNzcuMDU4OSA1OS44OTk1IDc2Ljk2ODUgNTkuMjUxNyA3Ni45NTI5QzU2LjczOTkgNzYuOTUyOSA1NS44MDc5IDc4LjI5MjkgNTUuODA3OSA4MS4wMjcxVjg4LjA5NzdINTAuNjg4TDUwLjY4NTUgNzIuNjQxNFpNNjUuMzk1MiA3MS4zNzMxQzYzLjcwNjcgNzEuMzczMSA2Mi40OTAzIDcwLjEzNyA2Mi40OTAzIDY4LjY1MzdDNjIuNDkwMyA2Ny4xNzAzIDYzLjY1OTcgNjUuODk3MSA2NS4zOTUyIDY1Ljg5NzFDNjcuMDgxMiA2NS44OTcxIDY4LjI3MDQgNjcuMDgzOCA2OC4yNzA0IDY4LjY1MzdDNjguMjYxMSA2OS4wMjEzIDY4LjE3OTMgNjkuMzgzNSA2OC4wMjk2IDY5LjcxOTRDNjcuODc5OSA3MC4wNTUzIDY3LjY2NTMgNzAuMzU4MyA2Ny4zOTgxIDcwLjYxMTFDNjcuMTMwOSA3MC44NjM4IDY2LjgxNjQgNzEuMDYxMiA2Ni40NzI3IDcxLjE5MkM2Ni4xMjkgNzEuMzIyNyA2NS43NjI4IDcxLjM4NDMgNjUuMzk1MiA3MS4zNzMxWk02Mi44MTkxIDcyLjYzMTVINjcuOTQxNlY4OC4wODc4SDYyLjgxOTFWNzIuNjMxNVpNNzYuMDAxIDg4LjU2NzRDNzMuMzU1OCA4OC41Njc0IDcxLjA3MzkgODcuODI1NyA2OS4zMjYgODYuMzIwMkw3MS44NzI0IDgzLjE3NTVDNzIuOTI1MiA4NC4wMjI5IDc0LjIyOTUgODQuNDk2OCA3NS41ODA3IDg0LjUyMjlDNzYuNzU3NSA4NC41MjI5IDc3LjM0ODQgODQuMjEzOCA3Ny4zNDg0IDgzLjU5MzNDNzcuMzQ4NCA4Mi45NzI4IDc2LjQ3MDcgODIuNzE1NyA3NS4wNzE1IDgyLjI3NTZDNzMuMzQwOSA4MS43MzQyIDcyLjAwODQgODEuMjUyMSA3MS4wNzE0IDgwLjMxNTFDNzAuMjUzMSA3OS40OTY4IDY5Ljg4OTcgNzguNDgwNyA2OS44ODk3IDc3LjEyMzVDNjkuODg5NyA3NC4wODc2IDcyLjI4MjggNzIuMTUxOSA3Ni4yNzA1IDcyLjE1MTlDNzguNDk1NSA3Mi4xNTE5IDgwLjU2NzIgNzIuODM5MSA4Mi4wNTA1IDc0LjE1NjhMNzkuNTk1NiA3Ny4xNTMyQzc4Ljg5MSA3Ni41NzQ3IDc3LjU2MzUgNzYuMTY0MyA3Ni41Njk2IDc2LjE2NDNDNzUuMzMzNSA3Ni4xNjQzIDc0LjcxMyA3Ni40NTYgNzQuNzEzIDc3LjAzNDVDNzQuNzEzIDc3LjYxMyA3NS40NTQ3IDc3Ljg5OTggNzcuMjI3MiA3OC4zODE5QzgwLjI5NTMgNzkuMjEyNSA4Mi4yOTA0IDgwLjU3OTcgODIuMjkwNCA4My41NzM1QzgyLjI5MDQgODYuNzYyNyA3OS43ODExIDg4LjU3NzMgNzYuMDAxIDg4LjU3NzNWODguNTY3NFpNOTEuODIzMiA4OC41Njc0Qzg1Ljc0MTYgODguNTY3NCA4My4zMTYzIDg0LjUwMDYgODMuMzE2MyA4MC4zNTk2QzgzLjMxNjMgNzUuMTk3NiA4Ni45MDYgNzIuMTUxOSA5MS40MDU0IDcyLjE1MTlDOTUuNTI0MiA3Mi4xNTE5IDk4LjgyMjEgNzQuNjI0MSA5OC44MjIxIDc5Ljg4Qzk4Ljg0MzIgODAuNDUyMSA5OC44MDI2IDgxLjAyNDkgOTguNzAxIDgxLjU4ODNIODguMzY3MUM4OC42NDY0IDgzLjQ2OTcgODkuOTc5IDg0LjU1NSA5Mi4xNDIyIDg0LjU1NUM5My41Mzg3IDg0LjU5MjMgOTQuODk3OCA4NC4xMDA1IDk1Ljk0NjkgODMuMTc4TDk4LjM0MjUgODYuMjMzNkM5Ni41NDc3IDg3Ljg4MDEgOTQuNTY5OSA4OC41NzczIDkxLjgxNTggODguNTc3M0w5MS44MjMyIDg4LjU2NzRaTTkzLjc3MTQgNzguNjUxM0M5My43MzY3IDc3LjA5NjMgOTMuMDUxOSA3NS44MDU4IDkxLjI1NDYgNzUuODA1OEM4OS42Nzc0IDc1LjgwNTggODguNzA5MSA3Ni43NTQzIDg4LjM0OTggNzguNjUxM0g5My43NzE0WiIgZmlsbD0iI0RBMjkxQyIvPgo8L2c+CjxkZWZzPgo8Y2xpcFBhdGggaWQ9ImNsaXAwXzkxNV8xMjg1MSI+CjxyZWN0IHdpZHRoPSI5OC44ODg4IiBoZWlnaHQ9Ijg5IiBmaWxsPSJ3aGl0ZSIvPgo8L2NsaXBQYXRoPgo8L2RlZnM+Cjwvc3ZnPgo=" alt="Sunrise" class="sunrise-logo"></span></div><p><button class="footer-secret-entry" id="preview-entry" type="button">Learn. Choose. Protect.</button><span class="footer-dot" aria-hidden="true"></span><span class="footer-small">Cybersecurity in everyday life.</span></p></footer>
   <dialog id="preview-access-dialog" class="app-dialog small-dialog" aria-labelledby="preview-access-title"><button class="dialog-close" data-close-dialog aria-label="Close"><span data-icon="close"></span></button><p class="eyebrow">GAME PREVIEW</p><h2 id="preview-access-title">Open test mode</h2><p>Enter your access code to choose and replay any game.</p><form id="preview-access-form"><label for="preview-code">Access code</label><input id="preview-code" name="preview-code" type="password" autocomplete="off" spellcheck="false" autocapitalize="off" aria-describedby="preview-access-error" required><p id="preview-access-error" class="preview-access-error" role="status" aria-live="polite"></p><button id="preview-unlock" class="button button-primary" type="submit">Unlock games <span data-icon="arrow"></span></button></form></dialog>
-  <dialog id="help-dialog" class="app-dialog" aria-labelledby="help-title"><button class="dialog-close" data-close-dialog aria-label="Close"><span data-icon="close"></span></button><p class="eyebrow">HOW TO PLAY</p><h2 id="help-title">Three spins. Three chances<br>to make the right choice.</h2><ol class="help-steps"><li><span>01</span><div><strong>Draw your games</strong><p>Press “Spin the wheel” three times. Each spin picks a different game and adds it to your journey.</p></div></li><li><span>02</span><div><strong>Press “Start”</strong><p>Play the challenges in the order they were drawn. Read the feedback, then move on to the next one.</p></div></li><li><span>03</span><div><strong>See your results</strong><p>At the end, you’ll see your score and three practical tips. Spin again to start a new journey.</p></div></li></ol><p class="dialog-note">All messages and situations are simulations. Use only made-up passwords in Password Lab; never enter real credentials or personal data. You can also play with a keyboard or on a smartphone.</p><button class="button button-primary" data-close-dialog>Ready, let’s play <span data-icon="arrow"></span></button></dialog>
+  <dialog id="help-dialog" class="app-dialog" aria-labelledby="help-title"><button class="dialog-close" data-close-dialog aria-label="Close"><span data-icon="close"></span></button><p class="eyebrow">HOW TO PLAY</p><h2 id="help-title">Two spins. Two chances<br>to make the right choice.</h2><ol class="help-steps"><li><span>01</span><div><strong>Draw your games</strong><p>Press “Spin the wheel” twice. Each spin picks a different game and adds it to your journey.</p></div></li><li><span>02</span><div><strong>Press “Start”</strong><p>Play the challenges in the order they were drawn. Read the feedback, then move on to the next one.</p></div></li><li><span>03</span><div><strong>See your results</strong><p>At the end, you’ll see your score and two practical tips. Spin again to start a new journey.</p></div></li></ol><p class="dialog-note">All messages and situations are simulations. Use only made-up passwords in Password Lab; never enter real credentials or personal data. You can also play with a keyboard or on a smartphone.</p><button class="button button-primary" data-close-dialog>Ready, let’s play <span data-icon="arrow"></span></button></dialog>
   <dialog id="exit-dialog" class="app-dialog small-dialog" aria-labelledby="exit-title"><p class="eyebrow">NEW JOURNEY</p><h2 id="exit-title">Back to the wheel?</h2><p>Your current draws and results will be reset.</p><div class="dialog-actions"><button class="button button-secondary" data-close-dialog>Keep playing</button><button class="button button-primary" id="confirm-exit">Back to the wheel</button></div></dialog>
   <div id="live-announcement" class="sr-only" aria-live="polite"></div>
 <script>
@@ -2001,6 +2003,7 @@ var time_estimates;time_estimates={estimate_attack_times:function(e){var t,n,s,o
   const $ = selector => document.querySelector(selector);
   const byId = id => games.find(game => game.id === id);
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const JOURNEY_LENGTH = 2;
   const state = {selected:[], results:[], round:0, phase:'wheel', spinning:false, rotation:0};
   const preview = {unlocked:false, activeId:null, results:{}, lastId:null};
   const normalPhases = ['wheel','game','results'];
@@ -2043,11 +2046,11 @@ var time_estimates;time_estimates={estimate_attack_times:function(e){var t,n,s,o
   function restore() {
     try {
       const data = JSON.parse(sessionStorage.getItem('cyberplay-session-en-v2'));
-      if (!data || !Array.isArray(data.selected) || data.selected.length > 3 || !data.selected.every(byId) || new Set(data.selected).size !== data.selected.length) return;
+      if (!data || !Array.isArray(data.selected) || data.selected.length > JOURNEY_LENGTH || !data.selected.every(byId) || new Set(data.selected).size !== data.selected.length) return;
       if (!['wheel','game','results'].includes(data.phase)) return;
-      if (data.phase !== 'wheel' && data.selected.length !== 3) return;
-      if (!Number.isInteger(data.round) || data.round < 0 || data.round > 3 || !Array.isArray(data.results) || data.results.length !== data.round) return;
-      if (data.phase === 'game' && data.round >= 3 || data.phase === 'results' && data.round !== 3) return;
+      if (data.phase !== 'wheel' && data.selected.length !== JOURNEY_LENGTH) return;
+      if (!Number.isInteger(data.round) || data.round < 0 || data.round > JOURNEY_LENGTH || !Array.isArray(data.results) || data.results.length !== data.round) return;
+      if (data.phase === 'game' && data.round >= JOURNEY_LENGTH || data.phase === 'results' && data.round !== JOURNEY_LENGTH) return;
       if (data.results.some((r,i) => r.id !== data.selected[i] || !Number.isFinite(r.percent) || r.percent < 0 || r.percent > 100 || typeof r.lesson !== 'string')) return;
       Object.assign(state, data);
       if (state.selected.length) state.rotation = (360 - games.findIndex(game => game.id === state.selected.at(-1)) * 40) % 360;
@@ -2068,25 +2071,25 @@ var time_estimates;time_estimates={estimate_attack_times:function(e){var t,n,s,o
     }).join('') + '<circle cx="250" cy="250" r="226" fill="none" stroke="#9db1cc33" stroke-width="1"/>';
   }
   function cardMarkup(game,index) {
-    return `<span class="selection-number">0${index+1}</span><span class="selection-icon">${icon(game ? game.icon : 'lock')}</span><div><h3>${game ? game.title : ['Your first challenge awaits','Another spin, another game','Your journey is taking shape'][index]}</h3><p>${game ? game.description : 'Spin the wheel to reveal it'}</p></div>`;
+    return `<span class="selection-number">0${index+1}</span><span class="selection-icon">${icon(game ? game.icon : 'lock')}</span><div><h3>${game ? game.title : ['Your first challenge awaits','Another spin, another game'][index]}</h3><p>${game ? game.description : 'Spin the wheel to reveal it'}</p></div>`;
   }
   function renderSelections(pending = -1) {
-    $('#selection-list').innerHTML = [0,1,2].map(index => {
+    $('#selection-list').innerHTML = Array.from({length:JOURNEY_LENGTH},(_,index) => {
       const game = byId(state.selected[index]);
       return `<li class="selection-card ${game ? 'picked' : ''} ${pending === index ? 'card-pending' : ''}" ${game ? `style="--game-color:${game.color}"` : ''}>${cardMarkup(game,index)}</li>`;
     }).join('');
-    $('#selection-count').innerHTML = `${state.selected.length}<span>/3</span>`;
-    $('#spin-dots').setAttribute('aria-label', `${state.selected.length} of 3 games drawn`);
+    $('#selection-count').innerHTML = `${state.selected.length}<span>/${JOURNEY_LENGTH}</span>`;
+    $('#spin-dots').setAttribute('aria-label', `${state.selected.length} of ${JOURNEY_LENGTH} games drawn`);
     [...$('#spin-dots').children].forEach((dot,index) => dot.classList.toggle('filled',index < state.selected.length));
-    const ready = state.selected.length === 3 && !state.spinning;
+    const ready = state.selected.length === JOURNEY_LENGTH && !state.spinning;
     $('#start-button').disabled = !ready;
-    $('#spin-button').disabled = state.spinning || state.selected.length === 3;
-    $('#spin-center').disabled = state.spinning || state.selected.length === 3;
-    $('#spin-center strong').textContent = state.selected.length === 3 ? 'READY' : 'SPIN';
-    $('#spin-label').textContent = state.spinning ? 'The wheel is spinning…' : state.selected.length === 3 ? 'Journey ready' : state.selected.length === 0 ? 'Spin the wheel' : `Spin again · ${state.selected.length + 1}/3`;
+    $('#spin-button').disabled = state.spinning || state.selected.length === JOURNEY_LENGTH;
+    $('#spin-center').disabled = state.spinning || state.selected.length === JOURNEY_LENGTH;
+    $('#spin-center strong').textContent = state.selected.length === JOURNEY_LENGTH ? 'READY' : 'SPIN';
+    $('#spin-label').textContent = state.spinning ? 'The wheel is spinning…' : state.selected.length === JOURNEY_LENGTH ? 'Journey ready' : state.selected.length === 0 ? 'Spin the wheel' : `Spin again · ${state.selected.length + 1}/${JOURNEY_LENGTH}`;
     $('#ready-icon').innerHTML = icon(ready ? 'check' : 'lock');
     $('#ready-icon').style.color = ready ? 'var(--green)' : '';
-    $('#ready-note').innerHTML = ready ? 'Your journey is ready.<br><span>Three challenges, in the order you drew them.</span>' : 'Draw three games to get started.<br><span>You’ll play them from top to bottom.</span>';
+    $('#ready-note').innerHTML = ready ? 'Your journey is ready.<br><span>Two challenges, in the order you drew them.</span>' : 'Draw two games to get started.<br><span>You’ll play them from top to bottom.</span>';
   }
   async function transferCard(game,index) {
     if (reducedMotion.matches) return;
@@ -2104,7 +2107,7 @@ var time_estimates;time_estimates={estimate_attack_times:function(e){var t,n,s,o
     } finally { flying.remove(); }
   }
   async function spin() {
-    if (state.spinning || state.selected.length >= 3 || state.phase !== 'wheel') return;
+    if (state.spinning || state.selected.length >= JOURNEY_LENGTH || state.phase !== 'wheel') return;
     state.spinning = true;
     renderSelections();
     $('#spin-status').textContent = 'A new game is about to join your journey…';
@@ -2147,10 +2150,10 @@ var time_estimates;time_estimates={estimate_attack_times:function(e){var t,n,s,o
       renderSelections();
       drawWheel();
       save();
-      $('#spin-status').textContent = state.selected.length === 3 ? 'Three games, one journey. Now press Start.' : `${game.title} has joined your journey. Spin again!`;
-      $('#live-announcement').textContent = `Game ${state.selected.length} of 3: ${game.title}. ${state.selected.length === 3 ? 'The Start button is now available.' : 'You can spin again.'}`;
+      $('#spin-status').textContent = state.selected.length === JOURNEY_LENGTH ? 'Two games, one journey. Now press Start.' : `${game.title} has joined your journey. Spin again!`;
+      $('#live-announcement').textContent = `Game ${state.selected.length} of ${JOURNEY_LENGTH}: ${game.title}. ${state.selected.length === JOURNEY_LENGTH ? 'The Start button is now available.' : 'You can spin again.'}`;
       // The native spin button becomes disabled after the last draw; move focus to the next action.
-      if (state.selected.length === 3) $('#start-button').focus({preventScroll:true});
+      if (state.selected.length === JOURNEY_LENGTH) $('#start-button').focus({preventScroll:true});
     } catch (error) {
       state.spinning = false;
       $('#wheel-stage').classList.remove('spinning');
@@ -2178,13 +2181,13 @@ var time_estimates;time_estimates={estimate_attack_times:function(e){var t,n,s,o
     $('#game-category').textContent = game.category;
     $('#game-heading-icon').innerHTML = icon(game.icon,32);
     $('#game-heading-icon').style.color = game.color;
-    $('#game-step').textContent = `CHALLENGE 0${state.round+1} / 03`;
+    $('#game-step').textContent = `CHALLENGE 0${state.round+1} / 0${JOURNEY_LENGTH}`;
     $('#journey-progress').innerHTML = state.selected.map((_,i) => `<span class="progress-step ${i === state.round ? 'active' : i < state.round ? 'complete' : ''}" aria-label="Challenge ${i+1}: ${i === state.round ? 'in progress' : i < state.round ? 'completed' : 'up next'}"></span>`).join('');
     $('#game-path').innerHTML = state.selected.map((id,index) => `<li class="game-path-item ${index === state.round ? 'active' : index < state.round ? 'complete' : ''}"><span class="path-number">${index < state.round ? icon('check') : `0${index+1}`}</span><span><strong>${byId(id).title}</strong><small>${index === state.round ? 'Playing now' : index < state.round ? 'Challenge complete' : 'The next move'}</small></span></li>`).join('');
     mountGame(game,'game',result => {
       state.results.push(result);
       state.round++;
-      if (state.round < 3) showGame(); else showResults();
+      if (state.round < JOURNEY_LENGTH) showGame(); else showResults();
       save();
     });
   }
@@ -2288,7 +2291,7 @@ var time_estimates;time_estimates={estimate_attack_times:function(e){var t,n,s,o
   function showResults() {
     teardown();
     showScreen('results');
-    const percent = Math.round(state.results.reduce((sum,result) => sum+result.percent,0) / 3);
+    const percent = Math.round(state.results.reduce((sum,result) => sum+result.percent,0) / JOURNEY_LENGTH);
     $('#total-score').textContent = percent;
     $('#result-badge').textContent = percent >= 80 ? 'CYBER DEFENDER' : percent >= 50 ? 'CYBER EXPLORER' : 'CYBER STARTER';
     $('#result-caption').textContent = percent >= 80 ? 'You spotted the warning signs and chose carefully. Keep checking, even when everything looks normal.' : percent >= 50 ? 'You have good instincts. The tips below will help you make your next decision even safer.' : 'Every challenge is a chance to learn. Start with the warning signs and safe choices you’ve discovered.';
@@ -2311,7 +2314,7 @@ var time_estimates;time_estimates={estimate_attack_times:function(e){var t,n,s,o
   $('#spin-button').addEventListener('click',spin);
   $('#spin-center').addEventListener('click',spin);
   $('#start-button').addEventListener('click',() => {
-    if (state.selected.length !== 3 || state.spinning || state.phase !== 'wheel') return;
+    if (state.selected.length !== JOURNEY_LENGTH || state.spinning || state.phase !== 'wheel') return;
     showGame(); save();
   });
   $('#help-button').addEventListener('click',() => $('#help-dialog').showModal());
@@ -2380,7 +2383,7 @@ var time_estimates;time_estimates={estimate_attack_times:function(e){var t,n,s,o
   }
   else if (state.phase === 'game') showGame();
   else if (state.phase === 'results') showResults();
-  else if (state.selected.length === 3) $('#spin-status').textContent = 'Your journey is ready. Press Start.';
+  else if (state.selected.length === JOURNEY_LENGTH) $('#spin-status').textContent = 'Your journey is ready. Press Start.';
   else if (state.selected.length > 0) $('#spin-status').textContent = 'Your journey is saved. Spin again!';
 })();
 
