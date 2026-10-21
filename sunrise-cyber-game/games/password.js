@@ -3,7 +3,7 @@
 
   window.CyberGames = window.CyberGames || {};
   const escape = value => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
-  const labels = ['Very guessable', 'Guessable', 'Needs work', 'Good estimate', 'Strong estimate'];
+  const labels = ['Very guessable', 'Guessable', 'Needs work', 'Good', 'Strong'];
   // zxcvbn supports contextual words in addition to its built-in dictionaries.
   const contextWords = ['sunrise', 'bip', 'estate', 'summer', 'winter', 'spring', 'autumn', '2026'];
 
@@ -20,20 +20,54 @@
 
       function estimate(value) {
         const result = window.zxcvbn(value, contextWords);
+        const length = Array.from(value).length;
+        const normalised = value.normalize('NFKC').toLowerCase();
+        const predictableSuffix = /^\p{L}{3,}(?:19\d{2}|20\d{2}|\d{1,8})[^\p{L}\p{N}\s]{0,3}$/u.test(normalised);
+        const repeatedChunk = /(.{3,})\1+/u.test(normalised);
+        let score = result.score;
+        const policyFlags = [];
+
+        // Current guidance prioritises length and resistance to common guessing
+        // patterns over cosmetic composition rules. A short candidate must not
+        // look "good" merely because it contains upper-case, digits and symbols.
+        if (length < 12) score = Math.min(score, 1);
+        else if (length < 15) score = Math.min(score, 2);
+        if (predictableSuffix) {
+          score = Math.min(score, 1);
+          policyFlags.push('predictable-suffix');
+        }
+        if (repeatedChunk) {
+          score = Math.min(score, 1);
+          policyFlags.push('repetition');
+        }
+
+        let warning = result.feedback.warning;
+        const suggestions = result.feedback.suggestions.slice();
+        if (predictableSuffix) {
+          warning = 'A name or word followed by numbers and a symbol is a predictable pattern.';
+          suggestions.unshift('Avoid names, dates, counting sequences and a symbol simply added at the end.');
+        } else if (repeatedChunk) {
+          warning = 'Repeated chunks are easier to guess than the total length suggests.';
+          suggestions.unshift('Use unrelated words or a manager-generated random password instead of repetition.');
+        } else if (length < 15) {
+          warning = warning || 'This candidate is too short for the lab target.';
+          suggestions.unshift('Use at least 15 characters; more length is better when the password is not randomly generated.');
+        }
         // Keep only generic feedback and numbers. Passwords and match tokens
         // never become game state, session data, scores or completion lessons.
         return {
-          score: result.score,
-          length: Array.from(value).length,
-          warning: result.feedback.warning,
-          suggestions: result.feedback.suggestions.slice(),
+          score,
+          length,
+          warning,
+          suggestions: [...new Set(suggestions)],
+          policyFlags,
           patterns: [...new Set(result.sequence.map(match => match.pattern))]
         };
       }
 
       function meter(result, baseline = false) {
         const qualified = result.score >= 3 && result.length >= 15;
-        return `<section class="pass-strength" data-testid="${baseline ? 'password-baseline-strength' : 'password-strength'}" data-score="${result.score}" data-length="${result.length}" aria-label="Estimated password strength"><div class="pass-strength-heading"><span>MODEL ESTIMATE</span><strong>${result.score} <small>/ 4</small> · ${labels[result.score]}</strong></div><div class="pass-meter" role="meter" aria-label="Offline strength estimate" aria-valuemin="0" aria-valuemax="4" aria-valuenow="${result.score}" aria-valuetext="${escape(labels[result.score])}">${Array.from({ length: 5 }, (_, i) => `<i class="${i <= result.score ? 'is-filled' : ''}"></i>`).join('')}</div><div class="pass-checks"><span class="${result.length >= 15 ? 'is-met' : ''}">${icon(result.length >= 15 ? 'check' : 'close', 16)} ${result.length} characters · lab target: at least 15</span><span class="${result.score >= 3 ? 'is-met' : ''}">${icon(result.score >= 3 ? 'check' : 'close', 16)} Lab target: model score of at least 3</span></div>${!baseline ? `<p class="pass-target ${qualified ? 'is-met' : ''}">${qualified ? 'Lab target reached. Next, protect it properly.' : 'Keep experimenting. There is no penalty for practice.'}</p>` : ''}</section>`;
+        return `<section class="pass-strength" data-testid="${baseline ? 'password-baseline-strength' : 'password-strength'}" data-score="${result.score}" data-length="${result.length}" aria-label="Estimated password strength"><div class="pass-strength-heading"><span>SECURITY ESTIMATE</span><strong>${result.score} <small>/ 4</small> · ${labels[result.score]}</strong></div><div class="pass-meter" role="meter" aria-label="Offline strength estimate" aria-valuemin="0" aria-valuemax="4" aria-valuenow="${result.score}" aria-valuetext="${escape(labels[result.score])}">${Array.from({ length: 5 }, (_, i) => `<i class="${i <= result.score ? 'is-filled' : ''}"></i>`).join('')}</div><div class="pass-checks"><span class="${result.length >= 15 ? 'is-met' : ''}">${icon(result.length >= 15 ? 'check' : 'close', 16)} ${result.length} characters · minimum target: 15</span><span class="${result.score >= 3 ? 'is-met' : ''}">${icon(result.score >= 3 ? 'check' : 'close', 16)} Guess resistance: ${result.score >= 3 ? 'passes' : 'does not pass'}</span></div>${!baseline ? `<p class="pass-target ${qualified ? 'is-met' : ''}">${qualified ? 'Lab target reached. Next, protect it properly.' : 'Not strong enough yet. Keep experimenting; practice has no penalty.'}</p>` : ''}</section>`;
       }
 
       function header(title, copy) {

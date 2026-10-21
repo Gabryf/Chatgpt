@@ -78,7 +78,7 @@
       const [x2,y2] = point(221, angle + 20);
       const [tx,ty] = point(177,angle);
       const rotate = -state.rotation;
-      return `<g class="wheel-sector ${state.selected.includes(game.id) ? 'drawn' : ''}" data-sector="${game.id}"><path d="M250 250L${x1} ${y1}A221 221 0 0 1 ${x2} ${y2}Z" fill="${game.fill}"/><path d="M${x1} ${y1}A221 221 0 0 1 ${x2} ${y2}" stroke="${game.color}" style="stroke:${game.color};stroke-width:3;opacity:.6;fill:none"/><g transform="translate(${tx} ${ty}) rotate(${rotate})"><g class="sector-icon" transform="translate(-11 -37)" style="color:${game.color}">${icon(game.icon,22)}</g><text class="sector-title" text-anchor="middle"><tspan x="0" y="-4">${game.short[0]}</tspan><tspan x="0" y="13">${game.short[1]}</tspan></text></g></g>`;
+      return `<g class="wheel-sector ${state.selected.includes(game.id) ? 'drawn' : ''}" data-sector="${game.id}"><path d="M250 250L${x1} ${y1}A221 221 0 0 1 ${x2} ${y2}Z" fill="${game.fill}"/><path d="M${x1} ${y1}A221 221 0 0 1 ${x2} ${y2}" stroke="${game.color}" style="stroke:${game.color};stroke-width:3;opacity:.6;fill:none"/><g transform="translate(${tx} ${ty})"><g class="wheel-label" style="transform:rotate(${rotate}deg);transform-origin:0 0"><g class="sector-icon" transform="translate(-11 -37)" style="color:${game.color}">${icon(game.icon,22)}</g><text class="sector-title" text-anchor="middle"><tspan x="0" y="-4">${game.short[0]}</tspan><tspan x="0" y="13">${game.short[1]}</tspan></text></g></g></g>`;
     }).join('') + '<circle cx="250" cy="250" r="226" fill="none" stroke="#9db1cc33" stroke-width="1"/>';
   }
   function cardMarkup(game,index) {
@@ -137,7 +137,13 @@
     const wantedMod = ((-sector * 40 % 360) + 360) % 360;
     const target = state.rotation + 360 * 5 + ((wantedMod - currentMod + 360) % 360);
     try {
-      await $('#wheel').animate([{transform:`rotate(${state.rotation}deg)`},{transform:`rotate(${target}deg)`}],{duration:reducedMotion.matches ? 60 : 3100,easing:'cubic-bezier(.12,.72,.08,1)'}).finished;
+      const animationOptions = {duration:reducedMotion.matches ? 60 : 3100,easing:'cubic-bezier(.12,.72,.08,1)'};
+      const wheelAnimation = $('#wheel').animate([{transform:`rotate(${state.rotation}deg)`},{transform:`rotate(${target}deg)`}],animationOptions);
+      const labelAnimations = [...document.querySelectorAll('.wheel-label')].map(label => label.animate(
+        [{transform:`rotate(${-state.rotation}deg)`},{transform:`rotate(${-target}deg)`}],
+        animationOptions
+      ));
+      await Promise.all([wheelAnimation.finished, ...labelAnimations.map(animation => animation.finished)]);
       $('#wheel').style.transform = `rotate(${target}deg)`;
       state.rotation = target;
       $('#wheel-stage').classList.remove('spinning');

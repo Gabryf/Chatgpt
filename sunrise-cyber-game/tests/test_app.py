@@ -3,6 +3,7 @@ import functools
 import http.server
 import os
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
@@ -205,6 +206,27 @@ class CyberPlayTests(unittest.TestCase):
         page.locator('#confirm-exit').click()
         expect(page.locator('.selection-card.picked')).to_have_count(0)
         self.assertEqual(errors, [])
+
+    def test_wheel_labels_stay_upright_while_spinning(self):
+        context = self.browser.new_context(viewport={'width': 1440, 'height': 960}, reduced_motion='no-preference')
+        context.add_init_script('crypto.getRandomValues = array => { array[0] = 3; return array; };')
+        page = context.new_page()
+        self.addCleanup(context.close)
+        page.goto(self.url)
+        page.locator('#spin-button').click()
+        expect(page.locator('#wheel-stage')).to_have_class(re.compile(r'\bspinning\b'))
+        page.wait_for_timeout(900)
+        angles = page.locator('#wheel').evaluate("""wheel => {
+          const angle = element => {
+            const matrix = new DOMMatrix(getComputedStyle(element).transform);
+            return Math.atan2(matrix.b, matrix.a) * 180 / Math.PI;
+          };
+          return [angle(wheel), ...[...wheel.querySelectorAll('.wheel-label')].map(angle)];
+        }""")
+        for label_angle in angles[1:]:
+            combined = ((angles[0] + label_angle + 180) % 360) - 180
+            self.assertAlmostEqual(combined, 0, delta=3)
+        expect(page.locator('.selection-card.picked')).to_have_count(1, timeout=5000)
 
     def test_small_screens_and_keyboard_selection(self):
         for width in (320, 390, 768):

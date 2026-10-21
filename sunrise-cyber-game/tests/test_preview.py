@@ -459,6 +459,15 @@ class PreviewTests(unittest.TestCase):
         expect(page.get_by_test_id('password-continue')).to_be_disabled()
         self.assert_lab_password_is_not_stored(page, weak)
 
+        # Cosmetic complexity must not make a name + digits + symbol pattern good.
+        predictable = 'Alessia1234$'
+        field.fill(predictable)
+        page.get_by_test_id('password-analyze').click()
+        self.assertLessEqual(int(strength.get_attribute('data-score')), 1)
+        expect(page.get_by_test_id('password-continue')).to_be_disabled()
+        expect(page.locator('[data-password-analysis]')).to_contain_text('predictable pattern')
+        self.assert_lab_password_is_not_stored(page, predictable)
+
         field.fill(test_app.LAB_PASSWORD)
         page.get_by_test_id('password-analyze').click()
         self.assertGreaterEqual(int(strength.get_attribute('data-score')), 3)
